@@ -35,9 +35,9 @@ public class TodoItemRepository : ITodoItemRepostory
         return _dbContext.Itens.Where(x => x.CreatorId == ownerId && x.Title.Contains(title)).ToList();
     }
 
-    public TodoItem GetById(Guid id)
+    public TodoItem? GetById(Guid id)
     {
-        return _dbContext.Itens.Where(x => x.Id == id).First();
+        return _dbContext.Itens.FirstOrDefault(x => x.Id == id);
     }
 
     public void Update(TodoItem item)

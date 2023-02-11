@@ -25,14 +25,14 @@ public class UserRepository : IUserRepository
         _dbContext.SaveChanges();
     }
 
-    public User GetByEmail(string email)
+    public User? GetByEmail(string email)
     {
-        return _dbContext.Users.Where(x => x.Email == email).First();
+        return _dbContext.Users.FirstOrDefault(x => x.Email == email);
     }
 
-    public User GetById(Guid id)
+    public User? GetById(Guid id)
     {
-        return _dbContext.Users.Where(x => x.Id == id).First();
+        return _dbContext.Users.FirstOrDefault(x => x.Id == id);
     }
 
     public void Update(User user)

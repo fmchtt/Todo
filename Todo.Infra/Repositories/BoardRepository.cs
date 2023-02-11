@@ -1,4 +1,5 @@
-﻿using Todo.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Infra.Contexts;
 
@@ -35,9 +36,9 @@ public class BoardRepository : IBoardRepository
         return _dbContext.Boards.Where(x => x.OwnerId == ownerId && x.Name.Contains(name)).ToList();
     }
 
-    public Board GetById(Guid id)
+    public Board? GetById(Guid id)
     {
-        throw new NotImplementedException();
+        return _dbContext.Boards.Include(x => x.Participants).Include(x => x.Columns).FirstOrDefault(x => x.Id == id);
     }
 
     public void Update(Board board)

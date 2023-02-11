@@ -32,7 +32,7 @@ public class ColumnController : TodoBaseController
         return ParseResult(result);
     }
 
-    [HttpDelete(":id"), Authorize]
+    [HttpDelete("{id}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic DeleteColumn(

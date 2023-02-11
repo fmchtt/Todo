@@ -1,4 +1,5 @@
-﻿using Todo.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Infra.Contexts;
 
@@ -25,9 +26,9 @@ public class ColumnRepository : IColumnRepository
         _dbContext.SaveChanges();
     }
 
-    public Column GetById(Guid id)
+    public Column? GetById(Guid id)
     {
-        return _dbContext.Columns.Where(x => x.Id == id).First();
+        return _dbContext.Columns.Include(x => x.Board.Participants).FirstOrDefault(x => x.Id == id);
     }
 
     public void Update(Column column)

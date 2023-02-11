@@ -4,7 +4,7 @@ namespace Todo.Domain.Repositories;
 
 public interface IBoardRepository
 {
-    public Board GetById(Guid id);
+    public Board? GetById(Guid id);
     public List<Board> GetAll(Guid ownerId);
     public List<Board> GetAllByName(string name, Guid ownerId);
     public void Create(Board board);

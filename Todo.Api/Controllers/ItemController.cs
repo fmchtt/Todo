@@ -49,7 +49,7 @@ public class ItemController : TodoBaseController
         return ParseResult(result);
     }
 
-    [HttpPatch(":id"), Authorize]
+    [HttpPatch("{id}"), Authorize]
     [ProducesResponseType(typeof(TodoItemResultDTO), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
@@ -70,7 +70,7 @@ public class ItemController : TodoBaseController
         return ParseResult(result);
     }
 
-    [HttpDelete(":id"), Authorize]
+    [HttpDelete("{id}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic DeleteItem(

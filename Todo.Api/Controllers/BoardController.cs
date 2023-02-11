@@ -28,7 +28,7 @@ public class BoardController : TodoBaseController
         return result;
     }
 
-    [HttpGet(":id"), Authorize]
+    [HttpGet("{id}"), Authorize]
     [ProducesResponseType(typeof(ExpandedBoardDTO), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic GetById(
@@ -39,7 +39,7 @@ public class BoardController : TodoBaseController
         var boardId = Guid.Parse(id);
         var board = boardRepository.GetById(boardId);
 
-        if (board.OwnerId != GetUserId())
+        if (board == null || board.OwnerId != GetUserId())
         {
             return NotFound(new MessageResult("Quadro não encontrado!"));
         }
@@ -65,7 +65,7 @@ public class BoardController : TodoBaseController
         return ParseResult(result);
     }
 
-    [HttpDelete(":id"), Authorize]
+    [HttpDelete("{id}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic DeleteBoard(
