@@ -17,10 +17,22 @@ public class TodoBaseController : ControllerBase
         {
             if (result.Result != null)
             {
+                #pragma warning disable CS8603
                 return Ok(result.Result);
             }
 
             return Ok(message);
+        }
+
+        if (result.Code == 201)
+        {
+            if (result.Result != null)
+            {
+                #pragma warning disable CS8603
+                return Created(result.Result);
+            }
+
+            return Created(message);
         }
 
         if (result.Code == 400)
@@ -92,10 +104,16 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public User? GetUser(IUserRepository repository)
+    public User? GetUser()
     {
+        var _userRepository = HttpContext.RequestServices.GetService<IUserRepository>();
+        if (_userRepository == null)
+        {
+            return null;
+        }
+
         var userId = GetUserId();
-        var user = repository.GetById(userId);
+        var user = _userRepository.GetById(userId);
 
         return user;
     }
@@ -104,6 +122,13 @@ public class TodoBaseController : ControllerBase
     public T Ok<T>(T data)
     {
         Response.StatusCode = 200;
+
+        return data;
+    }
+
+    public T Created<T>(T data)
+    {
+        Response.StatusCode = 201;
 
         return data;
     }

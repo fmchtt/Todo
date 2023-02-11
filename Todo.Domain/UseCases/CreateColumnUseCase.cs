@@ -17,9 +17,9 @@ public class CreateColumnUseCase
         _boardRepository = boardRepository;
     }
 
-    public ResultDTO<ColumnResultDTO> Handle(CreateColumnDTO data, Guid boardId, User user)
+    public ResultDTO<ColumnResultDTO> Handle(CreateColumnDTO data, User user)
     {
-        var board = _boardRepository.GetById(boardId);
+        var board = _boardRepository.GetById(data.BoardId);
         if (board == null)
         {
             return new ResultDTO<ColumnResultDTO>(400, "Quadro não encontrado!");
@@ -30,9 +30,9 @@ public class CreateColumnUseCase
             return new ResultDTO<ColumnResultDTO>(401, "Sem permissão");
         }
 
-        var column = new Column(data.Name, boardId);
+        var column = new Column(data.Name, data.BoardId);
         _columnRepository.Create(column);
 
-        return new ResultDTO<ColumnResultDTO>(200, "Coluna criada com sucesso!", new ColumnResultDTO(column));
+        return new ResultDTO<ColumnResultDTO>(201, "Coluna criada com sucesso!", new ColumnResultDTO(column));
     }
 }
