@@ -5,9 +5,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Todo.Api.Utils;
 using Todo.Api.Contracts;
+using Todo.Domain.Repositories;
+using Todo.Infra.Repositories;
+using Todo.Domain.Utils;
+using Todo.Infra.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
-var key = Encoding.ASCII.GetBytes(builder.Configuration.GetValue("SecretKey", "") ?? Guid.NewGuid().ToString());
+var secret = builder.Configuration.GetValue("SecretKey", "") ?? Guid.NewGuid().ToString();
+var key = Encoding.ASCII.GetBytes(secret);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -15,7 +20,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<TodoDBContext>(x => x.UseNpgsql(builder.Configuration.GetValue("ConnectionString", "")));
 builder.Services.AddTransient<ITokenService, TokenService>(x => new TokenService(key));
+builder.Services.AddTransient<IHasher, Hasher>(x => new Hasher(secret));
 
+builder.Services.AddTransient<IBoardRepository, BoardRepository>();
+builder.Services.AddTransient<IColumnRepository, ColumnRepository>();
+builder.Services.AddTransient<ITodoItemRepostory, TodoItemRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 builder.Services.AddAuthentication(
     options =>

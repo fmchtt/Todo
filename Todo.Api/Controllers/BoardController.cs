@@ -13,7 +13,9 @@ namespace Todo.Api.Controllers;
 public class BoardController : TodoBaseController
 {
     [HttpGet, Authorize]
-    public List<BoardResultDTO> GetAll([FromServices] IBoardRepository boardRepository)
+    public List<BoardResultDTO> GetAll(
+        [FromServices] IBoardRepository boardRepository
+    )
     {
         var todos = boardRepository.GetAll(GetUserId());
 
@@ -29,7 +31,10 @@ public class BoardController : TodoBaseController
     [HttpGet(":id"), Authorize]
     [ProducesResponseType(typeof(ExpandedBoardDTO), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic GetById([FromRoute] string id, [FromServices] IBoardRepository boardRepository)
+    public dynamic GetById(
+        [FromRoute] string id,
+        [FromServices] IBoardRepository boardRepository
+    )
     {
         var boardId = Guid.Parse(id);
         var board = boardRepository.GetById(boardId);
@@ -44,7 +49,11 @@ public class BoardController : TodoBaseController
 
     [HttpPost, Authorize]
     [ProducesResponseType(typeof(BoardResultDTO), 201)]
-    public dynamic Create([FromBody] CreateBoardDTO data, [FromServices] IBoardRepository boardRepository, [FromServices] IColumnRepository columnRepository)
+    public dynamic Create(
+        [FromBody] CreateBoardDTO data,
+        [FromServices] IBoardRepository boardRepository,
+        [FromServices] IColumnRepository columnRepository
+    )
     {
         var user = GetUser();
         if (user == null)
@@ -59,7 +68,11 @@ public class BoardController : TodoBaseController
     [HttpDelete(":id"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public dynamic DeleteBoard([FromRoute] string id, [FromServices] IBoardRepository boardRepository) {
+    public dynamic DeleteBoard(
+        [FromRoute] string id,
+        [FromServices] IBoardRepository boardRepository
+    )
+    {
         var user = GetUser();
         if (user == null)
         {

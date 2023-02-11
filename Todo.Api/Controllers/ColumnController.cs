@@ -16,7 +16,11 @@ public class ColumnController : TodoBaseController
     [ProducesResponseType(typeof(ColumnResultDTO), 201)]
     [ProducesResponseType(typeof(MessageResult), 400)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public dynamic Create([FromBody] CreateColumnDTO data, [FromServices] IColumnRepository columnRepository, [FromServices] IBoardRepository boardRepository)
+    public dynamic Create(
+        [FromBody] CreateColumnDTO data, 
+        [FromServices] IColumnRepository columnRepository, 
+        [FromServices] IBoardRepository boardRepository
+    )
     {
         var user = GetUser();
         if (user == null)
@@ -31,7 +35,10 @@ public class ColumnController : TodoBaseController
     [HttpDelete(":id"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public dynamic DeleteColumn([FromRoute] string id, [FromServices] IColumnRepository columnRepository)
+    public dynamic DeleteColumn(
+        [FromRoute] string id, 
+        [FromServices] IColumnRepository columnRepository
+    )
     {
         var user = GetUser();
         if (user == null)

@@ -10,15 +10,19 @@ namespace Todo.Api.Controllers;
 public class SearchController : TodoBaseController
 {
     [HttpGet, Authorize]
-    public SearchResultDTO Search([FromQuery] string s, [FromServices] ITodoItemRepostory itemRepostory, [FromServices] IBoardRepository boardRepository)
+    public SearchResultDTO Search(
+        [FromQuery] string s, 
+        [FromServices] ITodoItemRepostory itemRepostory, 
+        [FromServices] IBoardRepository boardRepository
+    )
     {
         if (s == null || s == String.Empty)
         {
             return new SearchResultDTO();
         }
 
-        var boards = boardRepository.GetAllByName(s);
-        var itens = itemRepostory.GetAllByTitle(s);
+        var boards = boardRepository.GetAllByName(s, GetUserId());
+        var itens = itemRepostory.GetAllByTitle(s, GetUserId());
 
         var result = new SearchResultDTO();
         foreach (var board in boards)

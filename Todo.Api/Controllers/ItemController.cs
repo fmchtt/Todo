@@ -13,7 +13,9 @@ namespace Todo.Api.Controllers;
 public class ItemController : TodoBaseController
 {
     [HttpGet, Authorize]
-    public List<TodoItemResultDTO> GetAll([FromServices] ITodoItemRepostory todoItemRepostory)
+    public List<TodoItemResultDTO> GetAll(
+        [FromServices] ITodoItemRepostory todoItemRepostory
+    )
     {
         var todos = todoItemRepostory.GetAll(GetUserId());
 
@@ -29,7 +31,12 @@ public class ItemController : TodoBaseController
     [HttpPost, Authorize]
     [ProducesResponseType(typeof(TodoItemResultDTO), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public dynamic CreateItem([FromBody] CreateTodoItemDTO data, [FromServices] ITodoItemRepostory itemRepostory, [FromServices] IBoardRepository boardRepository, [FromServices] IColumnRepository columnRepository, [FromServices] IUserRepository userRepository)
+    public dynamic CreateItem(
+        [FromBody] CreateTodoItemDTO data, 
+        [FromServices] ITodoItemRepostory itemRepostory, 
+        [FromServices] IBoardRepository boardRepository, 
+        [FromServices] IColumnRepository columnRepository
+    )
     {
         var user = GetUser();
         if (user == null)
@@ -46,7 +53,11 @@ public class ItemController : TodoBaseController
     [ProducesResponseType(typeof(TodoItemResultDTO), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic UpdateItem([FromBody] EditTodoItemDTO data, [FromRoute] string id, [FromServices] ITodoItemRepostory itemRepostory)
+    public dynamic UpdateItem(
+        [FromBody] EditTodoItemDTO data, 
+        [FromRoute] string id, 
+        [FromServices] ITodoItemRepostory itemRepostory
+    )
     {
         var user = GetUser();
         if (user == null)
@@ -62,7 +73,10 @@ public class ItemController : TodoBaseController
     [HttpDelete(":id"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public dynamic DeleteItem([FromRoute] string id, [FromServices] ITodoItemRepostory itemRepostory)
+    public dynamic DeleteItem(
+        [FromRoute] string id, 
+        [FromServices] ITodoItemRepostory itemRepostory
+    )
     {
         var user = GetUser();
         if (user == null)

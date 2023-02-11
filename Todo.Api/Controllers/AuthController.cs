@@ -14,7 +14,12 @@ public class AuthController : TodoBaseController
     [HttpPost("login")]
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic Login([FromBody] LoginDTO data, [FromServices] IUserRepository repository, [FromServices] IHasher hasher, [FromServices] ITokenService tokenService)
+    public dynamic Login(
+        [FromBody] LoginDTO data, 
+        [FromServices] IUserRepository repository, 
+        [FromServices] IHasher hasher, 
+        [FromServices] ITokenService tokenService
+    )
     {
         var result = new LoginUseCase(repository, hasher).Handle(data);
 
@@ -34,7 +39,12 @@ public class AuthController : TodoBaseController
     [HttpPost("register")]
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic Register([FromBody] UserCreateDTO data, [FromServices] IUserRepository repository, [FromServices] IHasher hasher, [FromServices] ITokenService tokenService)
+    public dynamic Register(
+        [FromBody] UserCreateDTO data, 
+        [FromServices] IUserRepository repository, 
+        [FromServices] IHasher hasher, 
+        [FromServices] ITokenService tokenService
+    )
     {
         var result = new UserRegisterUseCase(repository, hasher).Handle(data);
 

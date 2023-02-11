@@ -8,5 +8,5 @@ public interface IUserRepository
     User GetByEmail(string email);
     void Create(User user);
     void Update(User user);
-    void Delete(Guid id);
+    void Delete(User user);
 }
