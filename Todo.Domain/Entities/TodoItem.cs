@@ -7,32 +7,22 @@ public class TodoItem : Entity
     public DateTime CreatedDate { get; set; }
     public DateTime UpdatedDate { get; set; }
     public bool Done { get; set; }
-
-    /*
-     * Priority são opções
-     * 0 - Nenhuma
-     * 1 - Muito Baixa
-     * 2 - Baixa
-     * 3 - Media
-     * 4 - Alta
-     * 5 - Muito Alta
-     */
-    public int Priority { get; set; }
-    public List<string>? Files { get; set; }
+    public EPriority Priority { get; set; }
+    public List<string> Files { get; set; } = new List<string>();
     public Guid? BoardId { get; set; }
     public Board? Board { get; set; }
     public Guid? ColumnId { get; set; }
     public Column? Column { get; set; }
     public Guid CreatorId { get; set; }
-    public User? Creator { get; set; }
+    public User Creator { get; set; }
 
-    public TodoItem(string title, string description, DateTime createdDate, DateTime updatedDate, Guid? boardId, Guid creatorId, bool done, int priority, List<string>? files, Guid? columnId)
+    #pragma warning disable CS8618
+    public TodoItem(string title, string description, DateTime createdDate, DateTime updatedDate, Guid? boardId, Guid creatorId, bool done, EPriority priority, Guid? columnId)
     {
         Title = title;
         Description = description;
         CreatedDate = createdDate;
         UpdatedDate = updatedDate;
-        Files = files;
         BoardId = boardId;
         Done = done;
         CreatorId = creatorId;
@@ -40,11 +30,11 @@ public class TodoItem : Entity
         Priority = priority;
     }
 
-    public TodoItem(string title, string description, Guid? boardId, Guid creatorId, bool done, int priority, List<string>? files, Guid? columnId)
+    #pragma warning disable CS8618
+    public TodoItem(string title, string description, Guid? boardId, Guid creatorId, bool done, EPriority priority, Guid? columnId)
     {
         Title = title;
         Description = description;
-        Files = files;
         BoardId = boardId;
         CreatedDate = DateTime.Now;
         UpdatedDate = DateTime.Now;

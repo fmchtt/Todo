@@ -40,7 +40,7 @@ public class CreateTodoItemUseCase
             }
         }
         
-        var todoItem = new TodoItem(data.Title, data.Description, data.BoardId, user.Id, false, data.Priority, null, data.ColumnId);
+        var todoItem = new TodoItem(data.Title, data.Description, data.BoardId, user.Id, false, (EPriority) data.Priority, data.ColumnId);
         _todoItemRepostory.Create(todoItem);
 
         return new ResultDTO<TodoItemResultDTO>(201, "Item criado com sucesso!", new TodoItemResultDTO(todoItem));
