@@ -16,10 +16,10 @@ public class TodoDBContext : DbContext
     {
         modelBuilder.Entity<Board>().HasMany(b => b.Participants).WithMany(u => u.Boards);
         modelBuilder.Entity<Board>().HasMany(b => b.Columns).WithOne(c => c.Board).HasForeignKey(c => c.BoardId);
-        modelBuilder.Entity<Board>().HasMany(b => b.Itens).WithOne(i => i.Board).HasForeignKey(i => i.BoardId);
+        modelBuilder.Entity<Board>().HasMany(b => b.Itens).WithOne(i => i.Board).HasForeignKey(i => i.BoardId).OnDelete(DeleteBehavior.SetNull);
         modelBuilder.Entity<Board>().HasOne(b => b.Owner).WithMany(u => u.OwnedBoards).HasForeignKey(b => b.OwnerId);
 
-        modelBuilder.Entity<Column>().HasMany(c => c.Itens).WithOne(i => i.Column).HasForeignKey(i => i.ColumnId);
+        modelBuilder.Entity<Column>().HasMany(c => c.Itens).WithOne(i => i.Column).HasForeignKey(i => i.ColumnId).OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<TodoItem>().HasOne(t => t.Creator).WithMany(u => u.Itens).HasForeignKey(t => t.CreatorId);
     }

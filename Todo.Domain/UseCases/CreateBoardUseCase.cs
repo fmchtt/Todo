@@ -22,7 +22,7 @@ public class CreateBoardUseCase
         var board = new Board(data.Name, user.Id);
         board.Participants = new List<User> { user };
 
-        _boardRepository.CreateBoard(board);
+        _boardRepository.Create(board);
 
         _columnRepository.Create(new Column("Aberto", board.Id));
         _columnRepository.Create(new Column("Em Andamento", board.Id));

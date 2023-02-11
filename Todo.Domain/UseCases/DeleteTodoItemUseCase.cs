@@ -23,7 +23,7 @@ public class DeleteTodoItemUseCase
 
         if ((item.Board != null && item.Board.Participants.Find(x => x.Id == user.Id) == null) || item.Creator != user)
         {
-            return new ResultDTO(401, "Sem permissão para apagar a tarefa!!");
+            return new ResultDTO(401, "Sem permissão para apagar a tarefa!");
         }
 
         _todoItemRepostory.Delete(item);

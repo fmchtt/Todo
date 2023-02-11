@@ -5,7 +5,7 @@ namespace Todo.Domain.Repositories;
 public interface IBoardRepository
 {
     public Board GetById(Guid id);
-    public void CreateBoard(Board board);
-    public void UpdateBoard(Board board);
-    public void DeleteBoard(Guid id);
+    public void Create(Board board);
+    public void Update(Board board);
+    public void Delete(Board board);
 }
