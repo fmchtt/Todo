@@ -16,17 +16,17 @@ public class UserRegisterUseCase
         _hasher = hasher;
     }
 
-    public ResultDTO Handle(UserCreateDTO data)
+    public ResultDTO<User> Handle(UserCreateDTO data)
     {
         var existingUser = _userRepository.GetByEmail(data.Email);
         if (existingUser != null) {
-            return new ResultDTO(400, "Usuário com o email já existe");
+            return new ResultDTO<User>(400, "Usuário com o email já existe");
         }
 
         var password = _hasher.Hash(data.Password);
         var user = new User(data.Name, data.Email, password);
         _userRepository.Create(user);
 
-        return new ResultDTO(200, "Usuário criado com sucesso!");
+        return new ResultDTO<User>(200, "Usuário criado com sucesso!", user);
     }
 }
