@@ -37,7 +37,7 @@ public class EditTodoItemUseCase
             }
         }
 
-        item.UpdatedDate = DateTime.Now;
+        item.UpdatedDate = DateTime.UtcNow;
         _todoItemRepostory.Update(item);
 
         return new ResultDTO<TodoItemResultDTO>(200, "Tarefa editada com sucesso!", new TodoItemResultDTO(item));

@@ -10,11 +10,11 @@ public class TodoItem : Entity
     public EPriority Priority { get; set; }
     public List<string> Files { get; set; } = new List<string>();
     public Guid? BoardId { get; set; }
-    public Board? Board { get; set; }
+    public virtual Board? Board { get; set; }
     public Guid? ColumnId { get; set; }
-    public Column? Column { get; set; }
+    public virtual Column? Column { get; set; }
     public Guid CreatorId { get; set; }
-    public User Creator { get; set; }
+    public virtual User Creator { get; set; }
 
     #pragma warning disable CS8618
     public TodoItem(string title, string description, DateTime createdDate, DateTime updatedDate, Guid? boardId, Guid creatorId, bool done, EPriority priority, Guid? columnId)
@@ -36,8 +36,8 @@ public class TodoItem : Entity
         Title = title;
         Description = description;
         BoardId = boardId;
-        CreatedDate = DateTime.Now;
-        UpdatedDate = DateTime.Now;
+        CreatedDate = DateTime.UtcNow;
+        UpdatedDate = DateTime.UtcNow;
         Done = done;
         CreatorId = creatorId;
         ColumnId = columnId;
@@ -46,19 +46,19 @@ public class TodoItem : Entity
 
     public void MarkAsDone()
     {
-        UpdatedDate = DateTime.Now;
+        UpdatedDate = DateTime.UtcNow;
         Done = true;
     }
 
     public void MarkAsUndone()
     {
-        UpdatedDate = DateTime.Now;
+        UpdatedDate = DateTime.UtcNow;
         Done = false;
     }
 
     public void ChangeColumn(Column column)
     {
-        UpdatedDate = DateTime.Now;
+        UpdatedDate = DateTime.UtcNow;
         ColumnId = column.Id;
         Column = column;
     }

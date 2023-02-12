@@ -14,7 +14,7 @@ namespace Todo.Infra.Migrations
 {
     [DbContext(typeof(TodoDBContext))]
     [Migration("20230211000632_init")]
-    partial class init
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

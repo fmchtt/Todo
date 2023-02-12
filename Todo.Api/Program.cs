@@ -12,14 +12,14 @@ using Todo.Infra.Utils;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var secret = builder.Configuration.GetValue("SecretKey", "") ?? Guid.NewGuid().ToString();
+var secret = builder.Configuration.GetValue("SECRET_KEY", "") ?? Guid.NewGuid().ToString();
 var key = Encoding.ASCII.GetBytes(secret);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<TodoDBContext>(x => x.UseNpgsql(builder.Configuration.GetValue("ConnectionString", "")));
+builder.Services.AddDbContext<TodoDBContext>(x => x.UseLazyLoadingProxies().UseNpgsql(builder.Configuration.GetValue("CONNECTION_STRING", "")));
 builder.Services.AddTransient<ITokenService, TokenService>(x => new TokenService(key));
 builder.Services.AddTransient<IHasher, Hasher>(x => new Hasher(secret));
 
