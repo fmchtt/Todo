@@ -32,6 +32,27 @@ public class ColumnController : TodoBaseController
         return ParseResult(result);
     }
 
+    [HttpPatch("{id}"), Authorize]
+    [ProducesResponseType(typeof(ColumnResultDTO), 200)]
+    [ProducesResponseType(typeof(MessageResult), 401)]
+    [ProducesResponseType(typeof(MessageResult), 404)]
+    public dynamic EditColumn(
+        [FromRoute] string id,
+        [FromBody] EditColumnDTO data,
+        [FromServices] IColumnRepository columnRepository
+    )
+    {
+        var user = GetUser();
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var result = new EditColumnUseCase(columnRepository).Handle(data, Guid.Parse(id), user);
+
+        return ParseResult(result);
+    }
+
     [HttpDelete("{id}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]

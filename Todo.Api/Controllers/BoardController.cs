@@ -65,6 +65,28 @@ public class BoardController : TodoBaseController
         return ParseResult(result);
     }
 
+    [HttpPatch("{id}"), Authorize]
+    [ProducesResponseType(typeof(BoardResultDTO), 200)]
+    [ProducesResponseType(typeof(MessageResult), 401)]
+    [ProducesResponseType(typeof(MessageResult), 404)]
+    public dynamic EditBoard(
+        [FromRoute] string id,
+        [FromBody] EditBoardDTO data,
+        [FromServices] IBoardRepository boardRepository
+    )
+    {
+        var user = GetUser();
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var result = new EditBoardUseCase(boardRepository).Handle(data, Guid.Parse(id), user);
+
+        return ParseResult(result);
+    }
+
+
     [HttpDelete("{id}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
