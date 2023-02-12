@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
 using Todo.Api.DTO;
 using Todo.Domain.DTO.Input;
+using Todo.Domain.DTO.Output;
 using Todo.Domain.Repositories;
 using Todo.Domain.UseCases;
 using Todo.Domain.Utils;
@@ -11,6 +13,19 @@ namespace Todo.Api.Controllers;
 [ApiController, Route("auth")]
 public class AuthController : TodoBaseController
 {
+    [HttpGet("me"), Authorize]
+    [ProducesResponseType(typeof(UserResumedResultDTO), 200)]
+    public dynamic Me()
+    {
+        var user = GetUser();
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        return new UserResumedResultDTO(user);
+    }
+
     [HttpPost("login")]
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]

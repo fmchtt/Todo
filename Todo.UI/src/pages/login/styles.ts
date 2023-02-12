@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  background-image: linear-gradient(180deg, #092327, #000);
+  background-image: ${(props) => props.theme.gradients.full};
   width: 100vw;
   height: 100vh;
   display: flex;

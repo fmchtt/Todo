@@ -1,10 +1,12 @@
 import styled from "styled-components";
 
-export const Container = styled.div`
-  background-image: linear-gradient(0deg, #033130, #026a68);
+export const FormContainer = styled.div`
+  background-image: ${(props) => props.theme.gradients.semi};
   width: 100%;
-  flex: 1;
   padding: 30px;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  justify-content: center;
 `;

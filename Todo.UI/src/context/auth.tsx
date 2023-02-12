@@ -1,74 +1,101 @@
-import { useContext, createContext, ReactNode, useState } from "react";
-import { useQueryClient } from "react-query";
+import {
+  useContext,
+  createContext,
+  ReactNode,
+  useState,
+  useEffect,
+} from "react";
 import http from "../services/http";
+import User from "../types/user";
+import { TokenResponse } from "../types/responses/auth";
+import { useQuery, useQueryClient } from "react-query";
+import { getActualUser } from "../services/api/user";
 
 interface ContextProps {
   children: ReactNode;
 }
 
-interface ContextLogin {
+type LoginProps = {
   email: string;
   password: string;
-}
+};
 
-interface ContextSignUp {
+type RegisterProps = LoginProps & {
   name: string;
-  email: string;
-  password: string;
+};
+
+interface Context {
+  user: User | undefined;
+  register: (formData: RegisterProps) => Promise<void>;
+  login: (formData: LoginProps) => Promise<void>;
+  logout: () => void;
 }
 
-const initialState = {};
-
-const authContext = createContext({
-  state: initialState,
-});
+const authContext = createContext({} as Context);
 
 export function AuthProvider({ children }: ContextProps) {
-  const [authed, setAuthed] = useState<boolean>();
-  const [user, setUser] = useState<object>();
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token")
+  );
 
-  function login({ email, password }: ContextLogin) {
-    return new Promise(async (resolve, reject) => {
-      const formData = new FormData();
-      formData.append("email", email);
-      formData.append("password", password);
-      http
-        .post("login", formData)
-        .then((res) => {
-          setUser(res.data);
-          setAuthed(true);
-          return resolve;
-        })
-        .catch((e) => {
-          setUser({});
-          setAuthed(false);
-          return reject(e.response.data);
-        });
-    });
+  useEffect(() => {
+    if (token) {
+      http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      client.invalidateQueries(["me"]);
+    }
+  }, [token]);
+
+  const { data } = useQuery<User>(["me"], getActualUser, {
+    onError: (err) => {
+      setToken(null);
+    },
+  });
+  const client = useQueryClient();
+
+  http.interceptors.response.use(
+    (success) => {
+      return success;
+    },
+    (error) => {
+      if (error.response.status === 401 || error.response.status === 403) {
+        setToken(null);
+        localStorage.removeItem("token");
+        client.invalidateQueries(["me"]);
+      }
+
+      return Promise.reject(error);
+    }
+  );
+
+  async function login(formData: LoginProps) {
+    const { data } = await http.post<TokenResponse>("auth/login", formData);
+    setToken(data.token);
+
+    localStorage.setItem("token", data.token);
+    client.invalidateQueries(["me"]);
   }
 
-  function signUp(reqData: ContextSignUp) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const { data } = await http.post("register", reqData);
-        setUser(data);
-        setAuthed(true);
-        return resolve(data);
-      } catch (e: any) {
-        return reject(e.response.data);
-      }
-    });
+  async function register(formData: RegisterProps) {
+    const { data } = await http.post<TokenResponse>("auth/register", formData);
+    setToken(data.token);
+
+    localStorage.setItem("token", data.token);
+    client.invalidateQueries(["me"]);
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    setToken(null);
+    client.setQueryData("me", null);
   }
 
   return (
     <authContext.Provider
       value={{
-        state: {
-          user,
-          authed,
-          login,
-          signUp,
-        },
+        user: data,
+        login,
+        register,
+        logout,
       }}
     >
       {children}
