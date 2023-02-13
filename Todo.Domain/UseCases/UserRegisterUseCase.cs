@@ -24,7 +24,7 @@ public class UserRegisterUseCase
         }
 
         var password = _hasher.Hash(data.Password);
-        var user = new User(data.Name, data.Email, password);
+        var user = new User(data.Name, data.Email, password, null);
         _userRepository.Create(user);
 
         return new ResultDTO<User>(200, "Usuário criado com sucesso!", user);
