@@ -37,4 +37,19 @@ public class UserController : TodoBaseController
 
         return ParseResult(result);
     }
+
+    [HttpDelete, Authorize]
+    [ProducesResponseType(typeof(MessageResult), 200)]
+    public dynamic DeleteUser([FromServices] IUserRepository userRepository)
+    {
+        var user = GetUser();
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var result = new DeleteUserUseCase(userRepository).Handle(user);
+
+        return ParseResult(result);
+    }
 }
