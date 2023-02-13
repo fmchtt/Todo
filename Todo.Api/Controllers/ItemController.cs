@@ -49,6 +49,28 @@ public class ItemController : TodoBaseController
         return ParseResult(result);
     }
 
+    [HttpPost("{todoId}/column/{columnId}"), Authorize]
+    [ProducesResponseType(typeof(TodoItemResultDTO), 200)]
+    [ProducesResponseType(typeof(MessageResult), 401)]
+    [ProducesResponseType(typeof(MessageResult), 404)]
+    public dynamic ChangeColumn(
+        [FromRoute] string todoId, 
+        [FromRoute] string columnId, 
+        [FromServices] ITodoItemRepostory itemRepostory, 
+        [FromServices] IColumnRepository columnRepository
+    )
+    {
+        var user = GetUser();
+        if (user == null )
+        {
+            return NotFound();
+        }
+
+        var result = new ChangeItemColumnUseCase(itemRepostory, columnRepository).Handle(Guid.Parse(columnId), Guid.Parse(todoId), user);
+
+        return ParseResult(result);
+    }
+
     [HttpPatch("{id}"), Authorize]
     [ProducesResponseType(typeof(TodoItemResultDTO), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]

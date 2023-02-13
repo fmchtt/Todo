@@ -105,4 +105,25 @@ public class BoardController : TodoBaseController
 
         return ParseResult(result);
     }
+
+    [HttpDelete("{boardId}/participant/{participantId}"), Authorize]
+    [ProducesResponseType(typeof(MessageResult), 200)]
+    [ProducesResponseType(typeof(MessageResult), 401)]
+    [ProducesResponseType(typeof(MessageResult), 404)]
+    public dynamic RemoveParticipant(
+       [FromRoute] string boardId,
+       [FromRoute] string participantId,
+       [FromServices] IBoardRepository boardRepository
+    )
+    {
+        var user = GetUser();
+        if (user == null )
+        {
+            return NotFound();
+        }
+
+        var result = new RemoveParticipantUseCase(boardRepository).Handle(Guid.Parse(boardId), Guid.Parse(participantId), user);
+
+        return ParseResult(result);
+    }
 }

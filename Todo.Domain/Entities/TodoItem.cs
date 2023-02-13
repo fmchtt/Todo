@@ -59,6 +59,8 @@ public class TodoItem : Entity
     public void ChangeColumn(Column column)
     {
         UpdatedDate = DateTime.UtcNow;
+        BoardId = column.BoardId;
+        Board = column.Board;
         ColumnId = column.Id;
         Column = column;
     }
