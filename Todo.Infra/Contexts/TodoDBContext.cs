@@ -9,6 +9,7 @@ public class TodoDBContext : DbContext
     public DbSet<Column> Columns { get; set; }
     public DbSet<TodoItem> Itens { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<RecoverCode> RecoverCodes { get; set; }
 
     public TodoDBContext(DbContextOptions<TodoDBContext> options) : base(options) { }
 
@@ -22,5 +23,8 @@ public class TodoDBContext : DbContext
         modelBuilder.Entity<Column>().HasMany(c => c.Itens).WithOne(i => i.Column).HasForeignKey(i => i.ColumnId).OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<TodoItem>().HasOne(t => t.Creator).WithMany(u => u.Itens).HasForeignKey(t => t.CreatorId);
+
+        modelBuilder.Entity<RecoverCode>().HasOne(r => r.User).WithOne();
+        modelBuilder.Entity<RecoverCode>().HasIndex(r => new { r.UserId, r.Code }).IsUnique();
     }
 }

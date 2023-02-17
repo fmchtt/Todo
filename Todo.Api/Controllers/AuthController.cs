@@ -75,4 +75,49 @@ public class AuthController : TodoBaseController
 
         return tokenService.GenerateToken(result.Result);
     }
+
+    [HttpPost("password/reset")]
+    [ProducesResponseType(typeof(MessageResult), 200)]
+    public dynamic PasswordReset(
+        [FromBody] RecoverPasswordDTO data,
+        [FromServices] IRecoverCodeRepository recoverCodeRepository,
+        [FromServices] IUserRepository userRepository,
+        [FromServices] IMailer mailer
+    )
+    {
+        _ = new RecoverPasswordUseCase(mailer, userRepository, recoverCodeRepository).Handle(data);
+
+        return new MessageResult("Caso o email esteja registrado, um código será enviado ao email");
+    }
+
+    [HttpPost("password/reset/verify")]
+    [ProducesResponseType(typeof(MessageResult), 200)]
+    [ProducesResponseType(typeof(MessageResult), 404)]
+    public MessageResult VerifyCode(
+        [FromBody] CodeVerifyDTO data,
+        [FromServices] IRecoverCodeRepository codeRepository
+    )
+    {
+        var foundCode = codeRepository.Get(data.Code, data.Email);
+        if (foundCode == null) {
+            return Ok(new MessageResult("Código encontrado!"));
+        }
+
+        return NotFound(new MessageResult("Código não encontrado!"));
+    }
+
+
+    [HttpPost("password/reset/confirm")]
+    [ProducesResponseType(typeof(MessageResult), 200)]
+    public dynamic PasswordResetConfirm(
+        [FromBody] ConfirmRecoverPasswordDTO data,
+        [FromServices] IRecoverCodeRepository recoverCodeRepository,
+        [FromServices] IUserRepository userRepository,
+        [FromServices] IHasher hasher
+    )
+    {
+        var result = new ConfirmRecoverPasswordUseCase(recoverCodeRepository, hasher, userRepository).Handle(data);
+
+        return ParseResult(result);
+    }
 }

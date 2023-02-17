@@ -29,6 +29,7 @@ builder.Services.AddTransient<IBoardRepository, BoardRepository>();
 builder.Services.AddTransient<IColumnRepository, ColumnRepository>();
 builder.Services.AddTransient<ITodoItemRepostory, TodoItemRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IRecoverCodeRepository, RecoverCodeRepository>();
 
 builder.Services.AddSwaggerGen(options =>
 {
