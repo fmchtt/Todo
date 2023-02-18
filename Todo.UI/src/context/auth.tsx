@@ -10,26 +10,7 @@ import User from "../types/user";
 import { TokenResponse } from "../types/responses/auth";
 import { useQuery, useQueryClient } from "react-query";
 import { getActualUser } from "../services/api/user";
-
-interface ContextProps {
-  children: ReactNode;
-}
-
-type LoginProps = {
-  email: string;
-  password: string;
-};
-
-type RegisterProps = LoginProps & {
-  name: string;
-};
-
-interface Context {
-  user: User | undefined;
-  register: (formData: RegisterProps) => Promise<void>;
-  login: (formData: LoginProps) => Promise<void>;
-  logout: () => void;
-}
+import { LoginProps, RegisterProps, ContextProps, Context } from "./types";
 
 const authContext = createContext({} as Context);
 
@@ -72,7 +53,6 @@ export function AuthProvider({ children }: ContextProps) {
     setToken(data.token);
 
     localStorage.setItem("token", data.token);
-    client.invalidateQueries(["me"]);
   }
 
   async function register(formData: RegisterProps) {
@@ -80,7 +60,6 @@ export function AuthProvider({ children }: ContextProps) {
     setToken(data.token);
 
     localStorage.setItem("token", data.token);
-    client.invalidateQueries(["me"]);
   }
 
   function logout() {

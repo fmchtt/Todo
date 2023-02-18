@@ -1,20 +1,20 @@
+import { InputGroup, Label, Form } from "./styles";
+import { A, H1, Text } from "../../assets/css/global.styles";
 import { FormContainer } from "./styles";
 import Input from "../input";
-import { InputGroup, Label, Form } from "./styles";
-import { H1, Text, A } from "../../assets/css/global.styles";
-import useAuth from "../../context/auth";
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import FilledButton from "../filledButton";
+import { useEffect, useState } from "react";
+import useAuth from "../../context/auth";
+import { Link, useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import MessageErrorInput from "../messageErrorInput";
 
-export default function LoginForm() {
-  const { user, login } = useAuth();
-  const [showPassword, setShowPassword] = useState<string>("password");
+export default function RegisterForm() {
   const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<string>("password");
+  const { user, register } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,12 +33,15 @@ export default function LoginForm() {
 
   const formik = useFormik({
     initialValues: {
+      name: "",
       email: "",
       password: "",
     },
+
     onSubmit: (values) => {
       setLoading(true);
-      login({
+      register({
+        name: values.name,
         email: values.email,
         password: values.password,
       }).then(() => {
@@ -47,6 +50,7 @@ export default function LoginForm() {
     },
 
     validationSchema: Yup.object({
+      name: Yup.string().required("Este campo é obrigatório"),
       email: Yup.string().required("Este campo é obrigatório"),
       password: Yup.string().required("Este campo é obrigatório"),
     }),
@@ -57,16 +61,29 @@ export default function LoginForm() {
 
   return (
     <FormContainer>
-      <H1>Login</H1>
-      <Text>Faça login para acessar o app</Text>
+      <H1>Registre-se</H1>
+      <Text>Para ter acesso ao app é necessário ter uma conta. Crie uma</Text>
       <Form onSubmit={formik.handleSubmit}>
+        <InputGroup>
+          <Label>Nome</Label>
+          <Input
+            type="text"
+            name="name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            placeholder="Laura Silva"
+          />
+          {formik.errors.name && (
+            <MessageErrorInput>{formik.errors.name}</MessageErrorInput>
+          )}
+        </InputGroup>
         <InputGroup>
           <Label>Email</Label>
           <Input
             type="email"
+            name="email"
             value={formik.values.email}
             onChange={formik.handleChange}
-            name="email"
             placeholder="Ex: teste@email.com"
           />
           {formik.errors.email && (
@@ -78,8 +95,8 @@ export default function LoginForm() {
           <Input
             type={showPassword}
             value={formik.values.password}
-            onChange={formik.handleChange}
             name="password"
+            onChange={formik.handleChange}
             placeholder="Ex: Senha1234@"
           />
           {showPassword === "password" ? (
@@ -91,13 +108,13 @@ export default function LoginForm() {
             <MessageErrorInput>{formik.errors.password}</MessageErrorInput>
           )}
         </InputGroup>
-        <FilledButton size="25px" loading={loading}>
-          Entrar
+        <FilledButton size="25px" type="submit" loading={loading}>
+          Registrar
         </FilledButton>
         <Text>
-          Ainda não tem conta?{" "}
-          <Link to={"/register"} style={{ textDecoration: "none" }}>
-            <A>Registre-se</A>
+          Já tem conta? Faça{" "}
+          <Link to={"/login"} style={{ textDecoration: "none" }}>
+            <A>Login</A>
           </Link>
         </Text>
       </Form>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const StyledHeader = styled.header`
   background: ${(props) => props.theme.colors[500]};
 
-  height: 100px;
+  height: 60px;
   padding: 0 30px;
 
   display: flex;
@@ -20,5 +20,5 @@ export const UserMenu = styled.div`
   }
 
   border-radius: 20px;
-  padding: 15px;
+  padding: 8px 20px;
 `;

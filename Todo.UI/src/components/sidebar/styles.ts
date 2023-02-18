@@ -4,6 +4,7 @@ export const StyledSideBar = styled.aside`
   background: ${(props) => props.theme.gradients.semi};
 
   width: 220px;
+  height: calc(100vh - 60px);
   padding: 30px 0;
 
   display: flex;
