@@ -51,8 +51,7 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(BoardResultDTO), 201)]
     public dynamic Create(
         [FromBody] CreateBoardDTO data,
-        [FromServices] IBoardRepository boardRepository,
-        [FromServices] IColumnRepository columnRepository
+        [FromServices] IBoardRepository boardRepository
     )
     {
         var user = GetUser();
@@ -60,7 +59,7 @@ public class BoardController : TodoBaseController
         {
             return NotFound();
         }
-        var result = new CreateBoardUseCase(boardRepository, columnRepository).Handle(data, user);
+        var result = new CreateBoardUseCase(boardRepository).Handle(data, user);
 
         return ParseResult(result);
     }

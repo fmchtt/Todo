@@ -56,6 +56,13 @@ public class TodoItem : Entity
         Done = false;
     }
 
+    public bool UserCandEdit(Guid userId)
+    {
+        var canEdit = CreatorId == userId || Board?.Participants.Find(x => x.Id == userId) != null;
+
+        return canEdit;
+    }
+
     public void ChangeColumn(Column column)
     {
         UpdatedDate = DateTime.UtcNow;

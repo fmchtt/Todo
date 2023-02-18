@@ -16,6 +16,11 @@ public class Board : Entity
         OwnerId = ownerId;
     }
 
+    public bool UserCanEdit(Guid userId)
+    {
+        return Participants.Find(x => x.Id == userId) != null;
+    }
+
     public int GetTodoItemCount()
     {
         return Itens.Count;

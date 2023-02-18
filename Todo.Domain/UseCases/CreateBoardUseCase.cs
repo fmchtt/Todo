@@ -9,24 +9,21 @@ namespace Todo.Domain.UseCases;
 public class CreateBoardUseCase
 {
     private readonly IBoardRepository _boardRepository;
-    private readonly IColumnRepository _columnRepository;
 
-    public CreateBoardUseCase(IBoardRepository boardRepository, IColumnRepository columnRepository)
+    public CreateBoardUseCase(IBoardRepository boardRepository)
     {
         _boardRepository = boardRepository;
-        _columnRepository = columnRepository;
     }
 
     public ResultDTO<BoardResultDTO> Handle(CreateBoardDTO data, User user)
     {
         var board = new Board(data.Name, user.Id);
         board.Participants = new List<User> { user };
+        board.Columns.Add(new Column("Aberto", board.Id));
+        board.Columns.Add(new Column("Em Andamento", board.Id));
+        board.Columns.Add(new Column("Concluído", board.Id));
 
         _boardRepository.Create(board);
-
-        _columnRepository.Create(new Column("Aberto", board.Id));
-        _columnRepository.Create(new Column("Em Andamento", board.Id));
-        _columnRepository.Create(new Column("Concluído", board.Id));
 
         return new ResultDTO<BoardResultDTO>(201, "Quadro criado com sucesso!", new BoardResultDTO(board));
     }
