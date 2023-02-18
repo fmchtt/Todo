@@ -7,11 +7,15 @@ public class ExpandedBoardDTO
     public Guid Id { get; set; }
     public string Name { get; set; }
     public List<ExpandedColumnDTO> Columns { get; set; } = new List<ExpandedColumnDTO>();
+    public int ItemCount { get; set; }
+    public int DoneItemCount { get; set; }
 
     public ExpandedBoardDTO(Board board)
     {
         Id = board.Id;
         Name = board.Name;
+        ItemCount = board.Itens.Count;
+        DoneItemCount = board.Itens.Where(x => x.Done == true).Count();
 
         foreach (var column in board.Columns)
         {
