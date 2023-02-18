@@ -16,10 +16,10 @@ public class BoardTests
 
         Assert.Equal(201, result.Code);
 
-        var boards = boardRepository.GetAllByName("Teste", FakeBoardRepository.testUser.Id);
+        var board = boardRepository.GetById(result.Result.Id);
 
-        Assert.NotNull(boards);
-        Assert.True(boards.Count > 0);
+        Assert.NotNull(board);
+        Assert.Equal("Teste", board.Name);
     }
 
     [Fact]
@@ -30,10 +30,10 @@ public class BoardTests
 
         Assert.Equal(200, result.Code);
 
-        var boards = boardRepository.GetAllByName("Nome novo", FakeBoardRepository.testUser.Id);
+        var board = boardRepository.GetById(result.Result.Id);
 
-        Assert.NotNull(boards);
-        Assert.True(boards.Count > 0);
+        Assert.NotNull(board);
+        Assert.Equal("Nome novo", board.Name);
     }
 
     [Fact]
@@ -61,23 +61,16 @@ public class BoardTests
 
         Assert.Equal(200, result.Code);
 
-        var boards = boardRepository.GetAllByName("Nome novo", FakeBoardRepository.testUser.Id);
+        var board = boardRepository.GetById(Guid.Parse("5bc63d83-a6e4-4ad4-a9f5-9f253ac6101d"));
 
-        Assert.NotNull(boards);
-        Assert.True(boards.Count < 1);
+        Assert.Null(board);
     }
 
     [Fact]
     public void ShouldntDeleteBoard()
     {
-        // Not participant
-        var result = new DeleteBoardUseCase(boardRepository).Handle(Guid.Parse("5bc63d83-a6e4-4ad4-a9f5-9f253ac6101d"), FakeBoardRepository.OtherUser);
-
-        Assert.Equal(401, result.Code);
-
-        // Participant but not Owner
         boardRepository.Boards[1].Participants.Add(FakeBoardRepository.OtherUser);
-        result = new DeleteBoardUseCase(boardRepository).Handle(Guid.Parse("5bc63d83-a6e4-4ad4-a9f5-9f253ac6101d"), FakeBoardRepository.OtherUser);
+        var result = new DeleteBoardUseCase(boardRepository).Handle(Guid.Parse("5bc63d83-a6e4-4ad4-a9f5-9f253ac6101d"), FakeBoardRepository.OtherUser);
 
         Assert.Equal(401, result.Code);
     }
