@@ -2,26 +2,15 @@ import styled from "styled-components";
 import { FormBoardProps } from "./types";
 
 export const FormContainer = styled.div<FormBoardProps>`
-  background-image: ${(props) => props.theme.gradients.semi};
   max-width: ${(props) => props.maxWidth || "none"};
   width: 100%;
   padding: 30px;
+
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   justify-content: center;
-  position: relative;
-  top: ${(props) => (props.maxWidth ? "50%" : "none")};
-  left: ${(props) => (props.maxWidth ? "50%" : "none")};
-  transform: ${(props) => (props.maxWidth ? "translate(-50%, -50%)" : "none")};
-  border-radius: ${(props) => props.borderRadius || "none"};
-
-  .icon-close {
-    font-size: 30px;
-    color: #fff;
-    cursor: pointer;
-  }
+  gap: 10px;
 `;
 
 export const Form = styled.form`
@@ -55,4 +44,20 @@ export const InputGroup = styled.div`
     color: #ffffff;
     cursor: pointer;
   }
+`;
+
+export const Input = styled.input`
+  background-color: ${(props) => props.theme.colors[200]};
+  color: ${(props) => props.theme.font.medium};
+
+  ::placeholder {
+    color: ${(props) => props.theme.font.medium};
+  }
+
+  outline: none;
+
+  border: none;
+  border-radius: 25px;
+
+  padding: 15px 25px;
 `;

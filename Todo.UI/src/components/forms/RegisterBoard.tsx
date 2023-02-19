@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { FormContainer } from "./styles";
 import { FormBoardProps } from "./types";
-import { Form, Label, InputGroup } from "./styles";
+import { Form, Label, InputGroup, Input } from "./styles";
 import FilledButton from "../filledButton";
 import { H1 } from "../../assets/css/global.styles";
-import Input from "../input";
-import { IoClose } from "react-icons/io5";
 import { useFormik } from "formik";
 import { postBoard } from "../../services/api/boards";
 import * as Yup from "yup";
@@ -40,23 +37,20 @@ const BoardRegister = (props: FormBoardProps) => {
     validateOnChange: false,
   });
   return (
-    <FormContainer {...props}>
-      <IoClose className="icon-close" onClick={props.closeModal} />
-      <Form onSubmit={formik.handleSubmit}>
-        <H1>Cadastrar Quadro</H1>
-        <InputGroup>
-          <Label>Nome</Label>
-          <Input
-            placeholder="Ex: Quadro 1"
-            type={"text"}
-            name="name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-          />
-        </InputGroup>
-        <FilledButton loading={loading}>Cadastrar</FilledButton>
-      </Form>
-    </FormContainer>
+    <Form {...props} onSubmit={formik.handleSubmit}>
+      <H1>Cadastrar Quadro</H1>
+      <InputGroup>
+        <Label>Nome</Label>
+        <Input
+          placeholder="Ex: Quadro 1"
+          type="text"
+          name="name"
+          value={formik.values.name}
+          onChange={formik.handleChange}
+        />
+      </InputGroup>
+      <FilledButton loading={loading}>Cadastrar</FilledButton>
+    </Form>
   );
 };
 

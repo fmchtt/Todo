@@ -3,6 +3,7 @@
 public class Board : Entity
 {
     public string Name { get; set; }
+    public string Description { get; set; }
     public Guid OwnerId { get; set; }
     public virtual User Owner { get; set; }
     public virtual List<TodoItem> Itens { get; set; } = new List<TodoItem>();
@@ -10,9 +11,10 @@ public class Board : Entity
     public virtual List<User> Participants { get; set; } = new List<User>();
 
     #pragma warning disable CS8618
-    public Board(string name, Guid ownerId)
+    public Board(string name, string description, Guid ownerId)
     {
         Name = name;
+        Description = description;
         OwnerId = ownerId;
     }
 

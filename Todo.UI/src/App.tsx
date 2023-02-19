@@ -4,11 +4,11 @@ import Login from "./pages/login";
 import BaseLayout from "./layouts/baseLayout";
 import Dashboard from "./pages/dashboard";
 import Register from "./pages/register";
-import { Theme } from "./theme";
+import { Default } from "./types/themes";
 
 function App() {
   return (
-    <ThemeProvider theme={Theme}>
+    <ThemeProvider theme={Default}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />

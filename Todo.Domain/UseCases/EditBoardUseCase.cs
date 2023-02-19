@@ -28,11 +28,17 @@ public class EditBoardUseCase
             return new ResultDTO<BoardResultDTO>(401, "Sem permissão para alterar o quadro");
         }
 
-        if (data.Name != null && data.Name != board.Name)
+        if (data.Name != null)
         {
             board.Name = data.Name;
-            _boardRepository.Update(board);
         }
+
+        if (data.Description != null)
+        {
+            board.Description = data.Description;
+        }
+
+        _boardRepository.Update(board);
 
         return new ResultDTO<BoardResultDTO>(200, "Quadro editado com sucesso!", new BoardResultDTO(board));
     }

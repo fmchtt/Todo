@@ -1,6 +1,5 @@
 import { Container } from "./styles";
 import { Side, ContentTextSide } from "./styles";
-import LoginForm from "../../components/forms/LoginForm";
 import image from "../../assets/images/image-side.png";
 import { Helmet } from "react-helmet";
 import { H1, H2, Text } from "../../assets/css/global.styles";

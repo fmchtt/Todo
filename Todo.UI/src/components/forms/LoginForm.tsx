@@ -1,5 +1,4 @@
-import { FormContainer } from "./styles";
-import Input from "../input";
+import { FormContainer, Input } from "./styles";
 import { InputGroup, Label, Form } from "./styles";
 import { H1, Text, A } from "../../assets/css/global.styles";
 import useAuth from "../../context/auth";
@@ -9,7 +8,7 @@ import FilledButton from "../filledButton";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import MessageErrorInput from "../messageErrorInput";
+import ErrorMessage from "./ErrorMessage";
 
 export default function LoginForm() {
   const { user, login } = useAuth();
@@ -70,7 +69,7 @@ export default function LoginForm() {
             placeholder="Ex: teste@email.com"
           />
           {formik.errors.email && (
-            <MessageErrorInput>{formik.errors.email}</MessageErrorInput>
+            <ErrorMessage>{formik.errors.email}</ErrorMessage>
           )}
         </InputGroup>
         <InputGroup>
@@ -88,7 +87,7 @@ export default function LoginForm() {
             <AiFillEyeInvisible onClick={eyeInput} className="eye" />
           )}
           {formik.errors.password && (
-            <MessageErrorInput>{formik.errors.password}</MessageErrorInput>
+            <ErrorMessage>{formik.errors.password}</ErrorMessage>
           )}
         </InputGroup>
         <FilledButton size="25px" loading={loading}>

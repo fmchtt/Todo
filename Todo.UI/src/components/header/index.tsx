@@ -1,6 +1,6 @@
 import { H2, Text } from "../../assets/css/global.styles";
 import useAuth from "../../context/auth";
-import { StyledHeader, UserMenu } from "./styles";
+import { RoundedAvatar, StyledHeader, UserMenu } from "./styles";
 
 export default function Header() {
   const { user } = useAuth();
@@ -9,7 +9,10 @@ export default function Header() {
     <StyledHeader>
       <H2>Taskerizer</H2>
       <UserMenu>
-        <Text>{user?.name}</Text>
+        <Text margin="0 10px">{user?.name}</Text>
+        {user?.avatarUrl && (
+          <RoundedAvatar src={import.meta.env.VITE_API_URL + user.avatarUrl} />
+        )}
       </UserMenu>
     </StyledHeader>
   );

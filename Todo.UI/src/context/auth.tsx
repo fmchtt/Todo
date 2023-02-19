@@ -1,10 +1,4 @@
-import {
-  useContext,
-  createContext,
-  ReactNode,
-  useState,
-  useEffect,
-} from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import http from "../services/http";
 import User from "../types/user";
 import { TokenResponse } from "../types/responses/auth";

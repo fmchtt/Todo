@@ -4,6 +4,7 @@ namespace Todo.Domain.DTO.Output;
 
 public class TodoItemResultDTO
 {
+    public Guid Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public DateTime CreatedDate { get; set; }
@@ -13,6 +14,7 @@ public class TodoItemResultDTO
     public bool Done { get; set; }
 
     public TodoItemResultDTO(TodoItem todoItem) {
+        Id = todoItem.Id;
         Title = todoItem.Title;
         Description = todoItem.Description;
         CreatedDate = todoItem.CreatedDate;

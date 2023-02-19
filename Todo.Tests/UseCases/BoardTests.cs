@@ -11,7 +11,7 @@ public class BoardTests
     [Fact]
     public void ShouldCreateBoard()
     {
-        var data = new CreateBoardDTO("Teste");
+        var data = new CreateBoardDTO("Teste", String.Empty);
         var result = new CreateBoardUseCase(boardRepository).Handle(data, FakeBoardRepository.testUser);
 
         Assert.Equal(201, result.Code);
@@ -25,7 +25,7 @@ public class BoardTests
     [Fact]
     public void ShouldEditBoard()
     {
-        var data = new EditBoardDTO("Nome novo");
+        var data = new EditBoardDTO("Nome novo", null);
         var result = new EditBoardUseCase(boardRepository).Handle(data, Guid.Parse("5bc63d83-a6e4-4ad4-a9f5-9f253ac6101d"), FakeBoardRepository.testUser);
 
         Assert.Equal(200, result.Code);
@@ -39,7 +39,7 @@ public class BoardTests
     [Fact]
     public void ShouldntEditBoard()
     {
-        var data = new EditBoardDTO("Nome novo");
+        var data = new EditBoardDTO("Nome novo", null);
         var result = new EditBoardUseCase(boardRepository).Handle(data, Guid.Parse("5bc63d83-a6e4-4ad4-a9f5-9f253ac6101d"), FakeBoardRepository.OtherUser);
 
         Assert.Equal(401, result.Code);
@@ -48,7 +48,7 @@ public class BoardTests
     [Fact]
     public void ShouldntFindBoardToEdit()
     {
-        var data = new EditBoardDTO("Nome novo");
+        var data = new EditBoardDTO("Nome novo", null);
         var result = new EditBoardUseCase(boardRepository).Handle(data, Guid.NewGuid(), FakeBoardRepository.OtherUser);
 
         Assert.Equal(404, result.Code);

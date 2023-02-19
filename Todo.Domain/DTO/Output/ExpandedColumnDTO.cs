@@ -6,6 +6,7 @@ public class ExpandedColumnDTO
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
     public int ItemCount { get; set; }
     public List<TodoItemResultDTO> Itens { get; set; } = new List<TodoItemResultDTO>();
 

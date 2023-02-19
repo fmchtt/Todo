@@ -10,8 +10,8 @@ public class FakeBoardRepository : IBoardRepository
 
     public List<Board> Boards = new()
     {
-        new Board("Teste", OtherUser.Id) { Participants = new List<User>() { OtherUser } },
-        new Board("Teste 2", Guid.Parse("bf0caef8-6f82-4537-8ce6-9c077767860b")) { Id = Guid.Parse("5bc63d83-a6e4-4ad4-a9f5-9f253ac6101d"), Participants = new List<User>() { testUser }, Owner = testUser },
+        new Board("Teste", String.Empty, OtherUser.Id) { Participants = new List<User>() { OtherUser } },
+        new Board("Teste 2", String.Empty, Guid.Parse("bf0caef8-6f82-4537-8ce6-9c077767860b")) { Id = Guid.Parse("5bc63d83-a6e4-4ad4-a9f5-9f253ac6101d"), Participants = new List<User>() { testUser }, Owner = testUser },
     };
 
     public void Create(Board board)

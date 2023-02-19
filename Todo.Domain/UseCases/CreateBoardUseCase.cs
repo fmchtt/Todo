@@ -17,7 +17,7 @@ public class CreateBoardUseCase
 
     public ResultDTO<BoardResultDTO> Handle(CreateBoardDTO data, User user)
     {
-        var board = new Board(data.Name, user.Id);
+        var board = new Board(data.Name, data.Description, user.Id);
         board.Participants = new List<User> { user };
         board.Columns.Add(new Column("Aberto", board.Id));
         board.Columns.Add(new Column("Em Andamento", board.Id));

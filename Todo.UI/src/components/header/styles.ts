@@ -11,6 +11,11 @@ export const StyledHeader = styled.header`
   justify-content: space-between;
 `;
 
+export const RoundedAvatar = styled.img`
+  height: 40px;
+  border-radius: 20px;
+`;
+
 export const UserMenu = styled.div`
   background: ${(props) => props.theme.colors[200]};
   cursor: pointer;
@@ -20,5 +25,8 @@ export const UserMenu = styled.div`
   }
 
   border-radius: 20px;
-  padding: 8px 20px;
+  padding: 2px;
+
+  display: flex;
+  align-items: center;
 `;

@@ -1,7 +1,6 @@
-import { InputGroup, Label, Form } from "./styles";
+import { InputGroup, Label, Form, Input } from "./styles";
 import { A, H1, Text } from "../../assets/css/global.styles";
 import { FormContainer } from "./styles";
-import Input from "../input";
 import FilledButton from "../filledButton";
 import { useEffect, useState } from "react";
 import useAuth from "../../context/auth";
@@ -9,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import MessageErrorInput from "../messageErrorInput";
+import ErrorMessage from "./ErrorMessage";
 
 export default function RegisterForm() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -74,7 +73,7 @@ export default function RegisterForm() {
             placeholder="Laura Silva"
           />
           {formik.errors.name && (
-            <MessageErrorInput>{formik.errors.name}</MessageErrorInput>
+            <ErrorMessage>{formik.errors.name}</ErrorMessage>
           )}
         </InputGroup>
         <InputGroup>
@@ -87,7 +86,7 @@ export default function RegisterForm() {
             placeholder="Ex: teste@email.com"
           />
           {formik.errors.email && (
-            <MessageErrorInput>{formik.errors.email}</MessageErrorInput>
+            <ErrorMessage>{formik.errors.email}</ErrorMessage>
           )}
         </InputGroup>
         <InputGroup>
@@ -105,7 +104,7 @@ export default function RegisterForm() {
             <AiFillEyeInvisible onClick={eyeInput} className="eye" />
           )}
           {formik.errors.password && (
-            <MessageErrorInput>{formik.errors.password}</MessageErrorInput>
+            <ErrorMessage>{formik.errors.password}</ErrorMessage>
           )}
         </InputGroup>
         <FilledButton size="25px" type="submit" loading={loading}>
