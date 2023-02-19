@@ -21,9 +21,11 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { useState } from "react";
 import Modal from "../../components/modal";
 import RegisterBoard from "../../components/forms/RegisterBoard";
+import { getItens } from "../../services/api/itens";
 
 export default function Dashboard() {
   const { data, isLoading } = useQuery("boards", getBoards);
+  const itens = useQuery("itens", getItens);
   const [modal, setModal] = useState<boolean>(false);
   return (
     <>
