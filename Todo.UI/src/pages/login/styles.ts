@@ -7,6 +7,13 @@ export const Container = styled.div`
   display: flex;
 `;
 
+export const FormSide = styled.div`
+  background-image: ${(props) => props.theme.gradients.semi};
+  display: flex;
+  align-items: center;
+  flex: 1;
+`;
+
 export const Side = styled.div`
   position: relative;
   width: 100%;

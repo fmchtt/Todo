@@ -5,7 +5,8 @@ import { IoClose } from "react-icons/io5";
 
 export default function useModal(
   component: ReactNode,
-  initialState = false
+  initialState = false,
+  withControls = true
 ): [() => void, ReactNode] {
   const [open, setOpen] = useState(initialState);
 
@@ -19,16 +20,20 @@ export default function useModal(
       {open &&
         createPortal(
           <ContainerModal>
-            <ModalStyled>
-              <IoClose
-                role="button"
-                color="#fff"
-                cursor="pointer"
-                size={30}
-                onClick={handleState}
-              />
-              {component}
-            </ModalStyled>
+            {withControls ? (
+              <ModalStyled>
+                <IoClose
+                  role="button"
+                  color="#fff"
+                  cursor="pointer"
+                  size={30}
+                  onClick={handleState}
+                />
+                {component}
+              </ModalStyled>
+            ) : (
+              component
+            )}
           </ContainerModal>,
           document.body
         )}

@@ -8,7 +8,7 @@ export const StyledSideBar = styled.aside`
   background: ${(props) => props.theme.gradients.semi};
 
   height: calc(100vh - 60px);
-  padding: 30px 0;
+  padding: 10px 0;
 
   display: flex;
   flex-direction: column;
@@ -55,6 +55,7 @@ export const SideBarButton = styled.a<Options>`
 
 export const TitleOption = styled.p<Options>`
   color: ${(props) => props.theme.font.medium};
+  font-size: 1em;
   font-weight: 300;
   cursor: pointer;
 

@@ -5,6 +5,7 @@ import BaseLayout from "./layouts/baseLayout";
 import Dashboard from "./pages/dashboard";
 import Register from "./pages/register";
 import { Default } from "./types/themes";
+import Board from "./pages/board";
 
 function App() {
   return (
@@ -16,8 +17,8 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="/" element={<BaseLayout />}>
             <Route path="home" element={<Dashboard />} />
+            <Route path="board/:id" element={<Board />} />
           </Route>
-          <Route path="board/create" />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

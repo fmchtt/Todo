@@ -11,12 +11,25 @@ export const H2 = styled.h2`
 
 interface TextProps {
   margin?: string;
+  weight?: 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+  size?: "thin" | "medium" | "large";
 }
 
 export const Text = styled.p<TextProps>`
   color: ${(props) => props.theme.font.bold};
-  font-weight: 300;
-
+  font-weight: ${(props) => props.weight || 300};
+  font-size: ${(props) => {
+    switch (props.size) {
+      case "thin":
+        return "0.8em";
+      case "medium":
+        return "1em";
+      case "large":
+        return "1.6em";
+      default:
+        return "1em";
+    }
+  }};
   margin: ${(props) => props.margin || "inherit"};
 `;
 

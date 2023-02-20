@@ -7,15 +7,11 @@ type Arrow = {
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
 `;
 
 export const Section = styled.div`
-  width: 100%;
-  padding: 20px;
   display: flex;
   flex-direction: column;
-  position: relative;
 `;
 
 export const TitleSection = styled.h2`
@@ -29,20 +25,6 @@ export const Carousel = styled.div`
   gap: 20px;
   transition: 0.3s;
   margin-top: 20px;
-`;
-
-export const Board = styled.div`
-  background-color: ${(props) => props.theme.colors[200]};
-  width: 240px;
-  height: 240px;
-  flex: none;
-  transition: 0.3s;
-  border-left: 14px solid ${(props) => props.theme.colors[100]};
-  border-radius: 10px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 `;
 
 export const Arrow = styled.button<Arrow>`
@@ -62,65 +44,25 @@ export const Arrow = styled.button<Arrow>`
   transform: translateY(-50%);
 `;
 
-export const TitleBoard = styled.h3`
-  color: #fff;
-  font-weight: 400;
-`;
-
-export const SubtitleBoard = styled.p`
-  color: #fff;
-  font-weight: 200;
-  font-size: 14px;
-`;
-
-export const DivTitle = styled.div`
+export const HeadingContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-`;
-
-export const DivStatus = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  text-align: center;
   justify-content: space-between;
 `;
 
-export const Status = styled.div`
-  display: flex;
-`;
-
-export const StatusSingle = styled.div`
-  width: 50%;
-  height: 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const Counter = styled.p`
-  color: #fff;
-  font-weight: 400;
-  font-size: 14px;
-`;
-
-export const ButtonAddBoard = styled.div`
-  display: flex;
-  gap: 5px;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
+export const ActionButton = styled.div`
   cursor: pointer;
-  position: absolute;
-  right: 20px;
-  margin-top: 20px;
-  z-index: 1;
 
-  .icon-plus {
-    color: #fff;
-    font-size: 35px;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+`;
+
+export const ActionContainer = styled.div`
+  color: ${(props) => props.theme.font.medium};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 `;

@@ -24,17 +24,17 @@ export default function SideBar() {
 
   const options: Options[] = [
     {
-      icon: <IoHomeOutline size={26} />,
+      icon: <IoHomeOutline size={22} />,
       text: "Dashboard",
       route: "/home",
     },
     {
-      icon: <BsCalendar2Range size={26} />,
+      icon: <BsCalendar2Range size={22} />,
       text: "Quadros",
       route: "/home",
     },
     {
-      icon: <FaTasks size={26} />,
+      icon: <FaTasks size={22} />,
       text: "Tarefas",
       route: "/home",
     },
@@ -68,7 +68,7 @@ export default function SideBar() {
         })}
       </ButtonGroup>
       <SideBarButton onClick={logout}>
-        <IoExitOutline size={26} />
+        <IoExitOutline size={22} />
         <TitleOption show={showOptions}>Sair</TitleOption>
       </SideBarButton>
     </StyledSideBar>

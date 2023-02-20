@@ -1,3 +1,4 @@
+import { UseQueryOptions } from "react-query";
 import { ExpandedBoard, ResumedBoard } from "../../types/board";
 import http from "../http";
 
@@ -14,7 +15,12 @@ export async function postBoard(reqData: CreateBoardData) {
   return data;
 }
 
-export async function getBoardById(id: string) {
+export async function getBoardById(query: UseQueryOptions) {
+  const id = query.queryKey?.at(1);
+  if (!id) {
+    return undefined;
+  }
+
   const { data } = await http.get<ExpandedBoard>(`/boards/${id}`);
   return data;
 }

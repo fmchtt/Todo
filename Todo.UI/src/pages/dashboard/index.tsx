@@ -4,65 +4,75 @@ import { getBoards } from "../../services/api/boards";
 import {
   Container,
   Section,
-  TitleSection,
-  Board,
-  TitleBoard,
-  SubtitleBoard,
-  DivTitle,
-  DivStatus,
-  Status,
-  StatusSingle,
-  Counter,
-  ButtonAddBoard,
   Carousel,
+  ActionContainer,
+  HeadingContainer,
+  ActionButton,
 } from "./styles";
-import { AiOutlinePlus } from "react-icons/ai";
+import { TiPlusOutline } from "react-icons/ti";
 import { useModal } from "../../hooks";
 import BoardRegister from "../../components/forms/RegisterBoard";
+import { Text } from "../../assets/css/global.styles";
+import BoardCard from "../../components/boardCard";
+import { getItens } from "../../services/api/itens";
+import ItemCard from "../../components/itemCard";
+import { useState } from "react";
+import { Item } from "../../types/item";
+import ItemPresentation from "../../components/itemPresentation";
 
 export default function Dashboard() {
-  const { data } = useQuery("boards", getBoards);
-  const [handleModal, modal] = useModal(<BoardRegister />);
+  const boardQuery = useQuery("boards", getBoards);
+  const itemQuery = useQuery("itens", getItens);
+  const [itemClicked, setItemClicked] = useState<Item>({} as Item);
+  const [handleBoardModal, boardModal] = useModal(<BoardRegister />);
+  const [handleItemModal, itemModal] = useModal(
+    <ItemPresentation data={itemClicked} onCloseClick={handleItemCloseClick} />,
+    false,
+    false
+  );
+
+  function handleItemCloseClick() {
+    handleItemModal();
+  }
 
   return (
     <Container>
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
-      {modal}
-      <ButtonAddBoard onClick={handleModal}>
-        <AiOutlinePlus className="icon-plus" />
-        <SubtitleBoard>Adicionar Quadro</SubtitleBoard>
-      </ButtonAddBoard>
+      {boardModal}
+      {itemModal}
+      <HeadingContainer>
+        <Text size="large">Quadros</Text>
+        <ActionContainer>
+          <ActionButton onClick={handleBoardModal}>
+            <TiPlusOutline size={30} />
+            <Text>Adicionar Quadro</Text>
+          </ActionButton>
+        </ActionContainer>
+      </HeadingContainer>
       <Section>
-        <TitleSection>Quadros</TitleSection>
         <Carousel>
-          {data?.map((board) => {
+          {boardQuery.data?.map((board) => {
+            return <BoardCard key={board.id} data={board} />;
+          })}
+        </Carousel>
+      </Section>
+      <Section>
+        <Text size="large" margin="20px 0 0 0">
+          Tarefas
+        </Text>
+        <Carousel>
+          {itemQuery.data?.map((item) => {
             return (
-              <Board>
-                <DivTitle>
-                  <TitleBoard>{board.name}</TitleBoard>
-                  <SubtitleBoard>{board.description}</SubtitleBoard>
-                </DivTitle>
-                <DivStatus>
-                  <Status>
-                    <StatusSingle>
-                      <SubtitleBoard>Concluídos</SubtitleBoard>
-                      <Counter>
-                        {board.doneItemCount} / {board.itemCount}
-                      </Counter>
-                    </StatusSingle>
-                    <StatusSingle>
-                      <SubtitleBoard>Abertos</SubtitleBoard>
-                      <Counter>
-                        {board.itemCount - board.doneItemCount} /{" "}
-                        {board.itemCount}
-                      </Counter>
-                    </StatusSingle>
-                  </Status>
-                  <SubtitleBoard>Ultimo acesso: 10min</SubtitleBoard>
-                </DivStatus>
-              </Board>
+              <ItemCard
+                key={item.id}
+                data={item}
+                onClick={() => {
+                  setItemClicked(item);
+                  handleItemModal();
+                }}
+              />
             );
           })}
         </Carousel>

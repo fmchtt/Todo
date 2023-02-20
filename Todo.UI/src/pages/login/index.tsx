@@ -1,4 +1,4 @@
-import { Container } from "./styles";
+import { Container, FormSide } from "./styles";
 import { Side, ContentTextSide } from "./styles";
 import LoginForm from "../../components/forms/LoginForm";
 import image from "../../assets/images/image-side.png";
@@ -21,7 +21,9 @@ export default function Login() {
         </ContentTextSide>
         <img src={image} />
       </Side>
-      <LoginForm />
+      <FormSide>
+        <LoginForm />
+      </FormSide>
     </Container>
   );
 }
