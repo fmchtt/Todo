@@ -6,13 +6,15 @@ export const PresentationContainer = styled.div`
   display: flex;
   gap: 20px;
 
-  max-width: 40vw;
-  min-height: 80vh;
+  width: clamp(800px, 70vw, 90vw);
+  height: 80vh;
 `;
 
 export const PresentationBody = styled.div`
   padding: 20px 0 0 20px;
   flex: 1;
+
+  overflow-y: auto;
 `;
 
 export const PresentationSide = styled.div`

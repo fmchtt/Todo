@@ -1,5 +1,5 @@
 import { H1, Text } from "../../assets/css/global.styles";
-import { ExpandedItem, Item, getPriorityDisplay } from "../../types/item";
+import { ExpandedItem, getPriorityDisplay } from "../../types/item";
 import { RoundedAvatar } from "../header/styles";
 import {
   PresentationBody,
