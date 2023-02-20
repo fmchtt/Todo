@@ -38,7 +38,7 @@ const BoardRegister = (props: FormBoardProps) => {
     validateOnChange: false,
   });
   return (
-    <Form {...props} onSubmit={formik.handleSubmit}>
+    <Form {...props} onSubmit={formik.handleSubmit} width="30vw">
       <H1>Cadastrar Quadro</H1>
       <InputGroup>
         <Label>Nome</Label>

@@ -5,11 +5,15 @@ import {
   StyledSideBar,
   TitleOption,
 } from "./styles";
-import { FaTasks } from "react-icons/fa";
-import { BsCalendar2Range } from "react-icons/bs";
-import { IoExitOutline, IoHomeOutline, IoMenuSharp } from "react-icons/io5";
 import useAuth from "../../context/auth";
 import { ReactNode, useState } from "react";
+import {
+  TbHome,
+  TbLayoutKanban,
+  TbList,
+  TbLogout,
+  TbMenu2,
+} from "react-icons/tb";
 
 interface Options {
   icon: ReactNode;
@@ -24,17 +28,17 @@ export default function SideBar() {
 
   const options: Options[] = [
     {
-      icon: <IoHomeOutline size={22} />,
+      icon: <TbHome size={22} />,
       text: "Dashboard",
       route: "/home",
     },
     {
-      icon: <BsCalendar2Range size={22} />,
+      icon: <TbLayoutKanban size={22} />,
       text: "Quadros",
       route: "/home",
     },
     {
-      icon: <FaTasks size={22} />,
+      icon: <TbList size={22} />,
       text: "Tarefas",
       route: "/home",
     },
@@ -43,7 +47,7 @@ export default function SideBar() {
   return (
     <StyledSideBar>
       <ButtonGroup>
-        <IoMenuSharp
+        <TbMenu2
           className="icon-menu"
           onClick={() => {
             setShowOptions(showOptions ? false : true);
@@ -68,7 +72,7 @@ export default function SideBar() {
         })}
       </ButtonGroup>
       <SideBarButton onClick={logout}>
-        <IoExitOutline size={22} />
+        <TbLogout size={22} />
         <TitleOption show={showOptions}>Sair</TitleOption>
       </SideBarButton>
     </StyledSideBar>

@@ -9,7 +9,7 @@ import {
   HeadingContainer,
   ActionButton,
 } from "./styles";
-import { TiPlusOutline } from "react-icons/ti";
+import { TbPlus } from "react-icons/tb";
 import { useModal } from "../../hooks";
 import BoardRegister from "../../components/forms/RegisterBoard";
 import { Text } from "../../assets/css/global.styles";
@@ -19,6 +19,7 @@ import ItemCard from "../../components/itemCard";
 import { useState } from "react";
 import { Item } from "../../types/item";
 import ItemPresentation from "../../components/itemPresentation";
+import CreateItemForm from "../../components/forms/CreateItemForm";
 
 export default function Dashboard() {
   const boardQuery = useQuery("boards", getBoards);
@@ -30,6 +31,13 @@ export default function Dashboard() {
     false,
     false
   );
+  const [handleCreateItemModal, createItemModal] = useModal(
+    <CreateItemForm onSucess={handleCreateItemSuccess} />
+  );
+
+  function handleCreateItemSuccess() {
+    handleCreateItemModal();
+  }
 
   function handleItemCloseClick() {
     handleItemModal();
@@ -42,11 +50,12 @@ export default function Dashboard() {
       </Helmet>
       {boardModal}
       {itemModal}
+      {createItemModal}
       <HeadingContainer>
         <Text size="large">Quadros</Text>
         <ActionContainer>
           <ActionButton onClick={handleBoardModal}>
-            <TiPlusOutline size={30} />
+            <TbPlus size={28} />
             <Text>Adicionar Quadro</Text>
           </ActionButton>
         </ActionContainer>
@@ -59,9 +68,17 @@ export default function Dashboard() {
         </Carousel>
       </Section>
       <Section>
-        <Text size="large" margin="20px 0 0 0">
-          Tarefas
-        </Text>
+        <HeadingContainer>
+          <Text size="large" margin="20px 0 0 0">
+            Tarefas
+          </Text>
+          <ActionContainer>
+            <ActionButton onClick={handleCreateItemModal}>
+              <TbPlus size={28} />
+              <Text>Adicionar Tarefa</Text>
+            </ActionButton>
+          </ActionContainer>
+        </HeadingContainer>
         <Carousel>
           {itemQuery.data?.map((item) => {
             return (

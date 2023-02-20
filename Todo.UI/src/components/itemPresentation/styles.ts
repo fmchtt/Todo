@@ -34,6 +34,7 @@ export const PresentationGroup = styled.div<PresentationGroupProps>`
   color: ${(props) => props.theme.font.medium};
   display: ${(props) => (props.flex ? "flex" : "block")};
   justify-content: space-between;
+  align-items: center;
 `;
 
 type PresentationDataGroupProps = {

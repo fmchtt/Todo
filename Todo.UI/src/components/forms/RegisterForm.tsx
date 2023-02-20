@@ -5,10 +5,10 @@ import FilledButton from "../filledButton";
 import { useEffect, useState } from "react";
 import useAuth from "../../context/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorMessage from "./ErrorMessage";
+import { TbEye, TbEyeOff } from "react-icons/tb";
 
 export default function RegisterForm() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -99,9 +99,9 @@ export default function RegisterForm() {
             placeholder="Ex: Senha1234@"
           />
           {showPassword === "password" ? (
-            <AiFillEye className="eye" onClick={eyeInput} />
+            <TbEye className="eye" onClick={eyeInput} />
           ) : (
-            <AiFillEyeInvisible onClick={eyeInput} className="eye" />
+            <TbEyeOff onClick={eyeInput} className="eye" />
           )}
           {formik.errors.password && (
             <ErrorMessage>{formik.errors.password}</ErrorMessage>

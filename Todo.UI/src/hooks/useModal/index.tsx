@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { ContainerModal, ModalStyled } from "./styles";
 import { createPortal } from "react-dom";
-import { IoClose } from "react-icons/io5";
+import { TbX } from "react-icons/tb";
 
 export default function useModal(
   component: ReactNode,
@@ -22,7 +22,7 @@ export default function useModal(
           <ContainerModal>
             {withControls ? (
               <ModalStyled>
-                <IoClose
+                <TbX
                   role="button"
                   color="#fff"
                   cursor="pointer"

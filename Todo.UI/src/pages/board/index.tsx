@@ -9,13 +9,13 @@ import {
 } from "./styles";
 import { H2 } from "../../assets/css/global.styles";
 import Column from "../../components/column";
-import { TiPlusOutline, TiEdit, TiTrash } from "react-icons/ti";
 import { Helmet } from "react-helmet";
 import { useModal } from "../../hooks";
 import ItemPresentation from "../../components/itemPresentation";
 import { useState } from "react";
 import { Item } from "../../types/item";
 import CreateItem from "../../components/forms/CreateItemForm";
+import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
 
 type ParamProps = {
   id: string;
@@ -59,14 +59,14 @@ export default function Board() {
       <HeadingContainer>
         <H2>{data?.name}</H2>
         <ActionsContainer>
-          <TiPlusOutline
+          <TbPlus
             role="button"
-            size={30}
+            size={28}
             cursor="pointer"
             onClick={handleCreateItemModal}
           />
-          <TiEdit role="button" size={30} cursor="pointer" />
-          <TiTrash role="button" size={30} cursor="pointer" />
+          <TbEdit role="button" size={28} cursor="pointer" />
+          <TbTrash role="button" size={28} cursor="pointer" />
         </ActionsContainer>
       </HeadingContainer>
       <ColumnContainer>

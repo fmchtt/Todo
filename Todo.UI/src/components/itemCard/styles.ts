@@ -15,6 +15,14 @@ export const CardContainer = styled.div`
   }
 `;
 
+export const CardGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: ${(props) => props.theme.font.medium};
+`;
+
 export const CardFooter = styled.div`
   margin-top: 8px;
 

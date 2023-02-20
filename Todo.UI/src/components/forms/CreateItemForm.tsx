@@ -3,7 +3,7 @@ import FilledButton from "../filledButton";
 import { Form, Input, InputGroup, Label, Select, TextArea } from "./styles";
 import { useQueryClient } from "react-query";
 import { createItem } from "../../services/api/itens";
-import { Item } from "../../types/item";
+import { CreateItemProps, Item } from "../../types/item";
 
 const priorityChoices = [
   {
@@ -52,10 +52,20 @@ export default function CreateItemForm({
       boardId: "",
     },
     onSubmit: async (values) => {
+      let reqData: CreateItemProps = {
+        title: values.title,
+        description: values.description,
+        priority: values.priority,
+      };
+
       if (boardId) {
-        values["boardId"] = boardId;
+        reqData["boardId"] = boardId;
       }
-      const data = await createItem(values);
+      if (columns) {
+        reqData["columnId"] = values.columnId;
+      }
+
+      const data = await createItem(reqData);
 
       client.setQueryData<Item[]>(["itens"], (previous) => {
         if (!previous) {

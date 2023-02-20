@@ -1,7 +1,5 @@
-import { TiTrash } from "react-icons/ti";
-import { IoClose } from "react-icons/io5";
 import { H1, Text } from "../../assets/css/global.styles";
-import { Item } from "../../types/item";
+import { Item, getPriorityDisplay } from "../../types/item";
 import { RoundedAvatar } from "../header/styles";
 import {
   PresentationBody,
@@ -13,6 +11,8 @@ import {
 import moment from "moment";
 import { deleteItem } from "../../services/api/itens";
 import { useQueryClient } from "react-query";
+import PriorityIndicator from "../priorityIndicator";
+import { TbCalendarEvent, TbTrash, TbX } from "react-icons/tb";
 
 type ItemPresentationProps = {
   data: Item;
@@ -35,20 +35,23 @@ export default function ItemPresentation({
   return (
     <PresentationContainer>
       <PresentationBody>
-        <H1>{data.title}</H1>
+        <PresentationGroup flex={true}>
+          <H1>{data.title}</H1>
+          <PriorityIndicator size={26} priority={data.priority} />
+        </PresentationGroup>
         <Text>{data.description}</Text>
       </PresentationBody>
       <PresentationSide>
         <PresentationGroup flex={true}>
-          <TiTrash
+          <TbTrash
             role="button"
-            size={30}
+            size={26}
             cursor="pointer"
             onClick={handleDeleteItem}
           />
-          <IoClose
+          <TbX
             role="button"
-            size={30}
+            size={26}
             cursor="pointer"
             onClick={onCloseClick}
           />
@@ -67,7 +70,15 @@ export default function ItemPresentation({
         <PresentationGroup>
           <Text>Criado em:</Text>
           <PresentationDataGroup padding="10px">
+            <TbCalendarEvent size={24} />
             <Text>{moment(data.createdDate).format("DD/MM/YYYY")}</Text>
+          </PresentationDataGroup>
+        </PresentationGroup>
+        <PresentationGroup>
+          <Text>Prioridade:</Text>
+          <PresentationDataGroup padding="10px">
+            <PriorityIndicator size={24} priority={data.priority} />
+            <Text>{getPriorityDisplay(data.priority)}</Text>
           </PresentationDataGroup>
         </PresentationGroup>
       </PresentationSide>
