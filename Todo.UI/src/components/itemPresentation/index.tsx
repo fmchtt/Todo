@@ -12,8 +12,9 @@ import moment from "moment";
 import { deleteItem } from "../../services/api/itens";
 import { useQueryClient } from "react-query";
 import PriorityIndicator from "../priorityIndicator";
-import { TbCalendarEvent, TbTrash, TbX } from "react-icons/tb";
+import { TbCalendarEvent, TbLayoutKanban, TbTrash, TbX } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
+import useConfirmationModal from "../../hooks/useConfirmationModal";
 
 type ItemPresentationProps = {
   data: ExpandedItem;
@@ -28,6 +29,11 @@ export default function ItemPresentation({
   const navigate = useNavigate();
   const client = useQueryClient();
 
+  const [handleConfirmation, confirmationModal] = useConfirmationModal({
+    message: `Tem certeza que deseja apagar a tarefa ${data.title} ?`,
+    onConfirm: handleDeleteItem,
+  });
+
   function handleDeleteItem() {
     deleteItem(data.id).then(() => {
       client.invalidateQueries(["itens"]);
@@ -37,6 +43,7 @@ export default function ItemPresentation({
 
   return (
     <PresentationContainer>
+      {confirmationModal}
       <PresentationBody>
         <PresentationGroup flex={true}>
           <H1>{data.title}</H1>
@@ -50,7 +57,7 @@ export default function ItemPresentation({
             role="button"
             size={26}
             cursor="pointer"
-            onClick={handleDeleteItem}
+            onClick={handleConfirmation}
           />
           <TbX
             role="button"
@@ -93,6 +100,7 @@ export default function ItemPresentation({
                 data.board ? navigate(`/board/${data.board?.id}`) : null
               }
             >
+              <TbLayoutKanban size={24} />
               <Text>{data.board?.name || "Sem quadro"}</Text>
             </PresentationDataGroup>
           </PresentationGroup>

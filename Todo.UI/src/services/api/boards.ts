@@ -28,12 +28,12 @@ export async function getBoardById(query: UseQueryOptions) {
 
 interface UpdateBoardData {
   id: string;
-  name: string;
+  values: { name: string; description: string };
 }
-export async function patchBoardById(reqData: UpdateBoardData) {
+export async function patchBoard(reqData: UpdateBoardData) {
   const { data } = await http.patch<ResumedBoard>(
     `/boards/${reqData.id}`,
-    reqData
+    reqData.values
   );
   return data;
 }

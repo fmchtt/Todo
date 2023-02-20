@@ -17,6 +17,8 @@ import { Item } from "../../types/item";
 import CreateItem from "../../components/forms/CreateItemForm";
 import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
 import { deleteBoardById } from "../../services/api/boards";
+import BoardRegister from "../../components/forms/RegisterBoard";
+import useConfirmationModal from "../../hooks/useConfirmationModal";
 
 type ParamProps = {
   id: string;
@@ -25,6 +27,7 @@ export default function Board() {
   const params = useParams<ParamProps>();
   const navigate = useNavigate();
   const { data, isLoading } = useQuery(["board", params.id], getBoardById);
+
   const [itemClicked, setItemClicked] = useState<Item>({} as Item);
   const [handleItemModal, itemModal] = useModal(
     <ItemPresentation data={itemClicked} onCloseClick={handleItemCloseClick} />,
@@ -40,6 +43,20 @@ export default function Board() {
       })}
     />
   );
+  const [handleBoardModal, boardModal] = useModal(
+    <BoardRegister
+      data={{
+        id: data?.id || "",
+        description: data?.description,
+        name: data?.name,
+      }}
+      closeModal={handleBoardModalSuccess}
+    />
+  );
+  const [handleConfirmation, confirmationModal] = useConfirmationModal({
+    message: `Tem certeza que deseja apagar o quadro: ${data?.name} ?`,
+    onConfirm: handleBoardDelete,
+  });
 
   function handleBoardDelete() {
     if (!data) {
@@ -58,6 +75,10 @@ export default function Board() {
     handleCreateItemModal();
   }
 
+  function handleBoardModalSuccess() {
+    handleBoardModal();
+  }
+
   return (
     <Container>
       {!isLoading && (
@@ -65,8 +86,10 @@ export default function Board() {
           <title>Quadro - {data?.name}</title>
         </Helmet>
       )}
+      {boardModal}
       {itemModal}
       {createItemModal}
+      {confirmationModal}
       <HeadingContainer>
         <H2>{data?.name}</H2>
         <ActionsContainer>
@@ -76,12 +99,17 @@ export default function Board() {
             cursor="pointer"
             onClick={handleCreateItemModal}
           />
-          <TbEdit role="button" size={28} cursor="pointer" />
+          <TbEdit
+            role="button"
+            size={28}
+            cursor="pointer"
+            onClick={handleBoardModal}
+          />
           <TbTrash
             role="button"
             size={28}
             cursor="pointer"
-            onClick={handleBoardDelete}
+            onClick={handleConfirmation}
           />
         </ActionsContainer>
       </HeadingContainer>
