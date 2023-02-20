@@ -26,9 +26,11 @@ public class BoardRepository : IBoardRepository
         _dbContext.SaveChanges();
     }
 
-    public List<Board> GetAll(Guid ownerId)
+    public List<Board> GetAll(Guid ownerId, int page)
     {
-        return _dbContext.Boards.Where(x => x.OwnerId == ownerId).OrderBy(x => x.Name).ToList();
+        int offset = page * 10;
+
+        return _dbContext.Boards.Where(x => x.OwnerId == ownerId).Skip(offset).Take(10).OrderBy(x => x.Name).ToList();
     }
 
     public List<Board> GetAllByName(string name, Guid ownerId)

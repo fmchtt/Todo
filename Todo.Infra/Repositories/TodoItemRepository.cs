@@ -25,9 +25,11 @@ public class TodoItemRepository : ITodoItemRepostory
         _dbContext.SaveChanges();
     }
 
-    public List<TodoItem> GetAll(Guid ownerId)
+    public List<TodoItem> GetAll(Guid ownerId, int page)
     {
-        return _dbContext.Itens.Where(x => x.CreatorId == ownerId).OrderByDescending(x => x.CreatedDate).ToList();
+        int offset = page * 10;
+
+        return _dbContext.Itens.Where(x => x.CreatorId == ownerId).Skip(offset).Take(10).OrderByDescending(x => x.CreatedDate).ToList();
     }
 
     public List<TodoItem> GetAllByTitle(string title, Guid ownerId)

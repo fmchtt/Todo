@@ -14,10 +14,16 @@ public class BoardController : TodoBaseController
 {
     [HttpGet, Authorize]
     public List<BoardResultDTO> GetAll(
-        [FromServices] IBoardRepository boardRepository
+        [FromServices] IBoardRepository boardRepository,
+        [FromQuery] int page = 1
     )
     {
-        var todos = boardRepository.GetAll(GetUserId());
+        if (page < 1)
+        {
+            page = 1;
+        }
+
+        var todos = boardRepository.GetAll(GetUserId(), page - 1);
 
         var result = new List<BoardResultDTO>();
         foreach (var board in todos)

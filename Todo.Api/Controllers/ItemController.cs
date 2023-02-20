@@ -14,10 +14,16 @@ public class ItemController : TodoBaseController
 {
     [HttpGet, Authorize]
     public List<ExpandedTodoItemResultDTO> GetAll(
-        [FromServices] ITodoItemRepostory todoItemRepostory
+        [FromServices] ITodoItemRepostory todoItemRepostory,
+        [FromQuery] int page = 1
     )
     {
-        var todos = todoItemRepostory.GetAll(GetUserId());
+        if (page < 1)
+        {
+            page = 1;
+        }
+
+        var todos = todoItemRepostory.GetAll(GetUserId(), page - 1);
 
         var result = new List<ExpandedTodoItemResultDTO>();
         foreach (var item in todos)
