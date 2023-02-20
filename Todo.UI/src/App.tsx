@@ -6,6 +6,7 @@ import Dashboard from "./pages/dashboard";
 import Register from "./pages/register";
 import { Default } from "./types/themes";
 import Board from "./pages/board";
+import Profile from "./pages/profile";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<BaseLayout />}>
             <Route path="home" element={<Dashboard />} />
             <Route path="board/:id" element={<Board />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>
       </BrowserRouter>

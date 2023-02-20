@@ -17,16 +17,52 @@ export const RoundedAvatar = styled.img`
 `;
 
 export const UserMenu = styled.div`
-  background: ${(props) => props.theme.colors[200]};
   cursor: pointer;
+  position: relative;
+`;
 
-  :hover {
-    background: ${(props) => props.theme.colors[200] + "c1"};
-  }
-
+export const UserContainer = styled.div`
+  background: ${(props) => props.theme.colors[200]};
   border-radius: 20px;
   padding: 2px;
 
+  :hover {
+    background: ${(props) => props.theme.colors[100]};
+  }
+  position: relative;
+
   display: flex;
   align-items: center;
+  z-index: 2;
+`;
+
+export const DropDownMenu = styled.div`
+  background: ${(props) => props.theme.colors[300]};
+  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.25);
+
+  padding: 30px 0 10px 0;
+
+  position: absolute;
+  top: 30px;
+  left: 0;
+
+  width: 100%;
+  border-radius: 0 0 20px 20px;
+  z-index: 1;
+`;
+
+export const DropDownButton = styled.a`
+  color: ${(props) => props.theme.font.medium};
+  text-decoration: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  padding: 10px 0;
+
+  :hover {
+    background: ${(props) => props.theme.colors[800]};
+  }
 `;
