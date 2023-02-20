@@ -107,7 +107,7 @@ export default function RegisterForm() {
             <ErrorMessage>{formik.errors.password}</ErrorMessage>
           )}
         </InputGroup>
-        <FilledButton size="25px" type="submit" loading={loading}>
+        <FilledButton size="25px" type="submit" loading={loading ? 1 : 0}>
           Registrar
         </FilledButton>
         <Text>

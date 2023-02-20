@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 interface Options {
-  show?: boolean;
+  show?: number;
 }
 
 export const StyledSideBar = styled.aside`

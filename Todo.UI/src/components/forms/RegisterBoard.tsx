@@ -58,7 +58,7 @@ const BoardRegister = (props: FormBoardProps) => {
           onChange={formik.handleChange}
         />
       </InputGroup>
-      <FilledButton loading={loading}>Cadastrar</FilledButton>
+      <FilledButton loading={loading ? 1 : 0}>Cadastrar</FilledButton>
     </Form>
   );
 };

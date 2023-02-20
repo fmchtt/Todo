@@ -23,7 +23,7 @@ interface Options {
 }
 
 export default function SideBar() {
-  const [showOptions, setShowOptions] = useState<boolean>(false);
+  const [showOptions, setShowOptions] = useState<number>(0);
   const { logout } = useAuth();
 
   const options: Options[] = [
@@ -50,30 +50,39 @@ export default function SideBar() {
         <TbMenu2
           className="icon-menu"
           onClick={() => {
-            setShowOptions(showOptions ? false : true);
+            setShowOptions(showOptions === 1 ? 0 : 1);
           }}
         />
         {options.map((option, index) => {
           return option.action ? (
             <SideBarButton
-              show={showOptions}
+              show={showOptions ? 1 : 0}
               key={index}
               onClick={option.action}
             >
               {option.icon}
-              <TitleOption show={showOptions}>{option.text}</TitleOption>
+              <TitleOption show={showOptions ? 1 : 0}>
+                {option.text}
+              </TitleOption>
             </SideBarButton>
           ) : (
-            <SideBarButton show={showOptions} key={index} as={Link} to="/home">
+            <SideBarButton
+              show={showOptions ? 1 : 0}
+              key={index}
+              as={Link}
+              to="/home"
+            >
               {option.icon}
-              <TitleOption show={showOptions}>{option.text}</TitleOption>
+              <TitleOption show={showOptions ? 1 : 0}>
+                {option.text}
+              </TitleOption>
             </SideBarButton>
           );
         })}
       </ButtonGroup>
       <SideBarButton onClick={logout}>
         <TbLogout size={22} />
-        <TitleOption show={showOptions}>Sair</TitleOption>
+        <TitleOption show={showOptions ? 1 : 0}>Sair</TitleOption>
       </SideBarButton>
     </StyledSideBar>
   );
