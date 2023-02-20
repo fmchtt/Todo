@@ -28,7 +28,7 @@ public class BoardRepository : IBoardRepository
 
     public List<Board> GetAll(Guid ownerId)
     {
-        return _dbContext.Boards.Where(x => x.OwnerId == ownerId).ToList();
+        return _dbContext.Boards.Where(x => x.OwnerId == ownerId).OrderBy(x => x.Name).ToList();
     }
 
     public List<Board> GetAllByName(string name, Guid ownerId)

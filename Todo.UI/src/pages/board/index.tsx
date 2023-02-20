@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getBoardById } from "../../services/api/boards";
 import {
   ActionsContainer,
@@ -16,12 +16,14 @@ import { useState } from "react";
 import { Item } from "../../types/item";
 import CreateItem from "../../components/forms/CreateItemForm";
 import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
+import { deleteBoardById } from "../../services/api/boards";
 
 type ParamProps = {
   id: string;
 };
 export default function Board() {
   const params = useParams<ParamProps>();
+  const navigate = useNavigate();
   const { data, isLoading } = useQuery(["board", params.id], getBoardById);
   const [itemClicked, setItemClicked] = useState<Item>({} as Item);
   const [handleItemModal, itemModal] = useModal(
@@ -38,6 +40,15 @@ export default function Board() {
       })}
     />
   );
+
+  function handleBoardDelete() {
+    if (!data) {
+      return;
+    }
+    deleteBoardById(data.id).then(() => {
+      navigate("/home");
+    });
+  }
 
   function handleItemCloseClick() {
     handleItemModal();
@@ -66,7 +77,12 @@ export default function Board() {
             onClick={handleCreateItemModal}
           />
           <TbEdit role="button" size={28} cursor="pointer" />
-          <TbTrash role="button" size={28} cursor="pointer" />
+          <TbTrash
+            role="button"
+            size={28}
+            cursor="pointer"
+            onClick={handleBoardDelete}
+          />
         </ActionsContainer>
       </HeadingContainer>
       <ColumnContainer>

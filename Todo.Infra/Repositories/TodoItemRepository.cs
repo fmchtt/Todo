@@ -27,7 +27,7 @@ public class TodoItemRepository : ITodoItemRepostory
 
     public List<TodoItem> GetAll(Guid ownerId)
     {
-        return _dbContext.Itens.Where(x => x.CreatorId == ownerId).ToList();
+        return _dbContext.Itens.Where(x => x.CreatorId == ownerId).OrderByDescending(x => x.CreatedDate).ToList();
     }
 
     public List<TodoItem> GetAllByTitle(string title, Guid ownerId)
