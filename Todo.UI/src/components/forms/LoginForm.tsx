@@ -1,6 +1,6 @@
 import { FormContainer, Input } from "./styles";
 import { InputGroup, Label, Form } from "./styles";
-import { H1, Text, A } from "../../assets/css/global.styles";
+import { H1, Text, LinkSpan } from "../../assets/css/global.styles";
 import useAuth from "../../context/auth";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -96,7 +96,7 @@ export default function LoginForm() {
         <Text>
           Ainda não tem conta?{" "}
           <Link to={"/register"} style={{ textDecoration: "none" }}>
-            <A>Registre-se</A>
+            <LinkSpan>Registre-se</LinkSpan>
           </Link>
         </Text>
       </Form>

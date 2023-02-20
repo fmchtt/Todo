@@ -1,5 +1,5 @@
 import { InputGroup, Label, Form, Input } from "./styles";
-import { A, H1, Text } from "../../assets/css/global.styles";
+import { LinkSpan, H1, Text } from "../../assets/css/global.styles";
 import { FormContainer } from "./styles";
 import FilledButton from "../filledButton";
 import { useEffect, useState } from "react";
@@ -113,7 +113,7 @@ export default function RegisterForm() {
         <Text>
           Já tem conta? Faça{" "}
           <Link to={"/login"} style={{ textDecoration: "none" }}>
-            <A>Login</A>
+            <LinkSpan>Login</LinkSpan>
           </Link>
         </Text>
       </Form>

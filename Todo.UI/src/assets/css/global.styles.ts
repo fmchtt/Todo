@@ -33,7 +33,7 @@ export const Text = styled.p<TextProps>`
   margin: ${(props) => props.margin || "inherit"};
 `;
 
-export const A = styled.a`
+export const LinkSpan = styled.span`
   color: ${(props) => props.theme.colors[100]};
   font-weight: 300;
   text-decoration: none;
