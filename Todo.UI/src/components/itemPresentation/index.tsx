@@ -1,5 +1,5 @@
 import { H1, Text } from "../../assets/css/global.styles";
-import { ExpandedItem, getPriorityDisplay } from "../../types/item";
+import { ExpandedItem, Item, getPriorityDisplay } from "../../types/item";
 import { RoundedAvatar } from "../header/styles";
 import {
   PresentationBody,
@@ -13,6 +13,7 @@ import { deleteItem } from "../../services/api/itens";
 import { useQueryClient } from "react-query";
 import PriorityIndicator from "../priorityIndicator";
 import { TbCalendarEvent, TbTrash, TbX } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
 type ItemPresentationProps = {
   data: ExpandedItem;
@@ -24,6 +25,7 @@ export default function ItemPresentation({
   data,
   onCloseClick,
 }: ItemPresentationProps) {
+  const navigate = useNavigate();
   const client = useQueryClient();
 
   function handleDeleteItem() {
@@ -82,12 +84,17 @@ export default function ItemPresentation({
             <Text>{getPriorityDisplay(data.priority)}</Text>
           </PresentationDataGroup>
         </PresentationGroup>
-        <PresentationGroup>
-          <Text>Quadro:</Text>
-          <PresentationDataGroup padding="10px">
-            <Text>{data.board?.name || "Sem quadro"}</Text>
-          </PresentationDataGroup>
-        </PresentationGroup>
+        {data.board && (
+          <PresentationGroup>
+            <Text>Quadro:</Text>
+            <PresentationDataGroup
+              padding="10px"
+              onClick={() => navigate(`/board/${data.board?.id}`)}
+            >
+              <Text>{data.board?.name || "Sem quadro"}</Text>
+            </PresentationDataGroup>
+          </PresentationGroup>
+        )}
       </PresentationSide>
     </PresentationContainer>
   );
