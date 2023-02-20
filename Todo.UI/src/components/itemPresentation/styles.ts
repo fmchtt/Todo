@@ -8,6 +8,8 @@ export const PresentationContainer = styled.div`
 
   width: clamp(800px, 70vw, 90vw);
   height: 80vh;
+
+  box-shadow: 0px 0px 16px 4px rgba(255, 255, 255, 0.08);
 `;
 
 export const PresentationBody = styled.div`
