@@ -21,5 +21,8 @@ export const ColumnHeading = styled.div`
 `;
 
 export const ColumnBody = styled.div`
-  padding: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 `;

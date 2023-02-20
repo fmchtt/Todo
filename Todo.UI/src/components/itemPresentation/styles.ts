@@ -11,9 +11,8 @@ export const PresentationContainer = styled.div`
 `;
 
 export const PresentationBody = styled.div`
-  padding: 20px 0 0 20px;
+  padding: 20px 20px 0 20px;
   flex: 1;
-
   overflow-y: auto;
 `;
 
