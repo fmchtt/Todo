@@ -13,16 +13,16 @@ namespace Todo.Api.Controllers;
 public class ItemController : TodoBaseController
 {
     [HttpGet, Authorize]
-    public List<TodoItemResultDTO> GetAll(
+    public List<ExpandedTodoItemResultDTO> GetAll(
         [FromServices] ITodoItemRepostory todoItemRepostory
     )
     {
         var todos = todoItemRepostory.GetAll(GetUserId());
 
-        var result = new List<TodoItemResultDTO>();
+        var result = new List<ExpandedTodoItemResultDTO>();
         foreach (var item in todos)
         {
-            result.Add(new TodoItemResultDTO(item));
+            result.Add(new ExpandedTodoItemResultDTO(item));
         }
 
         return result;

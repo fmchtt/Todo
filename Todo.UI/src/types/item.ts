@@ -1,4 +1,5 @@
 import User from "./user";
+import { ResumedBoard } from "./board";
 
 export interface Item {
   id: string;
@@ -10,6 +11,10 @@ export interface Item {
   creator: User;
   files: string;
   done: string;
+}
+
+export interface ExpandedItem extends Item {
+  board?: ResumedBoard;
 }
 
 export type CreateItemProps = {

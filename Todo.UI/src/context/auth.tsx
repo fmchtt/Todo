@@ -21,7 +21,7 @@ export function AuthProvider({ children }: ContextProps) {
   }, [token]);
 
   const { data } = useQuery<User>(["me"], getActualUser, {
-    onError: (err) => {
+    onError: () => {
       setToken(null);
     },
   });

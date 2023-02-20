@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef } from "react";
 
-export interface StyledButtonProps extends ComponentPropsWithoutRef<"button"> {}
+export type StyledButtonProps = ComponentPropsWithoutRef<"button">
 
 export interface FilledButtonProps {
   children: string;

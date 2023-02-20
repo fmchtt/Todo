@@ -1,5 +1,5 @@
 import { H1, Text } from "../../assets/css/global.styles";
-import { Item, getPriorityDisplay } from "../../types/item";
+import { ExpandedItem, getPriorityDisplay } from "../../types/item";
 import { RoundedAvatar } from "../header/styles";
 import {
   PresentationBody,
@@ -15,8 +15,9 @@ import PriorityIndicator from "../priorityIndicator";
 import { TbCalendarEvent, TbTrash, TbX } from "react-icons/tb";
 
 type ItemPresentationProps = {
-  data: Item;
+  data: ExpandedItem;
   onCloseClick: () => void;
+  boards?: { label: string; value: string }[];
 };
 
 export default function ItemPresentation({
@@ -26,7 +27,7 @@ export default function ItemPresentation({
   const client = useQueryClient();
 
   function handleDeleteItem() {
-    deleteItem(data.id).then((res) => {
+    deleteItem(data.id).then(() => {
       client.invalidateQueries(["itens"]);
       onCloseClick();
     });
@@ -79,6 +80,12 @@ export default function ItemPresentation({
           <PresentationDataGroup padding="10px">
             <PriorityIndicator size={24} priority={data.priority} />
             <Text>{getPriorityDisplay(data.priority)}</Text>
+          </PresentationDataGroup>
+        </PresentationGroup>
+        <PresentationGroup>
+          <Text>Quadro:</Text>
+          <PresentationDataGroup padding="10px">
+            <Text>{data.board?.name || "Sem quadro"}</Text>
           </PresentationDataGroup>
         </PresentationGroup>
       </PresentationSide>

@@ -52,7 +52,7 @@ export default function CreateItemForm({
       boardId: "",
     },
     onSubmit: async (values) => {
-      let reqData: CreateItemProps = {
+      const reqData: CreateItemProps = {
         title: values.title,
         description: values.description,
         priority: values.priority,

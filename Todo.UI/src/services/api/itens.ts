@@ -1,8 +1,9 @@
-import { CreateItemProps, Item } from "../../types/item";
+import { CreateItemProps, ExpandedItem, Item } from "../../types/item";
+import { MessageResponse } from "../../types/responses/message";
 import http from "../http";
 
 export async function getItens() {
-  const { data } = await http.get<Item[]>("/itens");
+  const { data } = await http.get<ExpandedItem[]>("/itens");
   return data;
 }
 export async function createItem(reqData: CreateItemProps) {

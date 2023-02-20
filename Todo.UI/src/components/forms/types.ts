@@ -1,7 +1,4 @@
-import { DefaultTheme, StyledComponentProps } from "styled-components";
-
-export interface FormBoardProps
-  extends StyledComponentProps<"form", DefaultTheme, {}, never> {
+export interface FormBoardProps {
   maxWidth?: string;
   borderRadius?: string;
   closeModal?: () => void;
