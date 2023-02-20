@@ -13,15 +13,16 @@ export const FormContainer = styled.div<FormBoardProps>`
   gap: 10px;
 `;
 
-export const Form = styled.form`
-  width: 100%;
+type FormProps = {
+  width?: string;
+};
+export const Form = styled.form<FormProps>`
+  width: ${(props) => props.width || "100%"};
 
   gap: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  margin: 30px 0;
 `;
 
 export const Label = styled.label`
@@ -57,7 +58,39 @@ export const Input = styled.input`
   outline: none;
 
   border: none;
-  border-radius: 25px;
+  border-radius: 20px;
+
+  padding: 15px 25px;
+`;
+
+export const Select = styled.select`
+  background-color: ${(props) => props.theme.colors[200]};
+  color: ${(props) => props.theme.font.medium};
+
+  ::placeholder {
+    color: ${(props) => props.theme.font.medium};
+  }
+
+  outline: none;
+
+  border: none;
+  border-radius: 20px;
+
+  padding: 15px 25px;
+`;
+
+export const TextArea = styled.textarea`
+  background-color: ${(props) => props.theme.colors[200]};
+  color: ${(props) => props.theme.font.medium};
+
+  ::placeholder {
+    color: ${(props) => props.theme.font.medium};
+  }
+
+  outline: none;
+
+  border: none;
+  border-radius: 20px;
 
   padding: 15px 25px;
 `;

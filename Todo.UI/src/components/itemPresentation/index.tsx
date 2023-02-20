@@ -11,6 +11,8 @@ import {
   PresentationSide,
 } from "./styles";
 import moment from "moment";
+import { deleteItem } from "../../services/api/itens";
+import { useQueryClient } from "react-query";
 
 type ItemPresentationProps = {
   data: Item;
@@ -21,6 +23,15 @@ export default function ItemPresentation({
   data,
   onCloseClick,
 }: ItemPresentationProps) {
+  const client = useQueryClient();
+
+  function handleDeleteItem() {
+    deleteItem(data.id).then((res) => {
+      client.invalidateQueries(["itens"]);
+      onCloseClick();
+    });
+  }
+
   return (
     <PresentationContainer>
       <PresentationBody>
@@ -29,7 +40,12 @@ export default function ItemPresentation({
       </PresentationBody>
       <PresentationSide>
         <PresentationGroup flex={true}>
-          <TiTrash role="button" size={30} cursor="pointer" />
+          <TiTrash
+            role="button"
+            size={30}
+            cursor="pointer"
+            onClick={handleDeleteItem}
+          />
           <IoClose
             role="button"
             size={30}

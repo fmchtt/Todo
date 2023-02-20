@@ -6,6 +6,7 @@ export const PresentationContainer = styled.div`
   display: flex;
   gap: 20px;
 
+  max-width: 40vw;
   min-height: 80vh;
 `;
 

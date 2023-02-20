@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FormBoardProps } from "./types";
-import { Form, Label, InputGroup, Input } from "./styles";
+import { Form, Label, InputGroup, Input, TextArea } from "./styles";
 import FilledButton from "../filledButton";
 import { H1 } from "../../assets/css/global.styles";
 import { useFormik } from "formik";
@@ -25,6 +25,7 @@ const BoardRegister = (props: FormBoardProps) => {
   const formik = useFormik({
     initialValues: {
       name: "",
+      description: "",
     },
     onSubmit: (values) => {
       mutation.mutate(values);
@@ -46,6 +47,14 @@ const BoardRegister = (props: FormBoardProps) => {
           type="text"
           name="name"
           value={formik.values.name}
+          onChange={formik.handleChange}
+        />
+      </InputGroup>
+      <InputGroup>
+        <Label>Descrição</Label>
+        <TextArea
+          rows={8}
+          value={formik.values.description}
           onChange={formik.handleChange}
         />
       </InputGroup>
