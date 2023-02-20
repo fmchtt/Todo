@@ -92,7 +92,7 @@ export default function LoginForm() {
             <ErrorMessage>{formik.errors.password}</ErrorMessage>
           )}
         </InputGroup>
-        <FilledButton size="25px" loading={loading ? 1 : 0}>
+        <FilledButton type="submit" size="25px" loading={loading ? 1 : 0}>
           Entrar
         </FilledButton>
         <Text>

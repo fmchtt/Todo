@@ -15,6 +15,7 @@ import PriorityIndicator from "../priorityIndicator";
 import { TbCalendarEvent, TbLayoutKanban, TbTrash, TbX } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import useConfirmationModal from "../../hooks/useConfirmationModal";
+import profilePlaceholder from "../../assets/images/profile.svg";
 
 type ItemPresentationProps = {
   data: ExpandedItem;
@@ -69,11 +70,13 @@ export default function ItemPresentation({
         <PresentationGroup>
           <Text>Criador:</Text>
           <PresentationDataGroup>
-            {data.creator.avatarUrl && (
-              <RoundedAvatar
-                src={import.meta.env.VITE_API_URL + data.creator.avatarUrl}
-              />
-            )}
+            <RoundedAvatar
+              src={
+                data.creator.avatarUrl
+                  ? import.meta.env.VITE_API_URL + data.creator.avatarUrl
+                  : profilePlaceholder
+              }
+            />
             <Text>{data.creator.name}</Text>
           </PresentationDataGroup>
         </PresentationGroup>

@@ -10,6 +10,7 @@ import {
   UserMenu,
 } from "./styles";
 import { Link } from "react-router-dom";
+import profilePlaceholder from "../../assets/images/profile.svg";
 
 export default function Header() {
   const { user } = useAuth();
@@ -24,11 +25,13 @@ export default function Header() {
       >
         <UserContainer>
           <Text margin="0 10px">{user?.name}</Text>
-          {user?.avatarUrl && (
-            <RoundedAvatar
-              src={import.meta.env.VITE_API_URL + user.avatarUrl}
-            />
-          )}
+          <RoundedAvatar
+            src={
+              user?.avatarUrl
+                ? import.meta.env.VITE_API_URL + user.avatarUrl
+                : profilePlaceholder
+            }
+          />
         </UserContainer>
         {dropDownOpen && (
           <DropDownMenu>

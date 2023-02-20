@@ -135,7 +135,7 @@ export default function CreateItemForm({
           </Select>
         </InputGroup>
       )}
-      <FilledButton>Criar</FilledButton>
+      <FilledButton type="submit">Criar</FilledButton>
     </Form>
   );
 }
