@@ -4,6 +4,7 @@ import image from "../../assets/images/image-side.png";
 import { Helmet } from "react-helmet";
 import { H1, H2, Text } from "../../assets/css/global.styles";
 import RegisterForm from "../../components/forms/RegisterForm";
+import { FormSide } from "../login/styles";
 
 export default function Register() {
   return (
@@ -21,7 +22,9 @@ export default function Register() {
         </ContentTextSide>
         <img src={image} />
       </Side>
-      <RegisterForm />
+      <FormSide>
+        <RegisterForm />
+      </FormSide>
     </Container>
   );
 }

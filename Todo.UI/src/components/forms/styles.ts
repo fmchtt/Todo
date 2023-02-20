@@ -10,8 +10,10 @@ export const FormContainer = styled.div<FormBoardProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 10px;
+  gap: 50px;
 `;
+
+export const FormHeading = styled.div``;
 
 type FormProps = {
   width?: string;

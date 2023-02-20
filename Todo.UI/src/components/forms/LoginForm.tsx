@@ -1,4 +1,4 @@
-import { FormContainer, Input } from "./styles";
+import { FormContainer, FormHeading, Input } from "./styles";
 import { InputGroup, Label, Form } from "./styles";
 import { H1, Text, LinkSpan } from "../../assets/css/global.styles";
 import useAuth from "../../context/auth";
@@ -56,8 +56,10 @@ export default function LoginForm() {
 
   return (
     <FormContainer>
-      <H1>Login</H1>
-      <Text>Faça login para acessar o app</Text>
+      <FormHeading>
+        <H1>Login</H1>
+        <Text>Faça login para acessar o app</Text>
+      </FormHeading>
       <Form onSubmit={formik.handleSubmit}>
         <InputGroup>
           <Label>Email</Label>

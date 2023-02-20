@@ -1,4 +1,4 @@
-import { InputGroup, Label, Form, Input } from "./styles";
+import { InputGroup, Label, Form, Input, FormHeading } from "./styles";
 import { LinkSpan, H1, Text } from "../../assets/css/global.styles";
 import { FormContainer } from "./styles";
 import FilledButton from "../filledButton";
@@ -60,8 +60,10 @@ export default function RegisterForm() {
 
   return (
     <FormContainer>
-      <H1>Registre-se</H1>
-      <Text>Para ter acesso ao app é necessário ter uma conta. Crie uma</Text>
+      <FormHeading>
+        <H1>Registre-se</H1>
+        <Text>Para ter acesso ao app é necessário ter uma conta. Crie uma</Text>
+      </FormHeading>
       <Form onSubmit={formik.handleSubmit}>
         <InputGroup>
           <Label>Nome</Label>
