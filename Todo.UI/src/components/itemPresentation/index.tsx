@@ -84,12 +84,14 @@ export default function ItemPresentation({
             <Text>{getPriorityDisplay(data.priority)}</Text>
           </PresentationDataGroup>
         </PresentationGroup>
-        {data.board && (
+        {data.board !== undefined && (
           <PresentationGroup>
             <Text>Quadro:</Text>
             <PresentationDataGroup
               padding="10px"
-              onClick={() => navigate(`/board/${data.board?.id}`)}
+              onClick={() =>
+                data.board ? navigate(`/board/${data.board?.id}`) : null
+              }
             >
               <Text>{data.board?.name || "Sem quadro"}</Text>
             </PresentationDataGroup>
