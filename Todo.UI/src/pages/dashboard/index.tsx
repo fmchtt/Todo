@@ -62,9 +62,11 @@ export default function Dashboard() {
       </HeadingContainer>
       <Section>
         <Carousel>
-          {boardQuery.data?.map((board) => {
-            return <BoardCard key={board.id} data={board} />;
-          })}
+          {boardQuery.data
+            ?.map((board) => {
+              return <BoardCard key={board.id} data={board} />;
+            })
+            .slice(0, 4)}
         </Carousel>
       </Section>
       <Section>
@@ -80,18 +82,20 @@ export default function Dashboard() {
           </ActionContainer>
         </HeadingContainer>
         <Carousel>
-          {itemQuery.data?.map((item) => {
-            return (
-              <ItemCard
-                key={item.id}
-                data={item}
-                onClick={() => {
-                  setItemClicked(item);
-                  handleItemModal();
-                }}
-              />
-            );
-          })}
+          {itemQuery.data
+            ?.map((item) => {
+              return (
+                <ItemCard
+                  key={item.id}
+                  data={item}
+                  onClick={() => {
+                    setItemClicked(item);
+                    handleItemModal();
+                  }}
+                />
+              );
+            })
+            .slice(0, 4)}
         </Carousel>
       </Section>
     </Container>
