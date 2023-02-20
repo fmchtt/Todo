@@ -28,13 +28,27 @@ export default function BoardCard({ data }: BoardCardProps) {
           <DataGroup>
             <CardSubtitle>Concluídos</CardSubtitle>
             <Text>
-              {data.doneItemCount} / {data.itemCount}
+              {data.doneItemCount > 0 && data.itemCount > 0 ? (
+                <>
+                  {data.doneItemCount} / {data.itemCount}
+                </>
+              ) : (
+                <>0 / 0</>
+              )}
             </Text>
           </DataGroup>
           <DataGroup>
             <CardSubtitle>Abertos</CardSubtitle>
             <Text>
-              {data.itemCount - data.doneItemCount} / {data.itemCount}
+              {data.itemCount > 0 &&
+              data.doneItemCount > 0 &&
+              data.itemCount > 0 ? (
+                <>
+                  {data.itemCount - data.doneItemCount} / {data.itemCount}
+                </>
+              ) : (
+                <>0 / 0</>
+              )}
             </Text>
           </DataGroup>
         </DataContainer>
