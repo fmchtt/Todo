@@ -52,7 +52,6 @@ export default function BoardCard({ data }: BoardCardProps) {
             </Text>
           </DataGroup>
         </DataContainer>
-        <CardSubtitle>Ultimo acesso: 10min</CardSubtitle>
       </CardBody>
     </CardContainer>
   );

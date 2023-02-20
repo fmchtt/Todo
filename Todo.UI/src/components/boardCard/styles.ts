@@ -2,8 +2,7 @@ import styled from "styled-components";
 
 export const CardContainer = styled.div`
   background-color: ${(props) => props.theme.colors[200]};
-  width: 240px;
-  height: 240px;
+  min-width: 260px;
   flex: none;
   transition: 0.3s;
   border-left: 14px solid ${(props) => props.theme.colors[100]};

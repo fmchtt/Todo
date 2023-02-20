@@ -5,6 +5,7 @@ export const CardContainer = styled.div`
 
   padding: 10px 30px;
   border-radius: 20px;
+  min-width: 260px;
 
   position: relative;
 
