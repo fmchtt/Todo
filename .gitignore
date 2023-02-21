@@ -363,5 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 /Todo.Api/appsettings.Development.json
 /Todo.UI/.env
+/Todo.UI/dist
+wwwroot/
 
 Uploads/

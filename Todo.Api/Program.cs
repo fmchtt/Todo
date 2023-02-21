@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TodoDBContext>(x => x.UseLazyLoadingProxies().UseNpgsql(builder.Configuration.GetValue("CONNECTION_STRING", "")));
 builder.Services.AddTransient<ITokenService, TokenService>(x => new TokenService(key));
 builder.Services.AddTransient<IHasher, Hasher>(x => new Hasher(secret));
-builder.Services.AddTransient<IFileStorage, LocalFileStorage>(x => new LocalFileStorage(builder.Environment.ContentRootPath));
+builder.Services.AddTransient<IFileStorage, LocalFileStorage>(x => new LocalFileStorage(Path.Join(builder.Environment.ContentRootPath, "wwwroot")));
 
 builder.Services.AddTransient<IBoardRepository, BoardRepository>();
 builder.Services.AddTransient<IColumnRepository, ColumnRepository>();
@@ -91,23 +91,18 @@ app.UseHttpsRedirection();
 
 app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 
-var staticPath = Path.Join(builder.Environment.ContentRootPath, "Uploads");
-if (!Path.Exists(staticPath))
-{
-    Directory.CreateDirectory(staticPath);
-}
-
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        staticPath
+        Path.Join(builder.Environment.ContentRootPath, "wwwroot")
     ),
-    RequestPath = "/uploads"
+    RequestPath = ""
 });
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapFallbackToFile("index.html");
 
 app.Run();

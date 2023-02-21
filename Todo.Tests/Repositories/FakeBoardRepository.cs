@@ -24,7 +24,7 @@ public class FakeBoardRepository : IBoardRepository
         Boards.Remove(board);
     }
 
-    public List<Board> GetAll(Guid ownerId)
+    public List<Board> GetAll(Guid ownerId, int page)
     {
         return Boards;
     }

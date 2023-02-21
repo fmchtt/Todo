@@ -5,6 +5,14 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+FROM node:lts AS spa-build
+WORKDIR /src
+COPY . .
+WORKDIR "/src/Todo.UI"
+RUN rm -f .env
+RUN yarn install
+RUN yarn build
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["Todo.Api/Todo.Api.csproj", "Todo.Api/"]
@@ -20,5 +28,6 @@ RUN dotnet publish "Todo.Api.csproj" -c Release -o /app/publish /p:UseAppHost=fa
 
 FROM base AS final
 WORKDIR /app
+COPY --from=spa-build "/src/Todo.UI/dist" /wwwroot
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Todo.Api.dll"]

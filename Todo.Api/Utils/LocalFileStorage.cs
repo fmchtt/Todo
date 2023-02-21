@@ -15,7 +15,7 @@ public class LocalFileStorage : IFileStorage
     {
         var datetime = DateTime.Now;
         var timestamp = $"{datetime.Day}-{datetime.Month}-{datetime.Year}";
-        var path = Path.Join(BasePath, "Uploads", timestamp);
+        var path = Path.Join(BasePath, "uploads", timestamp);
 
         if (!Directory.Exists(path))
         {
@@ -30,6 +30,6 @@ public class LocalFileStorage : IFileStorage
             await file.CopyToAsync(stream);
         }
 
-        return Path.Join(timestamp, filename).Replace("\\", "/");
+        return Path.Join("uploads", timestamp, filename).Replace("\\", "/");
     }
 }
