@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   height: 100%;
 `;
 
@@ -23,8 +25,8 @@ export const ActionsContainer = styled.div<ActionsContainerProps>`
 `;
 
 export const ColumnContainer = styled.div`
-  height: 94%;
   margin: 15px 0;
+  flex: 1;
 
   display: flex;
   gap: 30px;

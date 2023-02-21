@@ -5,6 +5,8 @@ export const ColumnStyled = styled.div`
   width: 300px;
   height: 100%;
 
+  display: flex;
+  flex-direction: column;
   border-radius: 20px;
 `;
 
@@ -30,6 +32,6 @@ export const ColumnBody = styled.div`
   padding: 15px;
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: 15px;
-  height: 100%;
 `;
