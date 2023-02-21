@@ -8,7 +8,6 @@ public class TodoItem : Entity
     public DateTime UpdatedDate { get; set; }
     public bool Done { get; set; }
     public EPriority Priority { get; set; }
-    public List<string> Files { get; set; } = new List<string>();
     public Guid? BoardId { get; set; }
     public virtual Board? Board { get; set; }
     public Guid? ColumnId { get; set; }

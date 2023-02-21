@@ -6,11 +6,13 @@ EXPOSE 80
 EXPOSE 443
 
 FROM node:lts AS spa-build
-WORKDIR /src
-COPY . .
-WORKDIR "/src/Todo.UI"
-RUN rm -f .env
+WORKDIR /app/react
+COPY ["Todo.UI/package*.json", "."]
+COPY ["Todo.UI/tsconfig*.json", "."]
+COPY ["Todo.UI/vite.config.ts", "."]
+COPY ["Todo.UI/yarn.lock", "."]
 RUN yarn install
+COPY ["Todo.UI/", "."]
 RUN yarn build
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
@@ -28,6 +30,6 @@ RUN dotnet publish "Todo.Api.csproj" -c Release -o /app/publish /p:UseAppHost=fa
 
 FROM base AS final
 WORKDIR /app
-COPY --from=spa-build "/src/Todo.UI/dist" /wwwroot
+COPY --from=spa-build /app/react/dist ./wwwroot
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Todo.Api.dll"]

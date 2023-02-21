@@ -11,7 +11,6 @@ public class TodoItemResultDTO
     public DateTime CreatedDate { get; set; }
     public DateTime UpdatedDate { get; set; }
     public UserResumedResultDTO? Creator { get; set; }
-    public List<string>? Files { get; set; }
     public bool Done { get; set; }
 
     public TodoItemResultDTO(TodoItem todoItem) {
@@ -20,7 +19,6 @@ public class TodoItemResultDTO
         Description = todoItem.Description;
         CreatedDate = todoItem.CreatedDate;
         UpdatedDate = todoItem.UpdatedDate;
-        Files = todoItem.Files;
         Done = todoItem.Done;
         Priority = todoItem.Priority;
 

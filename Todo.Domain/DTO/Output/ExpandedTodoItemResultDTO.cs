@@ -12,7 +12,6 @@ public class ExpandedTodoItemResultDTO
     public DateTime UpdatedDate { get; set; }
     public UserResumedResultDTO? Creator { get; set; }
     public BoardResultDTO? Board { get; set; }
-    public List<string>? Files { get; set; }
     public bool Done { get; set; }
 
     public ExpandedTodoItemResultDTO(TodoItem todoItem)
@@ -22,7 +21,6 @@ public class ExpandedTodoItemResultDTO
         Description = todoItem.Description;
         CreatedDate = todoItem.CreatedDate;
         UpdatedDate = todoItem.UpdatedDate;
-        Files = todoItem.Files;
         Done = todoItem.Done;
         Priority = todoItem.Priority;
         Board = todoItem.Board != null ? new BoardResultDTO(todoItem.Board) : null;

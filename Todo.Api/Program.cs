@@ -16,14 +16,38 @@ var builder = WebApplication.CreateBuilder(args);
 var secret = builder.Configuration.GetValue("SECRET_KEY", "") ?? Guid.NewGuid().ToString();
 var key = Encoding.ASCII.GetBytes(secret);
 
+var staticPath = Path.Join(builder.Environment.ContentRootPath, "wwwroot");
+if (!Path.Exists(staticPath))
+{
+    Directory.CreateDirectory(staticPath);
+}
+
+var databasePath = Path.Join(builder.Environment.ContentRootPath, "database");
+if (builder.Environment.IsProduction() && !Path.Exists(databasePath))
+{
+    Directory.CreateDirectory(databasePath);
+}
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<TodoDBContext>(x => x.UseLazyLoadingProxies().UseNpgsql(builder.Configuration.GetValue("CONNECTION_STRING", "")));
+builder.Services.AddDbContext<TodoDBContext>(x =>
+{
+    x.UseLazyLoadingProxies();
+    if (builder.Environment.IsProduction())
+    {
+        x.UseSqlite("Data Source=./database/Todo.db");
+    }
+    else
+    {
+        x.UseNpgsql(builder.Configuration.GetValue("CONNECTION_STRING", ""));
+    }
+});
+
 builder.Services.AddTransient<ITokenService, TokenService>(x => new TokenService(key));
 builder.Services.AddTransient<IHasher, Hasher>(x => new Hasher(secret));
-builder.Services.AddTransient<IFileStorage, LocalFileStorage>(x => new LocalFileStorage(Path.Join(builder.Environment.ContentRootPath, "wwwroot")));
+builder.Services.AddTransient<IFileStorage, LocalFileStorage>(x => new LocalFileStorage(staticPath));
 
 builder.Services.AddTransient<IBoardRepository, BoardRepository>();
 builder.Services.AddTransient<IColumnRepository, ColumnRepository>();
@@ -90,11 +114,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
-
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.Join(builder.Environment.ContentRootPath, "wwwroot")
+        staticPath
     ),
     RequestPath = ""
 });
@@ -104,5 +127,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TodoDBContext>();
+    db.Database.Migrate();
+}
 
 app.Run();
