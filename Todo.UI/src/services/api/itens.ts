@@ -15,3 +15,8 @@ export async function deleteItem(id: string) {
   const { data } = await http.delete<MessageResponse>(`/itens/${id}`);
   return data;
 }
+
+export async function changeColumn(todoId: string, columnId: string) {
+  const { data } = await http.post<Item>(`/itens/${todoId}/column/${columnId}`);
+  return data;
+}

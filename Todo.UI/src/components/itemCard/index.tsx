@@ -6,11 +6,23 @@ import PriorityIndicator from "../priorityIndicator";
 
 type ItemCardProps = {
   data: Item;
+  draggable?: boolean;
   onClick?: () => void;
+  onDragStart?: (id: string) => void;
 };
-export default function ItemCard({ data, onClick }: ItemCardProps) {
+export default function ItemCard({
+  data,
+  onClick,
+  draggable,
+  onDragStart,
+}: ItemCardProps) {
   return (
-    <CardContainer onClick={onClick}>
+    <CardContainer
+      id={data.id}
+      onDragStart={() => (onDragStart ? onDragStart(data.id) : null)}
+      draggable={draggable}
+      onClick={onClick}
+    >
       <LeftDecoration />
       <CardGroup>
         <Text>{data.title}</Text>

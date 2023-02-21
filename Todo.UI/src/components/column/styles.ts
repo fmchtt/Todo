@@ -31,4 +31,5 @@ export const ColumnBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  height: 100%;
 `;

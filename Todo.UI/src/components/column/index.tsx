@@ -12,13 +12,14 @@ import { TbEdit } from "react-icons/tb";
 import { useModal } from "@/hooks";
 import ColumnForm from "../forms/ColumnForm";
 import { useQueryClient } from "react-query";
+import { changeColumn } from "@/services/api/itens";
 
 type ColumnProps = {
   data: ExpandedColumn;
   totalItems: number;
   onItemClick: (item: Item) => void;
 };
-
+let itemId = "";
 export default function Column({ data, totalItems, onItemClick }: ColumnProps) {
   const client = useQueryClient();
 
@@ -34,8 +35,24 @@ export default function Column({ data, totalItems, onItemClick }: ColumnProps) {
     client.invalidateQueries("board");
   }
 
+  async function handleColumnChange() {
+    if (itemId === "" || data.itens.filter((x) => x.id == itemId).length > 0) {
+      return;
+    }
+    console.log(`${itemId} para ${data.id}`);
+    await changeColumn(itemId, data.id);
+    client.invalidateQueries(["board"]);
+  }
+
   return (
-    <ColumnStyled>
+    <ColumnStyled
+      onDragOver={(e) => {
+        e.preventDefault();
+      }}
+      onDrop={() => {
+        handleColumnChange();
+      }}
+    >
       {columnModal}
       <ColumnHeading>
         <Text>{data.name}</Text>
@@ -58,6 +75,10 @@ export default function Column({ data, totalItems, onItemClick }: ColumnProps) {
               key={item.id}
               onClick={() => onItemClick(item)}
               data={item}
+              draggable
+              onDragStart={(id) => {
+                itemId = id;
+              }}
             />
           );
         })}
