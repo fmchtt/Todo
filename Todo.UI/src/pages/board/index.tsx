@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { getBoardById } from "@/services/api/boards";
 import {
@@ -7,7 +7,7 @@ import {
   Container,
   HeadingContainer,
 } from "./styles";
-import { H2 } from "@/assets/css/global.styles";
+import { H2, Text } from "@/assets/css/global.styles";
 import Column from "@/components/column";
 import { Helmet } from "react-helmet";
 import { useModal } from "@/hooks";
@@ -19,6 +19,7 @@ import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
 import { deleteBoardById } from "@/services/api/boards";
 import BoardRegister from "@/components/forms/RegisterBoard";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
+import ColumnForm from "@/components/forms/ColumnForm";
 
 type ParamProps = {
   id: string;
@@ -27,6 +28,7 @@ export default function Board() {
   const params = useParams<ParamProps>();
   const navigate = useNavigate();
   const { data, isLoading } = useQuery(["board", params.id], getBoardById);
+  const client = useQueryClient();
 
   const [itemClicked, setItemClicked] = useState<Item>({} as Item);
   const [handleItemModal, itemModal] = useModal(
@@ -57,6 +59,14 @@ export default function Board() {
     message: `Tem certeza que deseja apagar o quadro: ${data?.name} ?`,
     onConfirm: handleBoardDelete,
   });
+  const [handleColumnModal, columnModal] = useModal(
+    <ColumnForm boardId={data?.id} onSuccess={handleColumnModalSuccess} />
+  );
+
+  function handleColumnModalSuccess() {
+    handleColumnModal();
+    client.invalidateQueries("board");
+  }
 
   function handleBoardDelete() {
     if (!data) {
@@ -90,15 +100,18 @@ export default function Board() {
       {itemModal}
       {createItemModal}
       {confirmationModal}
+      {columnModal}
       <HeadingContainer>
         <H2>{data?.name}</H2>
         <ActionsContainer>
-          <TbPlus
-            role="button"
-            size={28}
-            cursor="pointer"
-            onClick={handleCreateItemModal}
-          />
+          <ActionsContainer clickable onClick={handleCreateItemModal}>
+            <TbPlus role="button" size={28} />
+            <Text>Adicionar Tarefa</Text>
+          </ActionsContainer>
+          <ActionsContainer clickable onClick={handleColumnModal}>
+            <TbPlus role="button" size={28} />
+            <Text>Adicionar Coluna</Text>
+          </ActionsContainer>
           <TbEdit
             role="button"
             size={28}

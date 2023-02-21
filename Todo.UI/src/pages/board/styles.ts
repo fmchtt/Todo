@@ -10,8 +10,12 @@ export const HeadingContainer = styled.div`
   align-items: center;
 `;
 
-export const ActionsContainer = styled.div`
+type ActionsContainerProps = {
+  clickable?: boolean;
+};
+export const ActionsContainer = styled.div<ActionsContainerProps>`
   color: ${(props) => props.theme.font.medium};
+  cursor: ${(props) => (props.clickable ? "pointer" : "unset")};
   display: flex;
   gap: 15px;
 `;
