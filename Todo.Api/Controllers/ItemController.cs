@@ -115,4 +115,44 @@ public class ItemController : TodoBaseController
 
         return ParseResult(result);
     }
+
+    [HttpPost("{id}/done"), Authorize]
+    [ProducesResponseType(typeof(TodoItemResultDTO), 200)]
+    [ProducesResponseType(typeof(MessageResult), 401)]
+    [ProducesResponseType(typeof(MessageResult), 404)]
+    public dynamic MarkAsDone(
+        [FromRoute] string id,
+        [FromServices] ITodoItemRepostory todoItemRepostory
+    )
+    {
+        var user = GetUser();
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var result = new MarkAsDoneUseCase(todoItemRepostory).Handle(Guid.Parse(id), user);
+
+        return ParseResult(result);
+    }
+
+    [HttpPost("{id}/undone"), Authorize]
+    [ProducesResponseType(typeof(TodoItemResultDTO), 200)]
+    [ProducesResponseType(typeof(MessageResult), 401)]
+    [ProducesResponseType(typeof(MessageResult), 404)]
+    public dynamic MarkAsunDone(
+        [FromRoute] string id,
+        [FromServices] ITodoItemRepostory todoItemRepostory
+    )
+    {
+        var user = GetUser();
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var result = new MarkAsUndoneUseCase(todoItemRepostory).Handle(Guid.Parse(id), user);
+
+        return ParseResult(result);
+    }
 }

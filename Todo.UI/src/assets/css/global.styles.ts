@@ -11,6 +11,7 @@ export const H2 = styled.h2`
 
 interface TextProps {
   margin?: string;
+  dashed?: number;
   weight?: 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
   size?: "thin" | "medium" | "large";
 }
@@ -31,6 +32,7 @@ export const Text = styled.p<TextProps>`
     }
   }};
   margin: ${(props) => props.margin || "inherit"};
+  text-decoration: ${(props) => (props.dashed ? "line-through" : "none")};
 `;
 
 export const LinkSpan = styled.span`

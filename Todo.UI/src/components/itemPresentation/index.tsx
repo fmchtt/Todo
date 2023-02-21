@@ -9,10 +9,17 @@ import {
   PresentationSide,
 } from "./styles";
 import moment from "moment";
-import { deleteItem } from "@/services/api/itens";
+import { changeDone, deleteItem } from "@/services/api/itens";
 import { useQueryClient } from "react-query";
 import PriorityIndicator from "../priorityIndicator";
-import { TbCalendarEvent, TbLayoutKanban, TbTrash, TbX } from "react-icons/tb";
+import {
+  TbCalendarEvent,
+  TbCheck,
+  TbCircleOff,
+  TbLayoutKanban,
+  TbTrash,
+  TbX,
+} from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
 import profilePlaceholder from "@/assets/images/profile.svg";
@@ -38,8 +45,17 @@ export default function ItemPresentation({
   function handleDeleteItem() {
     deleteItem(data.id).then(() => {
       client.invalidateQueries(["itens"]);
+      client.invalidateQueries(["board"]);
       onCloseClick();
     });
+  }
+
+  async function handleDone(done: boolean) {
+    await changeDone(data.id, done);
+    client.invalidateQueries(["itens"]);
+    client.invalidateQueries(["board"]);
+    client.invalidateQueries(["boards"]);
+    onCloseClick();
   }
 
   return (
@@ -60,6 +76,21 @@ export default function ItemPresentation({
             cursor="pointer"
             onClick={handleConfirmation}
           />
+          {data.done ? (
+            <TbCircleOff
+              role="button"
+              size={26}
+              cursor="pointer"
+              onClick={() => handleDone(false)}
+            />
+          ) : (
+            <TbCheck
+              role="button"
+              size={26}
+              cursor="pointer"
+              onClick={() => handleDone(true)}
+            />
+          )}
           <TbX
             role="button"
             size={26}
