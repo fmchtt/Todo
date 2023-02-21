@@ -1,5 +1,5 @@
-import { CreateItemProps, ExpandedItem, Item } from "../../types/item";
-import { MessageResponse } from "../../types/responses/message";
+import { CreateItemProps, ExpandedItem, Item } from "@/types/item";
+import { MessageResponse } from "@/types/responses/message";
 import http from "../http";
 
 export async function getItens() {

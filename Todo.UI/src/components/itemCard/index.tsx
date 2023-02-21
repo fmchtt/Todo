@@ -1,6 +1,6 @@
 import moment from "moment";
-import { Text } from "../../assets/css/global.styles";
-import { Item } from "../../types/item";
+import { Text } from "@/assets/css/global.styles";
+import { Item } from "@/types/item";
 import { CardContainer, CardFooter, CardGroup, LeftDecoration } from "./styles";
 import PriorityIndicator from "../priorityIndicator";
 

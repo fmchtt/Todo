@@ -1,6 +1,6 @@
-import { Text } from "../../assets/css/global.styles";
-import { ExpandedColumn } from "../../types/column";
-import { Item } from "../../types/item";
+import { Text } from "@/assets/css/global.styles";
+import { ExpandedColumn } from "@/types/column";
+import { Item } from "@/types/item";
 import ItemCard from "../itemCard";
 import { ColumnBody, ColumnHeading, ColumnStyled } from "./styles";
 

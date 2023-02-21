@@ -1,4 +1,4 @@
-import { EditBoard } from "../../types/board";
+import { EditBoard } from "@/types/board";
 
 export interface FormBoardProps {
   maxWidth?: string;

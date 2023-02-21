@@ -1,9 +1,9 @@
 import { Container } from "./styles";
 import { Side, ContentTextSide } from "./styles";
-import image from "../../assets/images/image-side.png";
+import image from "@/assets/images/image-side.png";
 import { Helmet } from "react-helmet";
-import { H1, H2, Text } from "../../assets/css/global.styles";
-import RegisterForm from "../../components/forms/RegisterForm";
+import { H1, H2, Text } from "@/assets/css/global.styles";
+import RegisterForm from "@/components/forms/RegisterForm";
 import { FormSide } from "../login/styles";
 
 export default function Register() {

@@ -1,4 +1,4 @@
-import { Text } from "../../../assets/css/global.styles";
+import { Text } from "@/assets/css/global.styles";
 
 interface ErrorMessageProps {
   children: string;

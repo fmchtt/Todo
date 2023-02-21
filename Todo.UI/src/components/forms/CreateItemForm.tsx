@@ -2,8 +2,8 @@ import { useFormik } from "formik";
 import FilledButton from "../filledButton";
 import { Form, Input, InputGroup, Label, Select, TextArea } from "./styles";
 import { useQueryClient } from "react-query";
-import { createItem } from "../../services/api/itens";
-import { CreateItemProps, Item } from "../../types/item";
+import { createItem } from "@/services/api/itens";
+import { CreateItemProps, Item } from "@/types/item";
 
 const priorityChoices = [
   {

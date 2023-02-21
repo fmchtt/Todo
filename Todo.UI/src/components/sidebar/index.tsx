@@ -5,7 +5,7 @@ import {
   StyledSideBar,
   TitleOption,
 } from "./styles";
-import useAuth from "../../context/auth";
+import useAuth from "@/context/auth";
 import { ReactNode, useState } from "react";
 import {
   TbHome,

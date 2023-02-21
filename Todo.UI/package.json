@@ -29,7 +29,8 @@
     "react-mutation": "^1.2.0",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.8.1",
-    "styled-components": "^5.3.6"
+    "styled-components": "^5.3.6",
+    "vite-tsconfig-paths": "^4.0.5"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",

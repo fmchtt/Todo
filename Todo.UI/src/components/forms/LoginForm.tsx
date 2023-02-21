@@ -1,7 +1,7 @@
 import { FormContainer, FormHeading, Input } from "./styles";
 import { InputGroup, Label, Form } from "./styles";
-import { H1, Text, LinkSpan } from "../../assets/css/global.styles";
-import useAuth from "../../context/auth";
+import { H1, Text, LinkSpan } from "@/assets/css/global.styles";
+import useAuth from "@/context/auth";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FilledButton from "../filledButton";

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import User from "../types/user";
+import User from "@/types/user";
 
 export type LoginProps = {
   email: string;

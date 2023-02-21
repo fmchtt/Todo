@@ -1,9 +1,9 @@
 import { InputGroup, Label, Form, Input, FormHeading } from "./styles";
-import { LinkSpan, H1, Text } from "../../assets/css/global.styles";
+import { LinkSpan, H1, Text } from "@/assets/css/global.styles";
 import { FormContainer } from "./styles";
 import FilledButton from "../filledButton";
 import { useEffect, useState } from "react";
-import useAuth from "../../context/auth";
+import useAuth from "@/context/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";

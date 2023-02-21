@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
 import FilledButton from "../filledButton";
 import { Form, Input, InputGroup, Label } from "./styles";
-import { getActualUser, patchUser } from "../../services/api/user";
+import { getActualUser, patchUser } from "@/services/api/user";
 import { useQuery, useQueryClient } from "react-query";
 
 export default function ProfileForm() {

@@ -1,5 +1,5 @@
-import { H1, Text } from "../../assets/css/global.styles";
-import { ExpandedItem, getPriorityDisplay } from "../../types/item";
+import { H1, Text } from "@/assets/css/global.styles";
+import { ExpandedItem, getPriorityDisplay } from "@/types/item";
 import { RoundedAvatar } from "../header/styles";
 import {
   PresentationBody,
@@ -9,13 +9,13 @@ import {
   PresentationSide,
 } from "./styles";
 import moment from "moment";
-import { deleteItem } from "../../services/api/itens";
+import { deleteItem } from "@/services/api/itens";
 import { useQueryClient } from "react-query";
 import PriorityIndicator from "../priorityIndicator";
 import { TbCalendarEvent, TbLayoutKanban, TbTrash, TbX } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
-import useConfirmationModal from "../../hooks/useConfirmationModal";
-import profilePlaceholder from "../../assets/images/profile.svg";
+import useConfirmationModal from "@/hooks/useConfirmationModal";
+import profilePlaceholder from "@/assets/images/profile.svg";
 
 type ItemPresentationProps = {
   data: ExpandedItem;

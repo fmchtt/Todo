@@ -1,4 +1,4 @@
-import ConfirmationModal from "../../components/forms/ConfirmationForm";
+import ConfirmationModal from "@/components/forms/ConfirmationForm";
 import useModal from "../useModal";
 
 type useConfirmationModalProps = {

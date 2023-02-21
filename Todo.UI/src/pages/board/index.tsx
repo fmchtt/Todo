@@ -1,24 +1,24 @@
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { getBoardById } from "../../services/api/boards";
+import { getBoardById } from "@/services/api/boards";
 import {
   ActionsContainer,
   ColumnContainer,
   Container,
   HeadingContainer,
 } from "./styles";
-import { H2 } from "../../assets/css/global.styles";
-import Column from "../../components/column";
+import { H2 } from "@/assets/css/global.styles";
+import Column from "@/components/column";
 import { Helmet } from "react-helmet";
-import { useModal } from "../../hooks";
-import ItemPresentation from "../../components/itemPresentation";
+import { useModal } from "@/hooks";
+import ItemPresentation from "@/components/itemPresentation";
 import { useState } from "react";
-import { Item } from "../../types/item";
-import CreateItem from "../../components/forms/CreateItemForm";
+import { Item } from "@/types/item";
+import CreateItem from "@/components/forms/CreateItemForm";
 import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
-import { deleteBoardById } from "../../services/api/boards";
-import BoardRegister from "../../components/forms/RegisterBoard";
-import useConfirmationModal from "../../hooks/useConfirmationModal";
+import { deleteBoardById } from "@/services/api/boards";
+import BoardRegister from "@/components/forms/RegisterBoard";
+import useConfirmationModal from "@/hooks/useConfirmationModal";
 
 type ParamProps = {
   id: string;

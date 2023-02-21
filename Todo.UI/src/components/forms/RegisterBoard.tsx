@@ -2,9 +2,9 @@ import { useState } from "react";
 import { FormBoardProps } from "./types";
 import { Form, Label, InputGroup, Input, TextArea } from "./styles";
 import FilledButton from "../filledButton";
-import { H1 } from "../../assets/css/global.styles";
+import { H1 } from "@/assets/css/global.styles";
 import { useFormik } from "formik";
-import { patchBoard, postBoard } from "../../services/api/boards";
+import { patchBoard, postBoard } from "@/services/api/boards";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "react-query";
 

@@ -1,7 +1,7 @@
 import { UseQueryOptions } from "react-query";
-import { ExpandedBoard, ResumedBoard } from "../../types/board";
+import { ExpandedBoard, ResumedBoard } from "@/types/board";
 import http from "../http";
-import { MessageResponse } from "../../types/responses/message";
+import { MessageResponse } from "@/types/responses/message";
 
 export async function getBoards() {
   const { data } = await http.get<ResumedBoard[]>("/boards");

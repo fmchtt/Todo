@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
-import { getBoards } from "../../services/api/boards";
+import { getBoards } from "@/services/api/boards";
 import {
   Container,
   Section,
@@ -10,16 +10,16 @@ import {
   ActionButton,
 } from "./styles";
 import { TbPlus } from "react-icons/tb";
-import { useModal } from "../../hooks";
-import BoardRegister from "../../components/forms/RegisterBoard";
-import { Text } from "../../assets/css/global.styles";
-import BoardCard from "../../components/boardCard";
-import { getItens } from "../../services/api/itens";
-import ItemCard from "../../components/itemCard";
+import { useModal } from "@/hooks";
+import BoardRegister from "@/components/forms/RegisterBoard";
+import { Text } from "@/assets/css/global.styles";
+import BoardCard from "@/components/boardCard";
+import { getItens } from "@/services/api/itens";
+import ItemCard from "@/components/itemCard";
 import { useState } from "react";
-import { Item } from "../../types/item";
-import ItemPresentation from "../../components/itemPresentation";
-import CreateItemForm from "../../components/forms/CreateItemForm";
+import { Item } from "@/types/item";
+import ItemPresentation from "@/components/itemPresentation";
+import CreateItemForm from "@/components/forms/CreateItemForm";
 
 export default function Dashboard() {
   const boardQuery = useQuery("boards", getBoards);

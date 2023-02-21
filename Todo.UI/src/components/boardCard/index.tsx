@@ -8,8 +8,8 @@ import {
   DataContainer,
   DataGroup,
 } from "./styles";
-import { ResumedBoard } from "../../types/board";
-import { Text } from "../../assets/css/global.styles";
+import { ResumedBoard } from "@/types/board";
+import { Text } from "@/assets/css/global.styles";
 
 type BoardCardProps = {
   data: ResumedBoard;
