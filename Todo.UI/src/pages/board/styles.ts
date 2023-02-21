@@ -16,8 +16,10 @@ type ActionsContainerProps = {
 export const ActionsContainer = styled.div<ActionsContainerProps>`
   color: ${(props) => props.theme.font.medium};
   cursor: ${(props) => (props.clickable ? "pointer" : "unset")};
+  gap: ${(props) => (props.clickable ? "2px" : "15px")};
+
   display: flex;
-  gap: 15px;
+  align-items: center;
 `;
 
 export const ColumnContainer = styled.div`
