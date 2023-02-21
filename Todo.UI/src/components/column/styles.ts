@@ -20,6 +20,12 @@ export const ColumnHeading = styled.div`
   align-items: center;
 `;
 
+export const ColumnActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
 export const ColumnBody = styled.div`
   padding: 15px;
   display: flex;
