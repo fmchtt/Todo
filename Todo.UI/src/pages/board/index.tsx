@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { getBoardById } from "@/services/api/boards";
 import {
@@ -28,11 +28,14 @@ export default function Board() {
   const params = useParams<ParamProps>();
   const navigate = useNavigate();
   const { data, isLoading } = useQuery(["board", params.id], getBoardById);
-  const client = useQueryClient();
 
   const [itemClicked, setItemClicked] = useState<Item>({} as Item);
   const [handleItemModal, itemModal] = useModal(
-    <ItemPresentation data={itemClicked} onCloseClick={handleItemCloseClick} />,
+    <ItemPresentation
+      data={itemClicked}
+      onCloseClick={handleItemCloseClick}
+      boardId={data?.id}
+    />,
     false,
     false
   );
@@ -60,12 +63,11 @@ export default function Board() {
     onConfirm: handleBoardDelete,
   });
   const [handleColumnModal, columnModal] = useModal(
-    <ColumnForm boardId={data?.id} onSuccess={handleColumnModalSuccess} />
+    <ColumnForm boardId={data?.id || ""} onSuccess={handleColumnModalSuccess} />
   );
 
   function handleColumnModalSuccess() {
     handleColumnModal();
-    client.invalidateQueries("board");
   }
 
   function handleBoardDelete() {
@@ -137,6 +139,7 @@ export default function Board() {
               key={column.id}
               totalItems={data.itemCount}
               data={column}
+              boardId={data.id}
             />
           );
         })}

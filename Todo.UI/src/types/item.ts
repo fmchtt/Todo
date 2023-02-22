@@ -10,7 +10,7 @@ export interface Item {
   updatedDate: string;
   creator: User;
   files: string;
-  done: string;
+  done: boolean;
 }
 
 export interface ExpandedItem extends Item {

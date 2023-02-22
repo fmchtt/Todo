@@ -35,7 +35,7 @@ export function AuthProvider({ children }: ContextProps) {
       if (error.response.status === 401 || error.response.status === 403) {
         setToken(null);
         localStorage.removeItem("token");
-        client.invalidateQueries(["me"]);
+        client.setQueryData(["me"], null);
       }
 
       return Promise.reject(error);

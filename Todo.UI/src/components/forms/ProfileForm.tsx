@@ -9,6 +9,7 @@ export default function ProfileForm() {
   const meQuery = useQuery(["me"], getActualUser);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
 
     patchUser(formData).then((res) => {
@@ -20,11 +21,11 @@ export default function ProfileForm() {
     <Form width="clamp(600px, 20%, 90%)" onSubmit={handleSubmit}>
       <InputGroup>
         <Label>Nome</Label>
-        <Input defaultValue={meQuery.data?.name} />
+        <Input name="name" defaultValue={meQuery.data?.name} />
       </InputGroup>
       <InputGroup>
         <Label>Foto de perfil</Label>
-        <Input type="file" />
+        <Input name="file" type="file" />
       </InputGroup>
       <FilledButton type="submit">Salvar</FilledButton>
     </Form>

@@ -7,14 +7,23 @@ import { useFormik } from "formik";
 import { patchBoard, postBoard } from "@/services/api/boards";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "react-query";
+import { ExpandedBoard, ResumedBoard } from "@/types/board";
 
 const BoardRegister = (props: FormBoardProps) => {
   const [loading, setLoading] = useState(false);
   const client = useQueryClient();
   const create = useMutation(postBoard, {
-    onSuccess: () => {
-      setLoading(true);
-      client.invalidateQueries(["boards"]);
+    onSuccess: (res) => {
+      client.setQueryData<ResumedBoard[]>(["boards"], (prev) => {
+        if (!prev) {
+          throw new Error("Cache invalido!");
+        }
+
+        prev.push(res);
+
+        return prev;
+      });
+
       setLoading(false);
       if (props.closeModal) {
         props.closeModal();
@@ -23,10 +32,36 @@ const BoardRegister = (props: FormBoardProps) => {
   });
 
   const update = useMutation(patchBoard, {
-    onSuccess: () => {
-      setLoading(true);
-      client.invalidateQueries(["board", props.data?.id]);
-      client.invalidateQueries(["boards"]);
+    onSuccess: (res) => {
+      try {
+        client.setQueryData<ResumedBoard[]>(["boards"], (prev) => {
+          if (!prev) {
+            throw new Error("Cache invalido!");
+          }
+
+          const boardIdx = prev.findIndex((x) => x.id === props.data?.id);
+          if (boardIdx >= 0) {
+            prev[boardIdx].name = res.name;
+            prev[boardIdx].description = res.description;
+          }
+
+          return prev;
+        });
+      } catch (e) {
+        console.log();
+      }
+
+      client.setQueryData<ExpandedBoard>(["board", props.data?.id], (prev) => {
+        if (!prev) {
+          throw new Error("Cache invalido!");
+        }
+
+        prev.name = res.name;
+        prev.description = res.description;
+
+        return prev;
+      });
+
       setLoading(false);
       if (props.closeModal) {
         props.closeModal();
@@ -40,6 +75,8 @@ const BoardRegister = (props: FormBoardProps) => {
       description: props.data?.description || "",
     },
     onSubmit: (values) => {
+      setLoading(true);
+
       if (props.data?.id) {
         update.mutate({ id: props.data.id, values });
       } else {
