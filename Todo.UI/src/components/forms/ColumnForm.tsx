@@ -4,10 +4,12 @@ import FilledButton from "../filledButton";
 import { Form, Input, InputGroup, Label } from "./styles";
 import { EditColumn } from "@/types/column";
 import { createColumn, editColumn } from "@/services/api/column";
+import { useQueryClient } from "react-query";
+import { ExpandedBoard } from "@/types/board";
 
 type ColumnFormProps = {
   data?: EditColumn;
-  boardId?: string;
+  boardId: string;
   onSuccess: () => void;
 };
 export default function ColumnForm({
@@ -16,6 +18,7 @@ export default function ColumnForm({
   boardId,
 }: ColumnFormProps) {
   const [loading, setLoading] = useState(false);
+  const client = useQueryClient();
 
   const formik = useFormik({
     initialValues: {
@@ -25,12 +28,37 @@ export default function ColumnForm({
       setLoading(true);
       try {
         if (data) {
-          await editColumn({ id: data.id, name: values.name });
+          const column = await editColumn({ id: data.id, name: values.name });
+
+          client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
+            if (!prev) {
+              throw new Error("Cache inválido");
+            }
+
+            const columnId = prev.columns.findIndex((x) => x.id === column.id);
+            prev.columns[columnId].name = column.name;
+
+            return prev;
+          });
         } else if (boardId) {
-          await createColumn({ name: values.name, boardId: boardId });
+          const column = await createColumn({
+            name: values.name,
+            boardId: boardId,
+          });
+
+          client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
+            if (!prev) {
+              throw new Error("Cache inválido");
+            }
+
+            prev.columns.push(column);
+
+            return prev;
+          });
         }
         onSuccess();
       } catch (e) {
+        console.log(e);
         setLoading(false);
       }
     },

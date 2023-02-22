@@ -23,9 +23,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
 import profilePlaceholder from "@/assets/images/profile.svg";
+import { ExpandedBoard, ResumedBoard } from "@/types/board";
 
 type ItemPresentationProps = {
   data: ExpandedItem;
+  boardId?: string;
   onCloseClick: () => void;
   boards?: { label: string; value: string }[];
 };
@@ -33,6 +35,7 @@ type ItemPresentationProps = {
 export default function ItemPresentation({
   data,
   onCloseClick,
+  boardId,
 }: ItemPresentationProps) {
   const navigate = useNavigate();
   const client = useQueryClient();
@@ -52,10 +55,68 @@ export default function ItemPresentation({
 
   async function handleDone(done: boolean) {
     await changeDone(data.id, done);
-    client.invalidateQueries(["itens"]);
-    client.invalidateQueries(["board"]);
-    client.invalidateQueries(["boards"]);
-    onCloseClick();
+
+    if (data.board || boardId) {
+      try {
+        client.setQueryData<ExpandedBoard>(
+          ["board", data.board?.id || boardId],
+          (prev) => {
+            if (!prev) {
+              throw new Error("Quadro inexistente");
+            }
+
+            const colIdx = prev.columns.findIndex(
+              (x) => x.itens.findIndex((x) => x.id === data.id) !== -1
+            );
+            const itemIdx = prev.columns[colIdx].itens.findIndex(
+              (x) => x.id === data.id
+            );
+
+            prev.columns[colIdx].itens[itemIdx].done = done;
+            if (done) {
+              prev.doneItemCount += 1;
+            } else {
+              prev.doneItemCount -= 1;
+            }
+
+            return prev;
+          }
+        );
+      } catch (e) {
+        console.log(e);
+      }
+
+      client.setQueryData<ResumedBoard[]>(["boards"], (prev) => {
+        if (!prev) {
+          throw new Error("Cache invalido!");
+        }
+
+        const boardIdx = prev.findIndex(
+          (x) => x.id === (data.board?.id || boardId)
+        );
+        if (boardIdx >= 0) {
+          if (done) {
+            prev[boardIdx].doneItemCount += 1;
+          } else {
+            prev[boardIdx].doneItemCount -= 1;
+          }
+        }
+
+        return prev;
+      });
+    }
+
+    client.setQueryData<ExpandedItem[]>(["itens"], (prev) => {
+      if (!prev) {
+        throw new Error("Cache invalido!");
+      }
+      const itemIdx = prev.findIndex((x) => x.id === data.id);
+      if (itemIdx >= 0) {
+        prev[itemIdx].done = done;
+      }
+
+      return prev;
+    });
   }
 
   return (

@@ -33,9 +33,13 @@ export const Label = styled.label`
   font-weight: 200;
 `;
 
-export const InputGroup = styled.div`
+type InputGroupProps = {
+  centralized?: boolean;
+};
+export const InputGroup = styled.div<InputGroupProps>`
   position: relative;
   display: flex;
+  align-items: ${(props) => (props.centralized ? "center" : "unset")};
   flex-direction: column;
   gap: 2px;
 
@@ -95,4 +99,12 @@ export const TextArea = styled.textarea`
   border-radius: 20px;
 
   padding: 15px 25px;
+`;
+
+export const ImagePreview = styled.img`
+  width: clamp(200px, 50%, 90%);
+
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 `;

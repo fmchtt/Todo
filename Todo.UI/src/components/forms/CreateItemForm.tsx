@@ -4,6 +4,7 @@ import { Form, Input, InputGroup, Label, Select, TextArea } from "./styles";
 import { useQueryClient } from "react-query";
 import { createItem } from "@/services/api/itens";
 import { CreateItemProps, Item } from "@/types/item";
+import { ExpandedBoard } from "@/types/board";
 
 const priorityChoices = [
   {
@@ -75,7 +76,21 @@ export default function CreateItemForm({
       });
 
       if (boardId) {
-        client.invalidateQueries(["board", boardId]);
+        client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
+          if (!prev) {
+            throw new Error("Cache invalido!");
+          }
+
+          const colIdx = prev.columns.findIndex(
+            (x) => x.id === values.columnId
+          );
+          if (colIdx >= 0) {
+            prev.columns[colIdx].itens.push(data);
+            prev.columns[colIdx].itemCount += 1;
+          }
+
+          return prev;
+        });
       }
 
       onSucess();
