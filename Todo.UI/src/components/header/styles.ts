@@ -12,8 +12,9 @@ export const StyledHeader = styled.header`
 `;
 
 export const RoundedAvatar = styled.img`
+  width: 40px;
   height: 40px;
-  border-radius: 20px;
+  border-radius: 50%;
 `;
 
 export const UserMenu = styled.div`

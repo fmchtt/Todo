@@ -102,9 +102,28 @@ export const TextArea = styled.textarea`
 `;
 
 export const ImagePreview = styled.img`
-  width: clamp(200px, 50%, 90%);
-
+  width: clamp(200px, 35%, 90%);
   border-radius: 50%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+  position: relative;
+  border: 5px solid ${(props) => props.theme.colors[200]};
+`;
+
+interface HoverProp {
+  hover: boolean;
+}
+
+export const HoverImage = styled.div<HoverProp>`
+  border-radius: 50%;
+  width: clamp(200px, 35%, 90%);
+  height: 100%;
+  background-color: #0008;
+  z-index: 2;
+  position: absolute;
+  cursor: pointer;
+  display: flex;
+  opacity: ${(props) => (props.hover ? "1" : "0")};
+  align-items: center;
+  justify-content: center;
 `;

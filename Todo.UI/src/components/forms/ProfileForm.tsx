@@ -1,14 +1,23 @@
 import { FormEvent, ChangeEvent, useState, useRef } from "react";
 import FilledButton from "../filledButton";
-import { Form, ImagePreview, Input, InputGroup, Label } from "./styles";
+import {
+  Form,
+  ImagePreview,
+  Input,
+  InputGroup,
+  Label,
+  HoverImage,
+} from "./styles";
 import { getActualUser, patchUser } from "@/services/api/user";
 import { useQuery, useQueryClient } from "react-query";
+import { TbEdit } from "react-icons/tb";
 
 export default function ProfileForm() {
   const client = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const meQuery = useQuery(["me"], getActualUser);
   const [imageBase64, setImageBase64] = useState<string>();
+  const [hover, setHover] = useState<boolean>(false);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -39,14 +48,21 @@ export default function ProfileForm() {
           hidden
           onChange={handleImageChange}
         />
+        <HoverImage
+          hover={hover}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          onClick={() => {
+            fileRef.current?.click();
+          }}
+        >
+          <TbEdit style={{ color: "#fff", fontSize: "40px" }} />
+        </HoverImage>
         <ImagePreview
           src={
             imageBase64 ||
             import.meta.env.VITE_API_URL + meQuery.data?.avatarUrl
           }
-          onClick={() => {
-            fileRef.current?.click();
-          }}
         />
       </InputGroup>
       <InputGroup>
