@@ -21,6 +21,7 @@ public class TodoDBContext : DbContext
         modelBuilder.Entity<Board>().HasOne(b => b.Owner).WithMany(u => u.OwnedBoards).HasForeignKey(b => b.OwnerId);
 
         modelBuilder.Entity<Column>().HasMany(c => c.Itens).WithOne(i => i.Column).HasForeignKey(i => i.ColumnId).OnDelete(DeleteBehavior.SetNull);
+        modelBuilder.Entity<Column>().HasIndex(c => new { c.Order, c.BoardId }).IsUnique();
 
         modelBuilder.Entity<TodoItem>().HasOne(t => t.Creator).WithMany(u => u.Itens).HasForeignKey(t => t.CreatorId);
 

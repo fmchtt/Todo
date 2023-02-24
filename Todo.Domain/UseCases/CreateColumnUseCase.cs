@@ -30,7 +30,9 @@ public class CreateColumnUseCase
             return new ResultDTO<ColumnResultDTO>(401, "Sem permissão");
         }
 
-        var column = new Column(data.Name, data.BoardId);
+        var order = _columnRepository.GetMaxOrder(data.BoardId);
+
+        var column = new Column(data.Name, data.BoardId, order);
         _columnRepository.Create(column);
 
         return new ResultDTO<ColumnResultDTO>(201, "Coluna criada com sucesso!", new ColumnResultDTO(column));

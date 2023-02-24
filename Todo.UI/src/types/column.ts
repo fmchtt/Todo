@@ -7,11 +7,13 @@ export interface CreateColumn {
 
 export interface EditColumn {
   id: string;
-  name: string;
+  name?: string;
+  order?: number;
 }
 export interface ExpandedColumn {
   id: string;
   name: string;
+  order: number;
   itemCount: number;
   itens: Item[];
 }

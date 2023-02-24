@@ -19,7 +19,7 @@ public class ExpandedBoardDTO
         ItemCount = board.Itens.Count;
         DoneItemCount = board.Itens.Where(x => x.Done == true).Count();
 
-        foreach (var column in board.Columns)
+        foreach (var column in board.Columns.OrderBy(x => x.Order).ToList())
         {
             Columns.Add(new ExpandedColumnDTO(column));
         }

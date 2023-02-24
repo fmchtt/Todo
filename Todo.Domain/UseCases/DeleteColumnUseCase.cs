@@ -27,6 +27,7 @@ public class DeleteColumnUseCase
         }
 
         _columnRepository.Delete(column);
+        _columnRepository.ColumnReorder(column.BoardId);
 
         return new ResultDTO(200, "Coluna deletada com sucesso!");
     }

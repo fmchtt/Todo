@@ -7,7 +7,12 @@ type ConfirmationModalProps = {
 };
 export default function ConfirmationModal(props: ConfirmationModalProps) {
   return (
-    <Form onSubmit={() => props.onConfirm}>
+    <Form
+      onSubmit={(e) => {
+        e.preventDefault();
+        props.onConfirm();
+      }}
+    >
       <InputGroup>
         <Label>{props.label}</Label>
       </InputGroup>

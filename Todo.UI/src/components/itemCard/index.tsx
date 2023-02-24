@@ -19,13 +19,18 @@ export default function ItemCard({
   return (
     <CardContainer
       id={data.id}
-      onDragStart={() => (onDragStart ? onDragStart(data.id) : null)}
+      onDragStart={(e) => {
+        e.stopPropagation();
+        onDragStart ? onDragStart(data.id) : null;
+      }}
       draggable={draggable}
       onClick={onClick}
     >
       <LeftDecoration />
       <CardGroup>
-        <Text dashed={data.done ? 1 : 0}>{data.title}</Text>
+        <Text lineLimiter dashed={data.done ? 1 : 0}>
+          {data.title}
+        </Text>
         <PriorityIndicator size={24} priority={data.priority} />
       </CardGroup>
       <CardFooter>

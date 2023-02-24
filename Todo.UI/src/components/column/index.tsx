@@ -8,17 +8,22 @@ import {
   ColumnHeading,
   ColumnStyled,
 } from "./styles";
-import { TbEdit } from "react-icons/tb";
+import { TbEdit, TbTrash } from "react-icons/tb";
 import { useModal } from "@/hooks";
 import ColumnForm from "../forms/ColumnForm";
 import { useQueryClient } from "react-query";
 import { changeColumn } from "@/services/api/itens";
 import { ExpandedBoard } from "@/types/board";
+import useConfirmationModal from "@/hooks/useConfirmationModal";
+import { deleteColumn } from "@/services/api/column";
 
 type ColumnProps = {
   data: ExpandedColumn;
   totalItems: number;
   boardId: string;
+  onDragStart: (columnId: string) => void;
+  onDragOver: (columnId: string) => void;
+  onDragEnd: () => void;
   onItemClick: (item: Item) => void;
 };
 let itemId = "";
@@ -27,6 +32,9 @@ export default function Column({
   totalItems,
   onItemClick,
   boardId,
+  onDragStart,
+  onDragOver,
+  onDragEnd,
 }: ColumnProps) {
   const client = useQueryClient();
 
@@ -37,6 +45,27 @@ export default function Column({
       onSuccess={handleColumnModalSuccess}
     />
   );
+  const [handleConfirmationModal, confirmationModal] = useConfirmationModal({
+    message: `Tem certeza que deseja apagar a coluna: ${data.name} ?`,
+    onConfirm: handleConfirmationModalSuccess,
+  });
+
+  async function handleConfirmationModalSuccess() {
+    await deleteColumn(data.id);
+
+    client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
+      if (prev == undefined) {
+        throw new Error("Cache invalido");
+      }
+
+      const columnIdx = prev.columns.findIndex((x) => x.id === data.id);
+      prev.columns.splice(columnIdx, 1);
+
+      return prev;
+    });
+
+    handleConfirmationModal();
+  }
 
   function handleColumnModalSuccess() {
     handleColumnModal();
@@ -68,6 +97,8 @@ export default function Column({
       prev.columns[newColIdx].itens.push(item[0]);
       prev.columns[newColIdx].itemCount += 1;
 
+      itemId = "";
+
       return prev;
     });
   }
@@ -76,15 +107,31 @@ export default function Column({
     <ColumnStyled
       onDragOver={(e) => {
         e.preventDefault();
+        onDragOver(data.id);
       }}
       onDrop={() => {
-        handleColumnChange();
+        if (itemId) {
+          handleColumnChange();
+        }
       }}
+      onDragStart={(e) => {
+        e.stopPropagation();
+        onDragStart(data.id);
+      }}
+      onDragEnd={onDragEnd}
+      draggable
     >
       {columnModal}
+      {confirmationModal}
       <ColumnHeading>
-        <Text>{data.name}</Text>
+        <Text lineLimiter>{data.name}</Text>
         <ColumnActions>
+          <TbTrash
+            role="button"
+            size={24}
+            cursor="pointer"
+            onClick={handleConfirmationModal}
+          />
           <TbEdit
             role="button"
             size={24}
