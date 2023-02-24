@@ -4,14 +4,15 @@ using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Utils;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.UserUseCases;
 
 public class UserRegisterUseCase
 {
     private readonly IUserRepository _userRepository;
     private readonly IHasher _hasher;
 
-    public UserRegisterUseCase(IUserRepository userRepository, IHasher hasher) {
+    public UserRegisterUseCase(IUserRepository userRepository, IHasher hasher)
+    {
         _userRepository = userRepository;
         _hasher = hasher;
     }
@@ -19,7 +20,8 @@ public class UserRegisterUseCase
     public ResultDTO<User> Handle(UserCreateDTO data)
     {
         var existingUser = _userRepository.GetByEmail(data.Email);
-        if (existingUser != null) {
+        if (existingUser != null)
+        {
             return new ResultDTO<User>(400, "Usuário com o email já existe");
         }
 

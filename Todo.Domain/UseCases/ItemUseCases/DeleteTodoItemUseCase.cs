@@ -2,7 +2,7 @@
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.ItemUseCases;
 
 public class DeleteTodoItemUseCase
 {
@@ -21,7 +21,7 @@ public class DeleteTodoItemUseCase
             return new ResultDTO(404, "Tarefa não encontrada!");
         }
 
-        if ((item.Board != null && item.Board.Participants.Find(x => x.Id == user.Id) == null) || item.Creator != user)
+        if (item.Board != null && item.Board.Participants.Find(x => x.Id == user.Id) == null || item.Creator != user)
         {
             return new ResultDTO(401, "Sem permissão para apagar a tarefa!");
         }

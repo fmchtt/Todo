@@ -4,10 +4,10 @@ using Todo.Domain.DTO.Output;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.BoardUseCases;
 
 public class EditBoardUseCase
-{ 
+{
     private readonly IBoardRepository _boardRepository;
 
     public EditBoardUseCase(IBoardRepository boardRepository)

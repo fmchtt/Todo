@@ -10,6 +10,7 @@ public class TodoDBContext : DbContext
     public DbSet<TodoItem> Itens { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<RecoverCode> RecoverCodes { get; set; }
+    public DbSet<Invite> Invites { get; set; }
 
     public TodoDBContext(DbContextOptions<TodoDBContext> options) : base(options) { }
 
@@ -27,5 +28,8 @@ public class TodoDBContext : DbContext
 
         modelBuilder.Entity<RecoverCode>().HasOne(r => r.User).WithOne();
         modelBuilder.Entity<RecoverCode>().HasIndex(r => new { r.UserId, r.Code }).IsUnique();
+
+        modelBuilder.Entity<Invite>().HasOne(i => i.Board).WithMany();
+        modelBuilder.Entity<Invite>().HasIndex(i => new { i.BoardId, i.Email }).IsUnique();
     }
 }

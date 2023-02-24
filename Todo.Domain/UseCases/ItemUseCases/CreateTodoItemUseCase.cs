@@ -4,7 +4,7 @@ using Todo.Domain.DTO.Output;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.ItemUseCases;
 
 public class CreateTodoItemUseCase
 {
@@ -25,7 +25,8 @@ public class CreateTodoItemUseCase
         {
             var board = _boardRepository.GetById(data.BoardId.Value);
 
-            if (board == null || !board.Participants.Exists(x => user.Id == x.Id)) {
+            if (board == null || !board.Participants.Exists(x => user.Id == x.Id))
+            {
                 return new ResultDTO<TodoItemResultDTO>(401, "Usuário não autorizado a adicionar itens nesse quadro!");
             }
         }
@@ -39,8 +40,8 @@ public class CreateTodoItemUseCase
                 return new ResultDTO<TodoItemResultDTO>(401, "Usuário não autorizado a adicionar itens nessa coluna!");
             }
         }
-        
-        var todoItem = new TodoItem(data.Title, data.Description, data.BoardId, user.Id, false, (EPriority) data.Priority, data.ColumnId);
+
+        var todoItem = new TodoItem(data.Title, data.Description, data.BoardId, user.Id, false, (EPriority)data.Priority, data.ColumnId);
         _todoItemRepostory.Create(todoItem);
 
         return new ResultDTO<TodoItemResultDTO>(201, "Item criado com sucesso!", new TodoItemResultDTO(todoItem));

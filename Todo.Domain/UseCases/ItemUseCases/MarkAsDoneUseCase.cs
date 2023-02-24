@@ -3,7 +3,7 @@ using Todo.Domain.DTO.Output;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.ItemUseCases;
 
 public class MarkAsDoneUseCase
 {
@@ -17,7 +17,8 @@ public class MarkAsDoneUseCase
     public ResultDTO<TodoItemResultDTO> Handle(Guid itemId, User user)
     {
         var item = _itemRepository.GetById(itemId);
-        if (item == null) {
+        if (item == null)
+        {
             return new ResultDTO<TodoItemResultDTO>(404, "Tarefa não encontrada!");
         }
 
