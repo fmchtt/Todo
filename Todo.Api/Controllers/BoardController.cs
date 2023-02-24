@@ -5,7 +5,9 @@ using Todo.Api.DTO;
 using Todo.Domain.DTO.Input;
 using Todo.Domain.DTO.Output;
 using Todo.Domain.Repositories;
-using Todo.Domain.UseCases;
+using Todo.Domain.UseCases.BoardUseCases;
+using Todo.Domain.UseCases.InviteUseCases;
+using Todo.Domain.Utils;
 
 namespace Todo.Api.Controllers;
 
@@ -111,6 +113,50 @@ public class BoardController : TodoBaseController
         return ParseResult(result);
     }
 
+    [HttpGet("{boardId}/invite/confirm")]
+    [ProducesResponseType(typeof(MessageResult), 201)]
+    [ProducesResponseType(typeof(MessageResult), 401)]
+    [ProducesResponseType(typeof(MessageResult), 404)]
+    public dynamic ConfirmInvite(
+        [FromRoute] string boardId,
+        [FromServices] IBoardRepository boardRepository,
+        [FromServices] IInviteRepository inviteRepository
+    )
+    {
+        var user = GetUser();
+        if ( user == null )
+        {
+            return NotFound();
+        }
+
+        var result = new ConfirmInviteUseCase(inviteRepository, boardRepository).Handle(Guid.Parse(boardId), user);
+
+        return ParseResult(result);
+    }
+
+    [HttpPost("{boardId}/invite"), Authorize]
+    [ProducesResponseType(typeof(MessageResult), 201)]
+    [ProducesResponseType(typeof(MessageResult), 401)]
+    [ProducesResponseType(typeof(MessageResult), 404)]
+    public dynamic InviteParticipant(
+        [FromRoute] string boardId,
+        [FromBody] InviteDTO data,
+        [FromServices] IBoardRepository boardRepository,
+        [FromServices] IInviteRepository inviteRepository,
+        [FromServices] IMailer mailer
+    )
+    {
+        var user = GetUser();
+        if (user == null )
+        {
+            return NotFound();
+        }
+
+        var result = new InviteUserUseCase(inviteRepository, boardRepository, mailer).Handle(data, Guid.Parse(boardId), user, HttpContext.Request.Path);
+
+        return ParseResult(result);
+    }
+
     [HttpDelete("{boardId}/participant/{participantId}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
@@ -122,7 +168,7 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null )
+        if (user == null)
         {
             return NotFound();
         }

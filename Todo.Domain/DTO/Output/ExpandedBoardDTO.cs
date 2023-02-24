@@ -8,6 +8,7 @@ public class ExpandedBoardDTO
     public string Name { get; set; }
     public string Description { get; set; }
     public List<ExpandedColumnDTO> Columns { get; set; } = new List<ExpandedColumnDTO>();
+    public List<UserResumedResultDTO> Participants { get; set; } = new List<UserResumedResultDTO>();
     public int ItemCount { get; set; }
     public int DoneItemCount { get; set; }
 
@@ -22,6 +23,11 @@ public class ExpandedBoardDTO
         foreach (var column in board.Columns.OrderBy(x => x.Order).ToList())
         {
             Columns.Add(new ExpandedColumnDTO(column));
+        }
+
+        foreach (var participant in board.Participants)
+        {
+            Participants.Add(new UserResumedResultDTO(participant));
         }
     }
 }

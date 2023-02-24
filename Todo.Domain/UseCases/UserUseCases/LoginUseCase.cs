@@ -4,18 +4,19 @@ using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Utils;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.UserUseCases;
 
 public class LoginUseCase
 {
     private readonly IUserRepository _userRepository;
     private readonly IHasher _hasher;
 
-    public LoginUseCase(IUserRepository userRepository, IHasher hasher) {
+    public LoginUseCase(IUserRepository userRepository, IHasher hasher)
+    {
         _userRepository = userRepository;
         _hasher = hasher;
     }
-    
+
     public ResultDTO<User> Handle(LoginDTO data)
     {
         var user = _userRepository.GetByEmail(data.Email);

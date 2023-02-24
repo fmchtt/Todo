@@ -2,14 +2,15 @@
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.BoardUseCases;
 
 public class DeleteBoardUseCase
 {
     private readonly IBoardRepository _boardRepository;
 
-    public DeleteBoardUseCase(IBoardRepository boardRepository) { 
-        _boardRepository = boardRepository; 
+    public DeleteBoardUseCase(IBoardRepository boardRepository)
+    {
+        _boardRepository = boardRepository;
     }
 
     public ResultDTO Handle(Guid BoardId, User user)

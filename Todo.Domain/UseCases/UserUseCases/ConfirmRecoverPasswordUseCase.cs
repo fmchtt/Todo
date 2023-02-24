@@ -3,7 +3,7 @@ using Todo.Domain.DTO.Input;
 using Todo.Domain.Repositories;
 using Todo.Domain.Utils;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.UserUseCases;
 
 public class ConfirmRecoverPasswordUseCase
 {

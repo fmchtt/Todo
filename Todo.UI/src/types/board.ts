@@ -1,4 +1,5 @@
 import { ExpandedColumn } from "./column";
+import User from "./user";
 
 export interface EditBoard {
   id: string;
@@ -19,6 +20,7 @@ export interface ExpandedBoard {
   name: string;
   description: string;
   columns: ExpandedColumn[];
+  participants: User[];
   itemCount: number;
   doneItemCount: number;
 }

@@ -4,7 +4,7 @@ using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Utils;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.UserUseCases;
 
 public class RecoverPasswordUseCase
 {
@@ -35,7 +35,8 @@ public class RecoverPasswordUseCase
 
             var recoverCode = new RecoverCode(user.Id, code);
             _recoverCodeRepository.Create(recoverCode);
-        } else
+        }
+        else
         {
             code = existingRecoverCode.Code;
         }

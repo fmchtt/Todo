@@ -4,14 +4,15 @@ using Todo.Domain.DTO.Output;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.ColumnUseCases;
 
 public class EditColumnUseCase
 {
     private readonly IColumnRepository _columnRepository;
 
-    public EditColumnUseCase(IColumnRepository columnRepository) { 
-        _columnRepository = columnRepository; 
+    public EditColumnUseCase(IColumnRepository columnRepository)
+    {
+        _columnRepository = columnRepository;
     }
 
     public ResultDTO<ColumnResultDTO> Handle(EditColumnDTO data, Guid columnId, User user)

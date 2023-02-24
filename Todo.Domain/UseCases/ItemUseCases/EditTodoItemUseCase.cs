@@ -4,7 +4,7 @@ using Todo.Domain.DTO.Output;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.ItemUseCases;
 
 public class EditTodoItemUseCase
 {
@@ -23,7 +23,7 @@ public class EditTodoItemUseCase
             return new ResultDTO<TodoItemResultDTO>(404, "Tarefa não encontrada");
         }
 
-        if ((item.Board != null && item.Board.Participants.Find(x => x == user) == null) && item.Creator != user)
+        if (item.Board != null && item.Board.Participants.Find(x => x == user) == null && item.Creator != user)
         {
             return new ResultDTO<TodoItemResultDTO>(401, "Sem permissão para alterar a Tarefa");
         }

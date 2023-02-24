@@ -5,7 +5,7 @@ using Todo.Api.DTO;
 using Todo.Domain.DTO.Input;
 using Todo.Domain.DTO.Output;
 using Todo.Domain.Repositories;
-using Todo.Domain.UseCases;
+using Todo.Domain.UseCases.ItemUseCases;
 
 namespace Todo.Api.Controllers;
 

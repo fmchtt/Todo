@@ -3,7 +3,7 @@ using Todo.Domain.DTO;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
-namespace Todo.Domain.UseCases;
+namespace Todo.Domain.UseCases.ItemUseCases;
 
 public class MarkAsUndoneUseCase
 {
