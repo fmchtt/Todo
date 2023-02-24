@@ -30,8 +30,15 @@ public class EditColumnUseCase
         if (data.Name != null && column.Name != data.Name)
         {
             column.Name = data.Name;
-            _columnRepository.Update(column);
         }
+
+        if (data.Order != null && column.Order != data.Order)
+        {
+            column.Order = data.Order.Value;
+            _columnRepository.ColumnReorder(column.BoardId, column.Id, data.Order.Value);
+        }
+
+        _columnRepository.Update(column);
 
         return new ResultDTO<ColumnResultDTO>(200, "Coluna alterada com sucesso!", new ColumnResultDTO(column));
     }

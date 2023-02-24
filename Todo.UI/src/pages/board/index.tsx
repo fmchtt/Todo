@@ -22,6 +22,7 @@ import useConfirmationModal from "@/hooks/useConfirmationModal";
 import ColumnForm from "@/components/forms/ColumnForm";
 import { ExpandedBoard } from "@/types/board";
 import { ExpandedColumn } from "@/types/column";
+import { editColumn } from "@/services/api/column";
 
 type ParamProps = {
   id: string;
@@ -139,6 +140,14 @@ export default function Board() {
         }
 
         prev.columns = newColumnOrder;
+        for (let i = 0; i < prev.columns.length; i++) {
+          prev.columns[i].order = i;
+        }
+
+        editColumn({
+          id: dragColumnId,
+          order: prev.columns[overColumnIdx].order,
+        });
 
         dragColumnId = "";
         overColumnId = "";
