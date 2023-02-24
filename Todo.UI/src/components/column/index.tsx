@@ -124,7 +124,7 @@ export default function Column({
       {columnModal}
       {confirmationModal}
       <ColumnHeading>
-        <Text>{data.name}</Text>
+        <Text lineLimiter>{data.name}</Text>
         <ColumnActions>
           <TbTrash
             role="button"

@@ -28,7 +28,9 @@ export default function ItemCard({
     >
       <LeftDecoration />
       <CardGroup>
-        <Text dashed={data.done ? 1 : 0}>{data.title}</Text>
+        <Text lineLimiter dashed={data.done ? 1 : 0}>
+          {data.title}
+        </Text>
         <PriorityIndicator size={24} priority={data.priority} />
       </CardGroup>
       <CardFooter>

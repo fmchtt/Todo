@@ -14,6 +14,7 @@ interface TextProps {
   dashed?: number;
   weight?: 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
   size?: "thin" | "medium" | "large";
+  lineLimiter?: boolean;
 }
 
 export const Text = styled.p<TextProps>`
@@ -33,6 +34,11 @@ export const Text = styled.p<TextProps>`
   }};
   margin: ${(props) => props.margin || "inherit"};
   text-decoration: ${(props) => (props.dashed ? "line-through" : "none")};
+
+  flex: ${(props) => (props.lineLimiter ? "1" : "unset")};
+  white-space: ${(props) => (props.lineLimiter ? "nowrap" : "unset")};
+  overflow: ${(props) => (props.lineLimiter ? "hidden" : "unset")};
+  text-overflow: ${(props) => (props.lineLimiter ? "ellipsis" : "unset")};
 `;
 
 export const LinkSpan = styled.span`
