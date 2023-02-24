@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { getBoardById } from "@/services/api/boards";
 import {
@@ -20,6 +20,8 @@ import { deleteBoardById } from "@/services/api/boards";
 import BoardRegister from "@/components/forms/RegisterBoard";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
 import ColumnForm from "@/components/forms/ColumnForm";
+import { ExpandedBoard } from "@/types/board";
+import { ExpandedColumn } from "@/types/column";
 
 type ParamProps = {
   id: string;
@@ -28,6 +30,7 @@ export default function Board() {
   const params = useParams<ParamProps>();
   const navigate = useNavigate();
   const { data, isLoading } = useQuery(["board", params.id], getBoardById);
+  const client = useQueryClient();
 
   const [itemClicked, setItemClicked] = useState<Item>({} as Item);
   const [handleItemModal, itemModal] = useModal(
@@ -91,6 +94,62 @@ export default function Board() {
     handleBoardModal();
   }
 
+  let dragColumnId = "";
+  let overColumnId = "";
+  function handleColumnDrag() {
+    console.log(dragColumnId, overColumnId);
+
+    if (dragColumnId === "" || overColumnId === "") {
+      return;
+    }
+
+    try {
+      client.setQueryData<ExpandedBoard>(["board", data?.id], (prev) => {
+        if (prev == undefined) {
+          throw new Error("Cache invalido!");
+        }
+
+        if (dragColumnId === overColumnId) {
+          throw new Error("Colunas iguais!");
+        }
+
+        const columnIdx = prev.columns.findIndex((x) => x.id === dragColumnId);
+        if (columnIdx < 0) {
+          throw new Error("Coluna movida nao encontrada!");
+        }
+
+        const items = prev.columns.splice(columnIdx, 1);
+        if (items.length === 0) {
+          throw new Error("Coluna nao encontrada no quadro!");
+        }
+
+        const overColumnIdx = prev.columns.findIndex(
+          (x) => x.id === overColumnId
+        );
+        if (columnIdx < 0) {
+          throw new Error("Coluna alvo nao encontrada!");
+        }
+
+        const newColumnOrder: ExpandedColumn[] = [];
+        for (let i = 0; i < prev.columns.length; i++) {
+          if (i === overColumnIdx) {
+            newColumnOrder.push(items[0]);
+          }
+          newColumnOrder.push(prev.columns[i]);
+        }
+
+        prev.columns = newColumnOrder;
+
+        dragColumnId = "";
+        overColumnId = "";
+
+        return prev;
+      });
+    } catch (e) {
+      console.log();
+    }
+  }
+
   return (
     <Container>
       {!isLoading && (
@@ -140,6 +199,13 @@ export default function Board() {
               totalItems={data.itemCount}
               data={column}
               boardId={data.id}
+              onDragStart={(columnId) => {
+                dragColumnId = columnId;
+              }}
+              onDragOver={(columnId) => {
+                overColumnId = columnId;
+              }}
+              onDragEnd={handleColumnDrag}
             />
           );
         })}

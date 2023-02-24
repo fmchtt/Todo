@@ -19,7 +19,10 @@ export default function ItemCard({
   return (
     <CardContainer
       id={data.id}
-      onDragStart={() => (onDragStart ? onDragStart(data.id) : null)}
+      onDragStart={(e) => {
+        e.stopPropagation();
+        onDragStart ? onDragStart(data.id) : null;
+      }}
       draggable={draggable}
       onClick={onClick}
     >
