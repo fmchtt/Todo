@@ -23,6 +23,7 @@ import ColumnForm from "@/components/forms/ColumnForm";
 import { ExpandedBoard } from "@/types/board";
 import { ExpandedColumn } from "@/types/column";
 import { editColumn } from "@/services/api/column";
+import useAuth from "@/context/auth";
 
 type ParamProps = {
   id: string;
@@ -32,6 +33,7 @@ export default function Board() {
   const navigate = useNavigate();
   const { data, isLoading } = useQuery(["board", params.id], getBoardById);
   const client = useQueryClient();
+  const { user } = useAuth();
 
   const [itemClicked, setItemClicked] = useState<Item>({} as Item);
   const [handleItemModal, itemModal] = useModal(
@@ -188,12 +190,14 @@ export default function Board() {
             cursor="pointer"
             onClick={handleBoardModal}
           />
-          <TbTrash
-            role="button"
-            size={28}
-            cursor="pointer"
-            onClick={handleConfirmation}
-          />
+          {data?.owner === user?.id && (
+            <TbTrash
+              role="button"
+              size={28}
+              cursor="pointer"
+              onClick={handleConfirmation}
+            />
+          )}
         </ActionsContainer>
       </HeadingContainer>
       <ColumnContainer>

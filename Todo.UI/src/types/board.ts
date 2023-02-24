@@ -19,6 +19,7 @@ export interface ExpandedBoard {
   id: string;
   name: string;
   description: string;
+  owner: string;
   columns: ExpandedColumn[];
   participants: User[];
   itemCount: number;
