@@ -48,12 +48,14 @@ builder.Services.AddDbContext<TodoDBContext>(x =>
 builder.Services.AddTransient<ITokenService, TokenService>(x => new TokenService(key));
 builder.Services.AddTransient<IHasher, Hasher>(x => new Hasher(secret));
 builder.Services.AddTransient<IFileStorage, LocalFileStorage>(x => new LocalFileStorage(staticPath));
+builder.Services.AddTransient<IMailer, ConsoleMailer>();
 
 builder.Services.AddTransient<IBoardRepository, BoardRepository>();
 builder.Services.AddTransient<IColumnRepository, ColumnRepository>();
 builder.Services.AddTransient<ITodoItemRepostory, TodoItemRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IRecoverCodeRepository, RecoverCodeRepository>();
+builder.Services.AddTransient<IInviteRepository, InviteRepository>();
 
 builder.Services.AddSwaggerGen(options =>
 {

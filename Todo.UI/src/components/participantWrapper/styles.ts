@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const StyledParticipantWrapper = styled.div`
   margin: 0;
   padding: 5px;
-  border-radius: 50%;
+  border-radius: 20px;
 
   display: flex;
   justify-content: center;
@@ -16,8 +16,21 @@ export const StyledParticipantWrapper = styled.div`
   }
 `;
 
-export const RoudedInitials = styled.div`
+type RoudedInitialsProps = {
+  over?: number;
+};
+export const RoudedInitials = styled.div<RoudedInitialsProps>`
   width: 40px;
   height: 40px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: ${(props) => props.theme.colors[400]};
+  color: ${(props) => props.theme.font.medium};
+  font-size: 0.8em;
   border-radius: 50%;
+
+  margin-left: ${(props) => (props.over ? "-16px" : "unset")};
 `;

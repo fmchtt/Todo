@@ -2,7 +2,7 @@
 
 namespace Todo.Infra.Utils;
 
-public class EmailMailer : IMailer
+public class ConsoleMailer : IMailer
 {
     public async Task<bool> SendMail(string subject, string body)
     {
