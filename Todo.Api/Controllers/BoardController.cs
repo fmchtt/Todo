@@ -152,7 +152,7 @@ public class BoardController : TodoBaseController
             return NotFound();
         }
 
-        var result = new InviteUserUseCase(inviteRepository, boardRepository, mailer).Handle(data, Guid.Parse(boardId), user, HttpContext.Request.Path);
+        var result = new InviteUserUseCase(inviteRepository, boardRepository, mailer).Handle(data, Guid.Parse(boardId), user, HttpContext.Request.Host.ToString());
 
         return ParseResult(result);
     }
