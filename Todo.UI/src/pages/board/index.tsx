@@ -24,6 +24,7 @@ import { ExpandedBoard } from "@/types/board";
 import { ExpandedColumn } from "@/types/column";
 import { editColumn } from "@/services/api/column";
 import useAuth from "@/context/auth";
+import ParticipantWrapper from "@/components/participantWrapper";
 
 type ParamProps = {
   id: string;
@@ -175,6 +176,9 @@ export default function Board() {
       {columnModal}
       <HeadingContainer>
         <H2>{data?.name}</H2>
+        {data?.participants && (
+          <ParticipantWrapper participants={data.participants} />
+        )}
         <ActionsContainer>
           <ActionsContainer clickable onClick={handleCreateItemModal}>
             <TbPlus role="button" size={28} />
