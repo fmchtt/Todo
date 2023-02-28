@@ -15,7 +15,7 @@ namespace Todo.Api.Controllers;
 public class BoardController : TodoBaseController
 {
     [HttpGet, Authorize]
-    public List<BoardResultDTO> GetAll(
+    public PaginatedDTO<BoardResultDTO> GetAll(
         [FromServices] IBoardRepository boardRepository,
         [FromQuery] int page = 1
     )
@@ -28,12 +28,12 @@ public class BoardController : TodoBaseController
         var todos = boardRepository.GetAll(GetUserId(), page - 1);
 
         var result = new List<BoardResultDTO>();
-        foreach (var board in todos)
+        foreach (var board in todos.Results)
         {
             result.Add(new BoardResultDTO(board));
         }
 
-        return result;
+        return new PaginatedDTO<BoardResultDTO>(result, todos.PageCount);
     }
 
     [HttpGet("{id}"), Authorize]

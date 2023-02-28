@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Todo.Domain.DTO.Output;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Infra.Contexts;
@@ -26,11 +27,16 @@ public class BoardRepository : IBoardRepository
         _dbContext.SaveChanges();
     }
 
-    public List<Board> GetAll(Guid ownerId, int page)
+    public PaginatedDTO<Board> GetAll(Guid ownerId, int page)
     {
         int offset = page * 10;
 
-        return _dbContext.Boards.Where(x => x.OwnerId == ownerId).Skip(offset).Take(10).OrderBy(x => x.Name).ToList();
+        var query = _dbContext.Boards.Where(x => x.OwnerId == ownerId).Skip(offset).Take(10).OrderBy(x => x.Name);
+
+        var result = query.ToList();
+        var count = query.Count() / 10;
+
+        return new PaginatedDTO<Board>(result, count);
     }
 
     public List<Board> GetAllByName(string name, Guid ownerId)
