@@ -68,6 +68,11 @@ public class TodoBaseController : ControllerBase
             return Ok(message);
         }
 
+        if (result.Code == 201)
+        {
+            return Created(message);
+        }
+
         if (result.Code == 400)
         {
             if (result.Errors != null)

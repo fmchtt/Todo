@@ -16,6 +16,7 @@ export interface ContextProps {
 
 export interface Context {
   user: User | undefined;
+  isLoading: boolean;
   register: (formData: RegisterProps) => Promise<void>;
   login: (formData: LoginProps) => Promise<void>;
   logout: () => void;

@@ -23,16 +23,18 @@ export default function Header() {
         onClick={() => setDropdownOpen(true)}
         onMouseLeave={() => setDropdownOpen(false)}
       >
-        <UserContainer>
-          <Text margin="0 10px">{user?.name}</Text>
-          <RoundedAvatar
-            src={
-              user?.avatarUrl
-                ? import.meta.env.VITE_API_URL + user.avatarUrl
-                : profilePlaceholder
-            }
-          />
-        </UserContainer>
+        {user && (
+          <UserContainer>
+            <Text margin="0 10px">{user?.name}</Text>
+            <RoundedAvatar
+              src={
+                user?.avatarUrl
+                  ? import.meta.env.VITE_API_URL + user.avatarUrl
+                  : profilePlaceholder
+              }
+            />
+          </UserContainer>
+        )}
         {dropDownOpen && (
           <DropDownMenu>
             <DropDownButton as={Link} to="/profile">

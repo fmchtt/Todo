@@ -3,7 +3,7 @@ import { InputGroup, Label, Form } from "./styles";
 import { H1, Text, LinkSpan } from "@/assets/css/global.styles";
 import useAuth from "@/context/auth";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import FilledButton from "../filledButton";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -16,9 +16,15 @@ export default function LoginForm() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (user) {
+      const next = searchParams.get("next");
+      if (next && next !== "/login") {
+        return navigate(next);
+      }
+
       navigate("/home");
     }
   }, [user]);
@@ -105,7 +111,14 @@ export default function LoginForm() {
         </FilledButton>
         <Text>
           Ainda não tem conta?{" "}
-          <Link to={"/register"} style={{ textDecoration: "none" }}>
+          <Link
+            to={`/register${
+              searchParams.get("next")
+                ? "?next=" + searchParams.get("next")
+                : ""
+            }`}
+            style={{ textDecoration: "none" }}
+          >
             <LinkSpan>Registre-se</LinkSpan>
           </Link>
         </Text>

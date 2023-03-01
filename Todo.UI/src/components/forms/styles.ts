@@ -30,19 +30,27 @@ export const Form = styled.form<FormProps>`
 
 export const Label = styled.label`
   color: ${(props) => props.theme.font.medium};
-  font-size: 1.2em;
+  font-size: 16px;
   font-weight: 200;
+`;
+
+export const Description = styled.span`
+  color: ${(props) => props.theme.font.medium};
+  font-size: 14px;
+  font-weight: 100;
 `;
 
 type InputGroupProps = {
   centralized?: boolean;
+  row?: boolean;
+  gap?: number;
 };
 export const InputGroup = styled.div<InputGroupProps>`
   position: relative;
   display: flex;
   align-items: ${(props) => (props.centralized ? "center" : "unset")};
-  flex-direction: column;
-  gap: 2px;
+  flex-direction: ${(props) => (props.row ? "row" : "column")};
+  gap: ${(props) => (props.gap ? props.gap + "px" : "2px")};
 
   .eye {
     position: absolute;
@@ -111,11 +119,23 @@ export const ImagePreview = styled.img`
   border: 5px solid ${(props) => props.theme.colors[200]};
 `;
 
-interface HoverProp {
+interface GroupProps {
+  justify?: "center" | "unset" | "space-around" | "space-between";
+  align?: "center" | "unset";
+  gap?: number;
+}
+export const Group = styled.div<GroupProps>`
+  display: flex;
+  align-items: ${(props) => (props.align ? props.align : "unset")};
+  justify-content: ${(props) => (props.justify ? props.justify : "unset")};
+  gap: ${(props) => (props.gap ? props.gap + "px" : "10px")};
+  color: ${(props) => props.theme.font.medium};
+`;
+
+interface HoverProps {
   hover: boolean;
 }
-
-export const HoverImage = styled.div<HoverProp>`
+export const HoverImage = styled.div<HoverProps>`
   border-radius: 50%;
   width: clamp(200px, 35%, 90%);
   height: 100%;

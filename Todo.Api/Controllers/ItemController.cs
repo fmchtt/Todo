@@ -13,7 +13,7 @@ namespace Todo.Api.Controllers;
 public class ItemController : TodoBaseController
 {
     [HttpGet, Authorize]
-    public List<ExpandedTodoItemResultDTO> GetAll(
+    public PaginatedDTO<ExpandedTodoItemResultDTO> GetAll(
         [FromServices] ITodoItemRepostory todoItemRepostory,
         [FromQuery] int page = 1
     )
@@ -26,12 +26,12 @@ public class ItemController : TodoBaseController
         var todos = todoItemRepostory.GetAll(GetUserId(), page - 1);
 
         var result = new List<ExpandedTodoItemResultDTO>();
-        foreach (var item in todos)
+        foreach (var item in todos.Results)
         {
             result.Add(new ExpandedTodoItemResultDTO(item));
         }
 
-        return result;
+        return new PaginatedDTO<ExpandedTodoItemResultDTO>(result, todos.PageCount);
     }
 
     [HttpPost, Authorize]
