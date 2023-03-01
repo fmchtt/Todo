@@ -15,10 +15,11 @@ interface TextProps {
   weight?: 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
   size?: "thin" | "medium" | "large";
   lineLimiter?: boolean;
+  color?: string;
 }
 
 export const Text = styled.p<TextProps>`
-  color: ${(props) => props.theme.font.bold};
+  color: ${(props) => props.color || props.theme.font.bold};
   font-weight: ${(props) => props.weight || 300};
   font-size: ${(props) => {
     switch (props.size) {

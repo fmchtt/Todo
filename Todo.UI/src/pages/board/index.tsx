@@ -99,8 +99,8 @@ export default function Board() {
 
   let dragColumnId = "";
   let overColumnId = "";
+
   function handleColumnDrag() {
-    console.log(dragColumnId, overColumnId);
 
     if (dragColumnId === "" || overColumnId === "") {
       return;
@@ -122,6 +122,7 @@ export default function Board() {
         }
 
         const items = prev.columns.splice(columnIdx, 1);
+
         if (items.length === 0) {
           throw new Error("Coluna nao encontrada no quadro!");
         }
@@ -129,6 +130,7 @@ export default function Board() {
         const overColumnIdx = prev.columns.findIndex(
           (x) => x.id === overColumnId
         );
+        
         if (columnIdx < 0) {
           throw new Error("Coluna alvo nao encontrada!");
         }

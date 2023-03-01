@@ -5,12 +5,13 @@ export const FormContainer = styled.div<FormBoardProps>`
   max-width: ${(props) => props.maxWidth || "none"};
   width: 100%;
   padding: 30px;
-
+  height: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 50px;
+  overflow-y: auto;
 `;
 
 export const FormHeading = styled.div``;

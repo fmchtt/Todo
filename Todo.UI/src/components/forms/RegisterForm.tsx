@@ -9,11 +9,14 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorMessage from "./ErrorMessage";
 import { TbEye, TbEyeOff } from "react-icons/tb";
+import { AxiosError } from "axios";
 
 export default function RegisterForm() {
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<string>("password");
   const { user, register } = useAuth();
+  const [error, setError] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,9 +46,17 @@ export default function RegisterForm() {
         name: values.name,
         email: values.email,
         password: values.password,
-      }).then(() => {
-        setLoading(false);
-      });
+      })
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((e) => {
+          setLoading(false);
+          setError(true);
+          if (e instanceof AxiosError) {
+            setMessage(e.response?.data.message);
+          }
+        });
     },
 
     validationSchema: Yup.object({
@@ -109,6 +120,7 @@ export default function RegisterForm() {
             <ErrorMessage>{formik.errors.password}</ErrorMessage>
           )}
         </InputGroup>
+        {error && <ErrorMessage>{message}</ErrorMessage>}
         <FilledButton size="25px" type="submit" loading={loading ? 1 : 0}>
           Registrar
         </FilledButton>

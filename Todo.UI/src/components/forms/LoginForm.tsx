@@ -14,6 +14,7 @@ export default function LoginForm() {
   const { user, login } = useAuth();
   const [showPassword, setShowPassword] = useState<string>("password");
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,13 +37,19 @@ export default function LoginForm() {
       password: "",
     },
     onSubmit: (values) => {
+      setError(false);
       setLoading(true);
       login({
         email: values.email,
         password: values.password,
-      }).then(() => {
-        setLoading(false);
-      });
+      })
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((e) => {
+          setLoading(false);
+          setError(true);
+        });
     },
 
     validationSchema: Yup.object({
@@ -92,6 +99,7 @@ export default function LoginForm() {
             <ErrorMessage>{formik.errors.password}</ErrorMessage>
           )}
         </InputGroup>
+        {error && <ErrorMessage>Usuário ou senha inválidos</ErrorMessage>}
         <FilledButton type="submit" size="25px" loading={loading ? 1 : 0}>
           Entrar
         </FilledButton>
