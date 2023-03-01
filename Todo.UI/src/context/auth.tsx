@@ -20,7 +20,7 @@ export function AuthProvider({ children }: ContextProps) {
     }
   }, [token]);
 
-  const { data } = useQuery<User>(["me"], getActualUser, {
+  const { data, isLoading } = useQuery<User>(["me"], getActualUser, {
     onError: () => {
       setToken(null);
     },
@@ -66,6 +66,7 @@ export function AuthProvider({ children }: ContextProps) {
     <authContext.Provider
       value={{
         user: data,
+        isLoading,
         login,
         register,
         logout,

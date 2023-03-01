@@ -25,6 +25,7 @@ import { ExpandedColumn } from "@/types/column";
 import { editColumn } from "@/services/api/column";
 import useAuth from "@/context/auth";
 import ParticipantWrapper from "@/components/participantWrapper";
+import InviteForm from "@/components/forms/InviteForm";
 
 type ParamProps = {
   id: string;
@@ -71,6 +72,14 @@ export default function Board() {
   });
   const [handleColumnModal, columnModal] = useModal(
     <ColumnForm boardId={data?.id || ""} onSuccess={handleColumnModalSuccess} />
+  );
+
+  const [handleInviteModal, inviteModal] = useModal(
+    <InviteForm
+      participants={data?.participants}
+      boardId={data?.id || ""}
+      ownerId={data?.owner}
+    />
   );
 
   function handleColumnModalSuccess() {
@@ -164,7 +173,7 @@ export default function Board() {
 
   return (
     <Container>
-      {!isLoading && (
+      {!isLoading && data && (
         <Helmet>
           <title>Quadro - {data?.name}</title>
         </Helmet>
@@ -174,35 +183,41 @@ export default function Board() {
       {createItemModal}
       {confirmationModal}
       {columnModal}
+      {inviteModal}
       <HeadingContainer>
         <H2>{data?.name}</H2>
         {data?.participants && (
-          <ParticipantWrapper participants={data.participants} />
-        )}
-        <ActionsContainer>
-          <ActionsContainer clickable onClick={handleCreateItemModal}>
-            <TbPlus role="button" size={28} />
-            <Text>Adicionar Tarefa</Text>
-          </ActionsContainer>
-          <ActionsContainer clickable onClick={handleColumnModal}>
-            <TbPlus role="button" size={28} />
-            <Text>Adicionar Coluna</Text>
-          </ActionsContainer>
-          <TbEdit
-            role="button"
-            size={28}
-            cursor="pointer"
-            onClick={handleBoardModal}
+          <ParticipantWrapper
+            participants={data.participants}
+            onClick={handleInviteModal}
           />
-          {data?.owner === user?.id && (
-            <TbTrash
+        )}
+        {data && (
+          <ActionsContainer>
+            <ActionsContainer clickable onClick={handleCreateItemModal}>
+              <TbPlus role="button" size={28} />
+              <Text>Adicionar Tarefa</Text>
+            </ActionsContainer>
+            <ActionsContainer clickable onClick={handleColumnModal}>
+              <TbPlus role="button" size={28} />
+              <Text>Adicionar Coluna</Text>
+            </ActionsContainer>
+            <TbEdit
               role="button"
               size={28}
               cursor="pointer"
-              onClick={handleConfirmation}
+              onClick={handleBoardModal}
             />
-          )}
-        </ActionsContainer>
+            {data?.owner === user?.id && (
+              <TbTrash
+                role="button"
+                size={28}
+                cursor="pointer"
+                onClick={handleConfirmation}
+              />
+            )}
+          </ActionsContainer>
+        )}
       </HeadingContainer>
       <ColumnContainer>
         {data?.columns.map((column) => {

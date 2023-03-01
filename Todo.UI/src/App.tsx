@@ -7,6 +7,7 @@ import Register from "./pages/register";
 import { Default } from "./types/themes";
 import Board from "./pages/board";
 import Profile from "./pages/profile";
+import Invite from "./pages/invite";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="invite/:id" element={<Invite />} />
           <Route path="/" element={<BaseLayout />}>
             <Route path="home" element={<Dashboard />} />
             <Route path="board/:id" element={<Board />} />

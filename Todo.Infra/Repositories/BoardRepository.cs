@@ -30,8 +30,9 @@ public class BoardRepository : IBoardRepository
     public PaginatedDTO<Board> GetAll(Guid ownerId, int page)
     {
         int offset = page * 10;
+        var user = _dbContext.Users.First(x => x.Id == ownerId);
 
-        var query = _dbContext.Boards.Where(x => x.OwnerId == ownerId).Skip(offset).Take(10).OrderBy(x => x.Name);
+        var query = _dbContext.Boards.Where(x => x.Participants.Contains(user)).Skip(offset).Take(10).OrderBy(x => x.Name);
 
         var result = query.ToList();
         var count = query.Count() / 10;

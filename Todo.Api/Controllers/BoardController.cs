@@ -46,8 +46,13 @@ public class BoardController : TodoBaseController
     {
         var boardId = Guid.Parse(id);
         var board = boardRepository.GetById(boardId);
+        var user = GetUser();
+        if (user == null)
+        {
+            return NotFound();
+        }
 
-        if (board == null || board.OwnerId != GetUserId())
+        if (board == null || !board.Participants.Contains(user))
         {
             return NotFound(new MessageResult("Quadro não encontrado!"));
         }

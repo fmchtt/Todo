@@ -4,7 +4,7 @@ import { FormContainer } from "./styles";
 import FilledButton from "../filledButton";
 import { useEffect, useState } from "react";
 import useAuth from "@/context/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorMessage from "./ErrorMessage";
@@ -15,9 +15,14 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState<string>("password");
   const { user, register } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (user) {
+      const next = searchParams.get("next");
+      if (next && next !== "/login") {
+        return navigate(next);
+      }
       navigate("/home");
     }
   }, [user]);
@@ -36,7 +41,6 @@ export default function RegisterForm() {
       email: "",
       password: "",
     },
-
     onSubmit: (values) => {
       setLoading(true);
       register({
@@ -114,7 +118,14 @@ export default function RegisterForm() {
         </FilledButton>
         <Text>
           Já tem conta? Faça{" "}
-          <Link to={"/login"} style={{ textDecoration: "none" }}>
+          <Link
+            to={`/login${
+              searchParams.get("next")
+                ? "?next=" + searchParams.get("next")
+                : ""
+            }`}
+            style={{ textDecoration: "none" }}
+          >
             <LinkSpan>Login</LinkSpan>
           </Link>
         </Text>
