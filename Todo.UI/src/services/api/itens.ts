@@ -4,7 +4,7 @@ import http from "../http";
 import { PageResult } from "@/types/responses/page";
 
 export async function getItens() {
-  const { data } = await http.get<PageResult<ExpandedItem[]>>("/itens");
+  const { data } = await http.get<PageResult<ExpandedItem>>("/itens");
   return data.results;
 }
 export async function createItem(reqData: CreateItemProps) {

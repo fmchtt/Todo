@@ -5,7 +5,7 @@ import { MessageResponse } from "@/types/responses/message";
 import { PageResult } from "@/types/responses/page";
 
 export async function getBoards() {
-  const { data } = await http.get<PageResult<ResumedBoard[]>>("/boards");
+  const { data } = await http.get<PageResult<ResumedBoard>>("/boards");
   return data.results;
 }
 

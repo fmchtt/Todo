@@ -11,6 +11,7 @@ using Todo.Domain.Utils;
 using Todo.Infra.Utils;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.FileProviders;
+using Todo.Domain.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 var secret = builder.Configuration.GetValue("SECRET_KEY", "") ?? Guid.NewGuid().ToString();
@@ -56,6 +57,10 @@ builder.Services.AddTransient<ITodoItemRepostory, TodoItemRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IRecoverCodeRepository, RecoverCodeRepository>();
 builder.Services.AddTransient<IInviteRepository, InviteRepository>();
+
+builder.Services.AddTransient<BoardHandler>();
+builder.Services.AddTransient<ColumnHandler>();
+builder.Services.AddTransient<UserHandler>();
 
 builder.Services.AddSwaggerGen(options =>
 {

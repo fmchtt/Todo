@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
-using Todo.Api.DTO;
-using Todo.Domain.DTO.Input;
-using Todo.Domain.DTO.Output;
+using Todo.Domain.Commands.BoardCommands;
+using Todo.Domain.Handlers;
 using Todo.Domain.Repositories;
-using Todo.Domain.UseCases.BoardUseCases;
-using Todo.Domain.UseCases.InviteUseCases;
-using Todo.Domain.Utils;
+using Todo.Domain.Results;
 
 namespace Todo.Api.Controllers;
 
@@ -15,7 +12,7 @@ namespace Todo.Api.Controllers;
 public class BoardController : TodoBaseController
 {
     [HttpGet, Authorize]
-    public PaginatedDTO<BoardResultDTO> GetAll(
+    public PaginatedDTO<ResumedBoardResult> GetAll(
         [FromServices] IBoardRepository boardRepository,
         [FromQuery] int page = 1
     )
@@ -27,17 +24,17 @@ public class BoardController : TodoBaseController
 
         var todos = boardRepository.GetAll(GetUserId(), page - 1);
 
-        var result = new List<BoardResultDTO>();
+        var result = new List<ResumedBoardResult>();
         foreach (var board in todos.Results)
         {
-            result.Add(new BoardResultDTO(board));
+            result.Add(new ResumedBoardResult(board));
         }
 
-        return new PaginatedDTO<BoardResultDTO>(result, todos.PageCount);
+        return new PaginatedDTO<ResumedBoardResult>(result, todos.PageCount);
     }
 
     [HttpGet("{id}"), Authorize]
-    [ProducesResponseType(typeof(ExpandedBoardDTO), 200)]
+    [ProducesResponseType(typeof(ExpandedBoardResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic GetById(
         [FromRoute] string id,
@@ -57,14 +54,14 @@ public class BoardController : TodoBaseController
             return NotFound(new MessageResult("Quadro não encontrado!"));
         }
 
-        return new ExpandedBoardDTO(board);
+        return new ExpandedBoardResult(board);
     }
 
     [HttpPost, Authorize]
-    [ProducesResponseType(typeof(BoardResultDTO), 201)]
+    [ProducesResponseType(typeof(ResumedBoardResult), 201)]
     public dynamic Create(
-        [FromBody] CreateBoardDTO data,
-        [FromServices] IBoardRepository boardRepository
+        CreateBoardCommand command,
+        [FromServices] BoardHandler handler
     )
     {
         var user = GetUser();
@@ -72,19 +69,18 @@ public class BoardController : TodoBaseController
         {
             return NotFound();
         }
-        var result = new CreateBoardUseCase(boardRepository).Handle(data, user);
+        var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
 
-    [HttpPatch("{id}"), Authorize]
-    [ProducesResponseType(typeof(BoardResultDTO), 200)]
+    [HttpPatch("{boardId}"), Authorize]
+    [ProducesResponseType(typeof(ResumedBoardResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic EditBoard(
-        [FromRoute] string id,
-        [FromBody] EditBoardDTO data,
-        [FromServices] IBoardRepository boardRepository
+        EditBoardCommand command,
+        [FromServices] BoardHandler handler
     )
     {
         var user = GetUser();
@@ -93,18 +89,18 @@ public class BoardController : TodoBaseController
             return NotFound();
         }
 
-        var result = new EditBoardUseCase(boardRepository).Handle(data, Guid.Parse(id), user);
+        var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
 
 
-    [HttpDelete("{id}"), Authorize]
+    [HttpDelete("{boardId}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic DeleteBoard(
-        [FromRoute] string id,
-        [FromServices] IBoardRepository boardRepository
+        DeleteBoardCommand command,
+        [FromServices] BoardHandler handler
     )
     {
         var user = GetUser();
@@ -113,7 +109,7 @@ public class BoardController : TodoBaseController
             return NotFound();
         }
 
-        var result = new DeleteBoardUseCase(boardRepository).Handle(Guid.Parse(id), user);
+        var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
@@ -123,9 +119,8 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic ConfirmInvite(
-        [FromRoute] string boardId,
-        [FromServices] IBoardRepository boardRepository,
-        [FromServices] IInviteRepository inviteRepository
+        ConfirmBoardParticipantCommand command,
+        [FromServices] BoardHandler handler
     )
     {
         var user = GetUser();
@@ -134,7 +129,7 @@ public class BoardController : TodoBaseController
             return NotFound();
         }
 
-        var result = new ConfirmInviteUseCase(inviteRepository, boardRepository).Handle(Guid.Parse(boardId), user);
+        var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
@@ -144,11 +139,8 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic InviteParticipant(
-        [FromRoute] string boardId,
-        [FromBody] InviteDTO data,
-        [FromServices] IBoardRepository boardRepository,
-        [FromServices] IInviteRepository inviteRepository,
-        [FromServices] IMailer mailer
+        AddBoardParticipantCommand command,
+        [FromServices] BoardHandler handler
     )
     {
         var user = GetUser();
@@ -157,7 +149,9 @@ public class BoardController : TodoBaseController
             return NotFound();
         }
 
-        var result = new InviteUserUseCase(inviteRepository, boardRepository, mailer).Handle(data, Guid.Parse(boardId), user, HttpContext.Request.Host.ToString());
+        command.Domain = HttpContext.Request.Host.ToString();
+
+        var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
@@ -167,9 +161,8 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic RemoveParticipant(
-       [FromRoute] string boardId,
-       [FromRoute] string participantId,
-       [FromServices] IBoardRepository boardRepository
+       RemoveBoardParticipantCommand command,
+       [FromServices] BoardHandler handler
     )
     {
         var user = GetUser();
@@ -178,7 +171,7 @@ public class BoardController : TodoBaseController
             return NotFound();
         }
 
-        var result = new RemoveParticipantUseCase(boardRepository).Handle(Guid.Parse(boardId), Guid.Parse(participantId), user);
+        var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }

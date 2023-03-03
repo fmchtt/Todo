@@ -1,19 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Todo.Api.DTO;
-using Todo.Domain.DTO;
 using Todo.Domain.Entities;
+using Todo.Domain.Handlers.Contracts;
 using Todo.Domain.Repositories;
+using Todo.Domain.Results;
 
 namespace Todo.Api.Contracts;
 
 public class TodoBaseController : ControllerBase
 {
     [NonAction]
-    public dynamic ParseResult<T>(ResultDTO<T> result)
+    public dynamic ParseResult<T>(CommandResult<T> result)
     {
         var message = result.Message;
 
-        if (result.Code == 200)
+        if (result.Code == Code.Ok)
         {
             if (result.Result != null)
             {
@@ -24,7 +25,7 @@ public class TodoBaseController : ControllerBase
             return Ok(message);
         }
 
-        if (result.Code == 201)
+        if (result.Code == Code.Created)
         {
             if (result.Result != null)
             {
@@ -35,7 +36,7 @@ public class TodoBaseController : ControllerBase
             return Created(message);
         }
 
-        if (result.Code == 400)
+        if (result.Code == Code.Invalid)
         {
             if (result.Errors != null)
             {
@@ -45,12 +46,12 @@ public class TodoBaseController : ControllerBase
             return BadRequest(message);
         }
 
-        if (result.Code == 404)
+        if (result.Code == Code.NotFound)
         {
             return NotFound(message);
         }
 
-        if (result.Code == 401)
+        if (result.Code == Code.Unauthorized)
         {
             return Unauthorized(message);
         }
@@ -59,21 +60,21 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public dynamic ParseResult(ResultDTO result)
+    public dynamic ParseResult(CommandResult result)
     {
         var message = result.Message;
 
-        if (result.Code == 200)
+        if (result.Code == Code.Ok)
         {
             return Ok(message);
         }
 
-        if (result.Code == 201)
+        if (result.Code == Code.Created)
         {
             return Created(message);
         }
 
-        if (result.Code == 400)
+        if (result.Code == Code.Invalid)
         {
             if (result.Errors != null)
             {
@@ -83,12 +84,12 @@ public class TodoBaseController : ControllerBase
             return BadRequest(message);
         }
 
-        if (result.Code == 404)
+        if (result.Code == Code.NotFound)
         {
             return NotFound(message);
         }
 
-        if (result.Code == 401)
+        if (result.Code == Code.Unauthorized)
         {
             return Unauthorized(message);
         }
