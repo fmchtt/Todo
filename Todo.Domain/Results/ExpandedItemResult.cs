@@ -13,17 +13,6 @@ public class ExpandedItemResult
     public ResumedUserResult? Creator { get; set; }
     public ResumedBoardResult? Board { get; set; }
     public bool Done { get; set; }
-
-    public ExpandedItemResult(TodoItem todoItem)
-    {
-        Id = todoItem.Id;
-        Title = todoItem.Title;
-        Description = todoItem.Description;
-        CreatedDate = todoItem.CreatedDate;
-        UpdatedDate = todoItem.UpdatedDate;
-        Done = todoItem.Done;
-        Priority = todoItem.Priority;
-        Board = todoItem.Board != null ? new ResumedBoardResult(todoItem.Board) : null;
-        Creator = todoItem.Creator != null ? new ResumedUserResult(todoItem.Creator) : null;
-    }
+    
+    public ExpandedItemResult() {}
 }

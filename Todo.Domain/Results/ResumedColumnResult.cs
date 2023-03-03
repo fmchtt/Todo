@@ -9,15 +9,7 @@ public class ResumedColumnResult
     public int Order { get; set; }
     public List<ItemResult> Itens { get; set; } = new List<ItemResult>();
 
-    public ResumedColumnResult(Column column)
+    public ResumedColumnResult()
     {
-        Id = column.Id;
-        Name = column.Name;
-        Order = column.Order;
-
-        foreach (var item in column.Itens)
-        {
-            Itens.Add(new ItemResult(item));
-        }
     }
 }

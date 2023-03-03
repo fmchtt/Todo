@@ -10,12 +10,7 @@ public class ResumedBoardResult
     public int ItemCount { get; set; }
     public int DoneItemCount { get; set; }
 
-    public ResumedBoardResult(Board board)
+    public ResumedBoardResult()
     {
-        Id = board.Id;
-        Name = board.Name;
-        Description = board.Description;
-        ItemCount = board.Itens.Count;
-        DoneItemCount = board.Itens.Count(x => x.Done == true);
     }
 }

@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
 using Todo.Api.DTO;
 using Todo.Domain.Commands.UserCommands;
+using Todo.Domain.Entities;
 using Todo.Domain.Handlers;
 using Todo.Domain.Handlers.Contracts;
 using Todo.Domain.Repositories;
@@ -15,10 +17,10 @@ public class AuthController : TodoBaseController
 {
     [HttpGet("me"), Authorize]
     [ProducesResponseType(typeof(ResumedUserResult), 200)]
-    public dynamic Me()
+    public dynamic Me([FromServices] IMapper mapper)
     {
         var user = GetUser();
-        return new ResumedUserResult(user);
+        return mapper.Map<ResumedUserResult>(user);
     }
 
     [HttpPost("login")]
@@ -34,7 +36,7 @@ public class AuthController : TodoBaseController
 
         if (result.Code != Code.Ok)
         {
-            return ParseResult(result);
+            return ParseResult<User, ResumedUserResult>(result);
         }
 
         if (result.Result == null)
@@ -58,7 +60,7 @@ public class AuthController : TodoBaseController
 
         if (result.Code != Code.Ok)
         {
-            return ParseResult(result);
+            return ParseResult<User, ResumedUserResult>(result);
         }
 
         if (result.Result == null)

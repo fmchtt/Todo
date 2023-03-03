@@ -9,17 +9,6 @@ public class ExpandedColumnResult
     public int Order { get; set; }
     public int ItemCount { get; set; }
     public List<ItemResult> Itens { get; set; } = new List<ItemResult>();
-
-    public ExpandedColumnResult(Column column)
-    {
-        Id = column.Id;
-        Name = column.Name;
-        ItemCount = column.Itens.Count;
-        Order = column.Order;
-
-        foreach (var item in column.Itens)
-        {
-            Itens.Add(new ItemResult(item));
-        }
-    }
+    
+    public ExpandedColumnResult() {}
 }

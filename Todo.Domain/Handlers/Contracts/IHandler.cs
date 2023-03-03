@@ -3,22 +3,22 @@ using Todo.Domain.Entities;
 
 namespace Todo.Domain.Handlers.Contracts;
 
-public interface IHandler<T, R> where T : ICommand
+public interface IHandler<in T, TR> where T : ICommand
 {
-    CommandResult<R> Handle(T command, User user);
+    CommandResult<TR> Handle(T command, User user);
 }
 
-public interface IHandler<T> where T : ICommand
+public interface IHandler<in T> where T : ICommand
 {
     CommandResult Handle(T command, User user);
 }
 
-public interface IHandlerPublic<T, R> where T : ICommand
+public interface IHandlerPublic<in T, TR> where T : ICommand
 {
-    CommandResult<R> Handle(T command);
+    CommandResult<TR> Handle(T command);
 }
 
-public interface IHandlerPublic<T> where T : ICommand
+public interface IHandlerPublic<in T> where T : ICommand
 {
     CommandResult Handle(T command);
 }

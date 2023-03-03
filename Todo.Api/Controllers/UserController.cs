@@ -5,6 +5,7 @@ using Todo.Api.DTO;
 using Todo.Domain.Commands.UserCommands;
 using Todo.Domain.Handlers;
 using Todo.Domain.Results;
+using Todo.Domain.Entities;
 
 namespace Todo.Api.Controllers;
 
@@ -29,7 +30,7 @@ public class UserController : TodoBaseController
         var command = new EditUserCommand(data.Name, avatarUrl);
         var result = handler.Handle(command, user);
 
-        return ParseResult(result);
+        return ParseResult<User, ResumedUserResult>(result);
     }
 
     [HttpDelete, Authorize]

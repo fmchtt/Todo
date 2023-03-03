@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
 using Todo.Domain.Commands.ColumnCommands;
+using Todo.Domain.Entities;
 using Todo.Domain.Handlers;
 using Todo.Domain.Results;
 
@@ -22,7 +23,7 @@ public class ColumnController : TodoBaseController
         var user = GetUser();
         var result = handler.Handle(command, user);
 
-        return ParseResult(result);
+        return ParseResult<Column, ResumedColumnResult>(result);
     }
 
     [HttpPatch("{columnId:guid}"), Authorize]
@@ -39,7 +40,7 @@ public class ColumnController : TodoBaseController
         command.ColumnId = columnId;
         var result = handler.Handle(command, user);
 
-        return ParseResult(result);
+        return ParseResult<Column, ResumedColumnResult>(result);
     }
 
     [HttpDelete("{columnId:guid}"), Authorize]

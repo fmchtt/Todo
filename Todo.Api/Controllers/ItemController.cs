@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
 using Todo.Domain.Commands.ItemCommands;
+using Todo.Domain.Entities;
 using Todo.Domain.Handlers;
 using Todo.Domain.Repositories;
 using Todo.Domain.Results;
@@ -14,6 +16,7 @@ public class ItemController : TodoBaseController
     [HttpGet, Authorize]
     public PaginatedDTO<ExpandedItemResult> GetAll(
         [FromServices] ITodoItemRepostory todoItemRepository,
+        [FromServices] IMapper mapper,
         [FromQuery] int page = 1
     )
     {
@@ -24,7 +27,7 @@ public class ItemController : TodoBaseController
 
         var todos = todoItemRepository.GetAll(GetUserId(), page - 1);
 
-        var result = todos.Results.Select(item => new ExpandedItemResult(item)).ToList();
+        var result = todos.Results.Select(item => mapper.Map<ExpandedItemResult>(item)).ToList();
 
         return new PaginatedDTO<ExpandedItemResult>(result, todos.PageCount);
     }
@@ -40,7 +43,7 @@ public class ItemController : TodoBaseController
         var user = GetUser();
         var result = handler.Handle(command, user);
 
-        return ParseResult(result);
+        return ParseResult<TodoItem, ItemResult>(result);
     }
 
     [HttpPost("{itemId:guid}/column/{columnId:guid}"), Authorize]
@@ -57,7 +60,7 @@ public class ItemController : TodoBaseController
         var command = new ChangeItemColumnCommand(itemId, columnId);
         var result = handler.Handle(command, user);
 
-        return ParseResult(result);
+        return ParseResult<TodoItem, ItemResult>(result);
     }
 
     [HttpPatch("{itemId:guid}"), Authorize]
@@ -74,7 +77,7 @@ public class ItemController : TodoBaseController
         command.ItemId = itemId;
         var result = handler.Handle(command, user);
 
-        return ParseResult(result);
+        return ParseResult<TodoItem, ItemResult>(result);
     }
 
     [HttpDelete("{itemId:guid}"), Authorize]
@@ -104,7 +107,7 @@ public class ItemController : TodoBaseController
         var user = GetUser();
         var result = handler.Handle(new MarkCommand(itemId, true), user);
 
-        return ParseResult(result);
+        return ParseResult<TodoItem, ItemResult>(result);
     }
 
     [HttpPost("{itemId:guid}/undone"), Authorize]
@@ -119,6 +122,6 @@ public class ItemController : TodoBaseController
         var user = GetUser();
         var result = handler.Handle(new MarkCommand(itemId, true), user);
 
-        return ParseResult(result);
+        return ParseResult<TodoItem, ItemResult>(result);
     }
 }

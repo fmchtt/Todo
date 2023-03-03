@@ -13,23 +13,5 @@ public class ExpandedBoardResult
     public int ItemCount { get; set; }
     public int DoneItemCount { get; set; }
 
-    public ExpandedBoardResult(Board board)
-    {
-        Id = board.Id;
-        Name = board.Name;
-        Description = board.Description;
-        ItemCount = board.Itens.Count;
-        DoneItemCount = board.Itens.Count(x => x.Done == true);
-        Owner = board.OwnerId;
-
-        foreach (var column in board.Columns.OrderBy(x => x.Order).ToList())
-        {
-            Columns.Add(new ExpandedColumnResult(column));
-        }
-
-        foreach (var participant in board.Participants)
-        {
-            Participants.Add(new ResumedUserResult(participant));
-        }
-    }
+    public ExpandedBoardResult() {}
 }
