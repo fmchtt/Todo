@@ -110,7 +110,7 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public User? GetUser()
+    public User GetUser()
     {
         var _userRepository = HttpContext.RequestServices.GetService<IUserRepository>();
         if (_userRepository == null)
@@ -120,6 +120,11 @@ public class TodoBaseController : ControllerBase
 
         var userId = GetUserId();
         var user = _userRepository.GetById(userId);
+
+        if (user == null)
+        {
+            throw new UnauthorizedAccessException("Usuário não encontrado!");
+        }
 
         return user;
     }

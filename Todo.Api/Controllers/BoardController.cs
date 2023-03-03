@@ -39,11 +39,6 @@ public class BoardController : TodoBaseController
     {
         var board = boardRepository.GetById(id);
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         if (board == null || !board.Participants.Contains(user))
         {
             return NotFound(new MessageResult("Quadro não encontrado!"));
@@ -60,10 +55,6 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
@@ -80,11 +71,6 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         command.BoardId = boardId;
         var result = handler.Handle(command, user);
 
@@ -101,11 +87,6 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         var command = new DeleteBoardCommand(boardId);
         var result = handler.Handle(command, user);
 
@@ -122,11 +103,6 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        if ( user == null )
-        {
-            return NotFound();
-        }
-
         var command = new ConfirmBoardParticipantCommand(boardId);
         var result = handler.Handle(command, user);
 
@@ -144,14 +120,8 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null )
-        {
-            return NotFound();
-        }
-
         command.BoardId = boardId;
         command.Domain = HttpContext.Request.Host.ToString();
-
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
@@ -168,13 +138,7 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         var command = new RemoveBoardParticipantCommand(boardId, participantId);
-
         var result = handler.Handle(command, user);
 
         return ParseResult(result);

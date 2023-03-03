@@ -20,11 +20,6 @@ public class ColumnController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
@@ -41,11 +36,6 @@ public class ColumnController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         command.ColumnId = columnId;
         var result = handler.Handle(command, user);
 
@@ -61,11 +51,6 @@ public class ColumnController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         var command = new DeleteColumnCommand(columnId);
         var result = handler.Handle(command, user);
 

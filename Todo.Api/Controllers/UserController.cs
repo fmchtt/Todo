@@ -20,11 +20,6 @@ public class UserController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         string? avatarUrl = null;
         if (data.File != null)
         {
@@ -42,11 +37,6 @@ public class UserController : TodoBaseController
     public dynamic DeleteUser([FromServices] UserHandler handler)
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         var result = handler.HandleDelete(user);
 
         return ParseResult(result);

@@ -18,11 +18,6 @@ public class AuthController : TodoBaseController
     public dynamic Me()
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         return new ResumedUserResult(user);
     }
 

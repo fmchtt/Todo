@@ -38,11 +38,6 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
@@ -59,11 +54,6 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null )
-        {
-            return NotFound();
-        }
-
         var command = new ChangeItemColumnCommand(itemId, columnId);
         var result = handler.Handle(command, user);
 
@@ -81,11 +71,6 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         command.ItemId = itemId;
         var result = handler.Handle(command, user);
 
@@ -101,11 +86,6 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         var command = new DeleteItemCommand(itemId);
         var result = handler.Handle(command, user);
 
@@ -122,11 +102,6 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         var result = handler.Handle(new MarkCommand(itemId, true), user);
 
         return ParseResult(result);
@@ -142,11 +117,6 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         var result = handler.Handle(new MarkCommand(itemId, true), user);
 
         return ParseResult(result);
