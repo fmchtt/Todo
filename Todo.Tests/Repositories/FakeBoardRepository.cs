@@ -1,4 +1,5 @@
-﻿using Todo.Domain.Entities;
+﻿using Todo.Domain.DTO.Output;
+using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
 namespace Todo.Tests.Repositories;
@@ -24,9 +25,9 @@ public class FakeBoardRepository : IBoardRepository
         Boards.Remove(board);
     }
 
-    public List<Board> GetAll(Guid ownerId, int page)
+    public PaginatedDTO<Board> GetAll(Guid ownerId, int page)
     {
-        return Boards;
+        return new PaginatedDTO<Board>(Boards, Boards.Count);
     }
 
     public List<Board> GetAllByName(string name, Guid ownerId)

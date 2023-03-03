@@ -1,5 +1,5 @@
 ﻿using Todo.Domain.DTO.Input;
-using Todo.Domain.UseCases;
+using Todo.Domain.UseCases.BoardUseCases;
 using Todo.Tests.Repositories;
 
 namespace Todo.Tests.UseCases;

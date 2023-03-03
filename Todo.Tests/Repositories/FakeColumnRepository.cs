@@ -13,14 +13,27 @@ public class FakeColumnRepository : IColumnRepository
 
     public List<Column> Columns = new()
     {
-        new Column("Aberto", testBoard.Id) { Board = testBoard, Id = Guid.Parse("c2963d0f-7551-4fd2-b8f4-561714bb0ce6") },
-        new Column("Em Andamento", testBoard.Id) { Board = testBoard, Id = Guid.Parse("974a4dcb-3cbe-4064-9476-404462798702") },
-        new Column("Fechado", testBoard.Id) { Board = testBoard, Id = Guid.Parse("5d1c65a5-35c3-4ea9-bad2-d40579d171ba") },
+        new Column("Aberto", testBoard.Id, 0) { Board = testBoard, Id = Guid.Parse("c2963d0f-7551-4fd2-b8f4-561714bb0ce6") },
+        new Column("Em Andamento", testBoard.Id, 1) { Board = testBoard, Id = Guid.Parse("974a4dcb-3cbe-4064-9476-404462798702") },
+        new Column("Fechado", testBoard.Id, 2) { Board = testBoard, Id = Guid.Parse("5d1c65a5-35c3-4ea9-bad2-d40579d171ba") },
     };
+
+    public int GetMaxOrder(Guid boardId)
+    {
+        return Columns.Max(x => x.Order) + 1;
+    }
 
     public void Create(Column column)
     {
         Columns.Add(column);
+    }
+
+    public void ColumnReorder(Guid boardId, Guid columnId, int order)
+    {
+        for (var i = 0; i < Columns.Count; i++)
+        {
+            Columns[i].Order = i;
+        }
     }
 
     public void Delete(Column column)
@@ -37,5 +50,13 @@ public class FakeColumnRepository : IColumnRepository
     {
         var index = Columns.FindIndex(x => x.Id == column.Id);
         Columns[index] = column;
+    }
+
+    public void ColumnReorder(Guid boardId)
+    {
+        for (var i = 0; i < Columns.Count; i++)
+        {
+            Columns[i].Order = i;
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Todo.Domain.DTO.Input;
-using Todo.Domain.UseCases;
+using Todo.Domain.UseCases.ColumnUseCases;
 using Todo.Tests.Repositories;
 
 namespace Todo.Tests.UseCases;
@@ -25,7 +25,7 @@ public class ColumnTests
     [Fact]
     public void ShouldEditColumn()
     {
-        var data = new EditColumnDTO("Nome novo");
+        var data = new EditColumnDTO("Nome novo", null);
         var result = new EditColumnUseCase(columnRepository).Handle(data, columnRepository.Columns[0].Id, FakeColumnRepository.testUser);
 
         Assert.Equal(200, result.Code);
@@ -39,7 +39,7 @@ public class ColumnTests
     [Fact]
     public void ShouldntEditColumn()
     {
-        var data = new EditColumnDTO("Nome novo");
+        var data = new EditColumnDTO("Nome novo", null);
         var result = new EditColumnUseCase(columnRepository).Handle(data, columnRepository.Columns[0].Id, FakeColumnRepository.OtherUser);
 
         Assert.Equal(401, result.Code);
@@ -48,7 +48,7 @@ public class ColumnTests
     [Fact]
     public void ShouldntFindColumnToEdit()
     {
-        var data = new EditColumnDTO("Nome novo");
+        var data = new EditColumnDTO("Nome novo", null);
         var result = new EditColumnUseCase(columnRepository).Handle(data, Guid.NewGuid(), FakeColumnRepository.OtherUser);
 
         Assert.Equal(404, result.Code);
