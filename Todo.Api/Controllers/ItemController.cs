@@ -13,7 +13,7 @@ public class ItemController : TodoBaseController
 {
     [HttpGet, Authorize]
     public PaginatedDTO<ExpandedItemResult> GetAll(
-        [FromServices] ITodoItemRepostory todoItemRepostory,
+        [FromServices] ITodoItemRepostory todoItemRepository,
         [FromQuery] int page = 1
     )
     {
@@ -22,13 +22,9 @@ public class ItemController : TodoBaseController
             page = 1;
         }
 
-        var todos = todoItemRepostory.GetAll(GetUserId(), page - 1);
+        var todos = todoItemRepository.GetAll(GetUserId(), page - 1);
 
-        var result = new List<ExpandedItemResult>();
-        foreach (var item in todos.Results)
-        {
-            result.Add(new ExpandedItemResult(item));
-        }
+        var result = todos.Results.Select(item => new ExpandedItemResult(item)).ToList();
 
         return new PaginatedDTO<ExpandedItemResult>(result, todos.PageCount);
     }
@@ -52,12 +48,13 @@ public class ItemController : TodoBaseController
         return ParseResult(result);
     }
 
-    [HttpPost("{itemId}/column/{columnId}"), Authorize]
+    [HttpPost("{itemId:guid}/column/{columnId:guid}"), Authorize]
     [ProducesResponseType(typeof(ItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic ChangeColumn(
-        ChangeItemColumnCommand command,
+        Guid itemId,
+        Guid columnId,
         [FromServices] ItemHandler handler
     )
     {
@@ -67,17 +64,19 @@ public class ItemController : TodoBaseController
             return NotFound();
         }
 
+        var command = new ChangeItemColumnCommand(itemId, columnId);
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
 
-    [HttpPatch("{itemId}"), Authorize]
+    [HttpPatch("{itemId:guid}"), Authorize]
     [ProducesResponseType(typeof(ItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic UpdateItem(
         EditItemCommand command,
+        Guid itemId,
         [FromServices] ItemHandler handler
     )
     {
@@ -87,16 +86,17 @@ public class ItemController : TodoBaseController
             return NotFound();
         }
 
+        command.ItemId = itemId;
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
 
-    [HttpDelete("{itemId}"), Authorize]
+    [HttpDelete("{itemId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic DeleteItem(
-        DeleteItemCommand command,
+        Guid itemId,
         [FromServices] ItemHandler handler
     )
     {
@@ -106,12 +106,13 @@ public class ItemController : TodoBaseController
             return NotFound();
         }
 
+        var command = new DeleteItemCommand(itemId);
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
 
-    [HttpPost("{itemId}/done"), Authorize]
+    [HttpPost("{itemId:guid}/done"), Authorize]
     [ProducesResponseType(typeof(ItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
@@ -131,11 +132,11 @@ public class ItemController : TodoBaseController
         return ParseResult(result);
     }
 
-    [HttpPost("{itemId}/undone"), Authorize]
+    [HttpPost("{itemId:guid}/undone"), Authorize]
     [ProducesResponseType(typeof(ItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic MarkAsunDone(
+    public dynamic MarkAsUndone(
         [FromRoute] Guid itemId,
         [FromServices] ItemHandler handler
     )

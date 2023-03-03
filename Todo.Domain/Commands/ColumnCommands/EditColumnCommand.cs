@@ -1,9 +1,11 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using System.Text.Json.Serialization;
+using Todo.Domain.Commands.Contracts;
 
 namespace Todo.Domain.Commands.ColumnCommands;
 
 public class EditColumnCommand : ICommand
 {
+    [JsonIgnore]
     public Guid ColumnId { get; set; }
     public string? Name { get; set; }
     public int? Order { get; set; }

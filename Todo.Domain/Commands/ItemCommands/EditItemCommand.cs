@@ -1,9 +1,11 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using System.Text.Json.Serialization;
+using Todo.Domain.Commands.Contracts;
 
 namespace Todo.Domain.Commands.ItemCommands;
 
 public class EditItemCommand : ICommand
 {
+    [JsonIgnore]
     public Guid ItemId { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }

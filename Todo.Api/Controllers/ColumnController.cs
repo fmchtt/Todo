@@ -30,12 +30,13 @@ public class ColumnController : TodoBaseController
         return ParseResult(result);
     }
 
-    [HttpPatch("{columnId}"), Authorize]
+    [HttpPatch("{columnId:guid}"), Authorize]
     [ProducesResponseType(typeof(ResumedColumnResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic EditColumn(
         EditColumnCommand command,
+        Guid columnId,
         [FromServices] ColumnHandler handler
     )
     {
@@ -45,16 +46,17 @@ public class ColumnController : TodoBaseController
             return NotFound();
         }
 
+        command.ColumnId = columnId;
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
 
-    [HttpDelete("{columnId}"), Authorize]
+    [HttpDelete("{columnId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic DeleteColumn(
-        DeleteColumnCommand command, 
+        Guid columnId,
         [FromServices] ColumnHandler handler
     )
     {
@@ -64,6 +66,7 @@ public class ColumnController : TodoBaseController
             return NotFound();
         }
 
+        var command = new DeleteColumnCommand(columnId);
         var result = handler.Handle(command, user);
 
         return ParseResult(result);

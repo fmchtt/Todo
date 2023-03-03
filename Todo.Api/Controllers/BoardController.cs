@@ -24,25 +24,20 @@ public class BoardController : TodoBaseController
 
         var todos = boardRepository.GetAll(GetUserId(), page - 1);
 
-        var result = new List<ResumedBoardResult>();
-        foreach (var board in todos.Results)
-        {
-            result.Add(new ResumedBoardResult(board));
-        }
+        var result = todos.Results.Select(board => new ResumedBoardResult(board)).ToList();
 
         return new PaginatedDTO<ResumedBoardResult>(result, todos.PageCount);
     }
 
-    [HttpGet("{id}"), Authorize]
+    [HttpGet("{id:guid}"), Authorize]
     [ProducesResponseType(typeof(ExpandedBoardResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic GetById(
-        [FromRoute] string id,
+        [FromRoute] Guid id,
         [FromServices] IBoardRepository boardRepository
     )
     {
-        var boardId = Guid.Parse(id);
-        var board = boardRepository.GetById(boardId);
+        var board = boardRepository.GetById(id);
         var user = GetUser();
         if (user == null)
         {
@@ -74,12 +69,13 @@ public class BoardController : TodoBaseController
         return ParseResult(result);
     }
 
-    [HttpPatch("{boardId}"), Authorize]
+    [HttpPatch("{boardId:guid}"), Authorize]
     [ProducesResponseType(typeof(ResumedBoardResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic EditBoard(
         EditBoardCommand command,
+        Guid boardId,
         [FromServices] BoardHandler handler
     )
     {
@@ -89,17 +85,18 @@ public class BoardController : TodoBaseController
             return NotFound();
         }
 
+        command.BoardId = boardId;
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
 
 
-    [HttpDelete("{boardId}"), Authorize]
+    [HttpDelete("{boardId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic DeleteBoard(
-        DeleteBoardCommand command,
+        Guid boardId,
         [FromServices] BoardHandler handler
     )
     {
@@ -109,17 +106,18 @@ public class BoardController : TodoBaseController
             return NotFound();
         }
 
+        var command = new DeleteBoardCommand(boardId);
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
 
-    [HttpGet("{boardId}/invite/confirm")]
+    [HttpGet("{boardId:guid}/invite/confirm")]
     [ProducesResponseType(typeof(MessageResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic ConfirmInvite(
-        ConfirmBoardParticipantCommand command,
+        Guid boardId,
         [FromServices] BoardHandler handler
     )
     {
@@ -129,17 +127,19 @@ public class BoardController : TodoBaseController
             return NotFound();
         }
 
+        var command = new ConfirmBoardParticipantCommand(boardId);
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
 
-    [HttpPost("{boardId}/invite"), Authorize]
+    [HttpPost("{boardId:guid}/invite"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic InviteParticipant(
         AddBoardParticipantCommand command,
+        Guid boardId,
         [FromServices] BoardHandler handler
     )
     {
@@ -149,6 +149,7 @@ public class BoardController : TodoBaseController
             return NotFound();
         }
 
+        command.BoardId = boardId;
         command.Domain = HttpContext.Request.Host.ToString();
 
         var result = handler.Handle(command, user);
@@ -156,12 +157,13 @@ public class BoardController : TodoBaseController
         return ParseResult(result);
     }
 
-    [HttpDelete("{boardId}/participant/{participantId}"), Authorize]
+    [HttpDelete("{boardId:guid}/participant/{participantId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic RemoveParticipant(
-       RemoveBoardParticipantCommand command,
+       Guid boardId,
+       Guid participantId,
        [FromServices] BoardHandler handler
     )
     {
@@ -170,6 +172,8 @@ public class BoardController : TodoBaseController
         {
             return NotFound();
         }
+
+        var command = new RemoveBoardParticipantCommand(boardId, participantId);
 
         var result = handler.Handle(command, user);
 
