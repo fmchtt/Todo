@@ -1,26 +1,31 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Todo.Domain.Commands.Contracts;
+using Todo.Domain.Entities;
 
 namespace Todo.Domain.Commands.ItemCommands;
 
+public class CreateItemValidator : AbstractValidator<CreateItemCommand>
+{
+    public CreateItemValidator()
+    {
+        RuleFor(x => x.Title).MinimumLength(5);
+        RuleFor(x => x.Description).MinimumLength(10);
+        RuleFor(x => x.Priority).IsInEnum();
+    }
+}
+
 public class CreateItemCommand : ICommand
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public int Priority { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public EPriority Priority { get; set; } = 0;
     public Guid? BoardId { get; set; }
     public Guid? ColumnId { get; set; }
 
-    public CreateItemCommand(string title, string description, int priority, Guid? boardId, Guid? columnId)
+    public ValidationResult Validate()
     {
-        Title = title;
-        Description = description;
-        BoardId = boardId;
-        ColumnId = columnId;
-        Priority = priority;
-    }
-
-    public bool Validate()
-    {
-        throw new NotImplementedException();
+        var validator = new CreateItemValidator();
+        return validator.Validate(this);
     }
 }

@@ -15,7 +15,7 @@ public class UserController : TodoBaseController
     [HttpPatch, Authorize]
     [ProducesResponseType(typeof(ResumedUserResult), 200)]
     public async Task<dynamic> ChangeAvatar(
-        [FromForm] EditUserApiDTO data, 
+        [FromForm] EditUserApiDTO data,
         [FromServices] IFileStorage fileStorage,
         [FromServices] UserHandler handler
     )
@@ -27,7 +27,11 @@ public class UserController : TodoBaseController
             avatarUrl = await fileStorage.SaveFile(data.File);
         }
 
-        var command = new EditUserCommand(data.Name, avatarUrl);
+        var command = new EditUserCommand()
+        {
+            Name = data.Name,
+            AvatarUrl = avatarUrl
+        };
         var result = handler.Handle(command, user);
 
         return ParseResult<User, ResumedUserResult>(result);

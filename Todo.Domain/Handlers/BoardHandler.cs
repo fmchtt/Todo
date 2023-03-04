@@ -2,11 +2,14 @@
 using Todo.Domain.Entities;
 using Todo.Domain.Handlers.Contracts;
 using Todo.Domain.Repositories;
+using Todo.Domain.Results;
 using Todo.Domain.Utils;
 
 namespace Todo.Domain.Handlers;
 
-public class BoardHandler : IHandler<CreateBoardCommand, Board>, IHandler<DeleteBoardCommand>, IHandler<EditBoardCommand, Board> , IHandler<AddBoardParticipantCommand>, IHandler<RemoveBoardParticipantCommand>, IHandler<ConfirmBoardParticipantCommand>
+public class BoardHandler : IHandler<CreateBoardCommand, Board>, IHandler<DeleteBoardCommand>,
+    IHandler<EditBoardCommand, Board>, IHandler<AddBoardParticipantCommand>, IHandler<RemoveBoardParticipantCommand>,
+    IHandler<ConfirmBoardParticipantCommand>
 {
     private readonly IBoardRepository _boardRepository;
     private readonly IInviteRepository _inviteRepository;
@@ -18,9 +21,16 @@ public class BoardHandler : IHandler<CreateBoardCommand, Board>, IHandler<Delete
         _boardRepository = boardRepository;
         _mailer = mailer;
     }
-    
+
     public CommandResult<Board> Handle(CreateBoardCommand command, User user)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult<Board>(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var board = new Board(command.Name, command.Description, user.Id)
         {
             Participants = new List<User> { user }
@@ -37,6 +47,13 @@ public class BoardHandler : IHandler<CreateBoardCommand, Board>, IHandler<Delete
 
     public CommandResult Handle(DeleteBoardCommand command, User user)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var board = _boardRepository.GetById(command.BoardId);
         if (board == null)
         {
@@ -55,6 +72,13 @@ public class BoardHandler : IHandler<CreateBoardCommand, Board>, IHandler<Delete
 
     public CommandResult<Board> Handle(EditBoardCommand command, User user)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult<Board>(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var board = _boardRepository.GetById(command.BoardId);
         if (board == null)
         {
@@ -77,15 +101,23 @@ public class BoardHandler : IHandler<CreateBoardCommand, Board>, IHandler<Delete
         }
 
         _boardRepository.Update(board);
-        
+
 
         return new CommandResult<Board>(Code.Ok, "Quadro editado com sucesso!", board);
     }
 
     public CommandResult Handle(AddBoardParticipantCommand command, User user)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var board = _boardRepository.GetById(command.BoardId);
-        if (board == null) {
+        if (board == null)
+        {
             return new CommandResult(Code.NotFound, "Quadro não encontrado!");
         }
 
@@ -98,8 +130,10 @@ public class BoardHandler : IHandler<CreateBoardCommand, Board>, IHandler<Delete
         foreach (var email in command.Emails)
         {
             invites.Add(new Invite(email, command.BoardId));
-            _mailer.SendMail(email, $"Você foi convidado para participar do quadro: {board.Name}, clique <a href='{command.Domain}/invite/{board.Id}'>aqui</a> para participar!");
+            _mailer.SendMail(email,
+                $"Você foi convidado para participar do quadro: {board.Name}, clique <a href='{command.Domain}/invite/{board.Id}'>aqui</a> para participar!");
         }
+
         _inviteRepository.CreateMany(invites);
 
         return new CommandResult(Code.Created, "Convites criados com sucesso!");
@@ -107,6 +141,13 @@ public class BoardHandler : IHandler<CreateBoardCommand, Board>, IHandler<Delete
 
     public CommandResult Handle(ConfirmBoardParticipantCommand command, User user)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var invite = _inviteRepository.GetInvite(user.Email, command.BoardId);
         if (invite == null)
         {
@@ -127,6 +168,13 @@ public class BoardHandler : IHandler<CreateBoardCommand, Board>, IHandler<Delete
 
     public CommandResult Handle(RemoveBoardParticipantCommand command, User user)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var board = _boardRepository.GetById(command.BoardId);
         if (board == null)
         {

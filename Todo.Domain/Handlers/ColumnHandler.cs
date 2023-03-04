@@ -2,28 +2,37 @@
 using Todo.Domain.Entities;
 using Todo.Domain.Handlers.Contracts;
 using Todo.Domain.Repositories;
+using Todo.Domain.Results;
 
 namespace Todo.Domain.Handlers;
 
-public class ColumnHandler : IHandler<CreateColumnCommand, Column>, IHandler<EditColumnCommand, Column>, IHandler<DeleteColumnCommand>
+public class ColumnHandler : IHandler<CreateColumnCommand, Column>, IHandler<EditColumnCommand, Column>,
+    IHandler<DeleteColumnCommand>
 {
     private readonly IBoardRepository _boardRepository;
     private readonly IColumnRepository _columnRepository;
-    
+
     public ColumnHandler(IBoardRepository boardRepository, IColumnRepository columnRepository)
     {
         _boardRepository = boardRepository;
         _columnRepository = columnRepository;
     }
-    
+
     public CommandResult<Column> Handle(CreateColumnCommand command, User user)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult<Column>(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var board = _boardRepository.GetById(command.BoardId);
         if (board == null)
         {
             return new CommandResult<Column>(Code.Invalid, "Quadro não encontrado!");
         }
-        
+
         if (!board.UserCanEdit(user.Id))
         {
             return new CommandResult<Column>(Code.Unauthorized, "Sem permissão para alterar o quadro!");
@@ -39,6 +48,13 @@ public class ColumnHandler : IHandler<CreateColumnCommand, Column>, IHandler<Edi
 
     public CommandResult<Column> Handle(EditColumnCommand command, User user)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult<Column>(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var column = _columnRepository.GetById(command.ColumnId);
         if (column == null)
         {
@@ -68,6 +84,13 @@ public class ColumnHandler : IHandler<CreateColumnCommand, Column>, IHandler<Edi
 
     public CommandResult Handle(DeleteColumnCommand command, User user)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var column = _columnRepository.GetById(command.ColumnId);
         if (column == null)
         {

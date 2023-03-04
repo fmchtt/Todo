@@ -1,22 +1,28 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Todo.Domain.Commands.Contracts;
 
 namespace Todo.Domain.Commands.UserCommands;
 
+public class RegisterValidator : AbstractValidator<RegisterCommand>
+{
+    public RegisterValidator()
+    {
+        RuleFor(x => x.Name).NotNull().NotEmpty().MinimumLength(4).Must(x => x.Contains(' '));
+        RuleFor(x => x.Email).NotNull().NotEmpty().EmailAddress();
+        RuleFor(x => x.Password).NotNull().NotEmpty();
+    }
+}
+
 public class RegisterCommand : ICommand
 {
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
 
-    public RegisterCommand(string name, string email, string password)
+    public ValidationResult Validate()
     {
-        Name = name;
-        Email = email;
-        Password = password;
-    }
-
-    public bool Validate()
-    {
-        throw new NotImplementedException();
+        var validator = new RegisterValidator();
+        return validator.Validate(this);
     }
 }

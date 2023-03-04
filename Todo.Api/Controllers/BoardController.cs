@@ -27,7 +27,7 @@ public class BoardController : TodoBaseController
 
         var todos = boardRepository.GetAll(GetUserId(), page - 1);
 
-        var result = todos.Results.Select(board => mapper.Map<ResumedBoardResult>(board)).ToList();
+        var result = todos.Results.Select(mapper.Map<ResumedBoardResult>).ToList();
 
         return new PaginatedDTO<ResumedBoardResult>(result, todos.PageCount);
     }
@@ -91,7 +91,10 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new DeleteBoardCommand(boardId);
+        var command = new DeleteBoardCommand()
+        {
+            BoardId = boardId
+        };
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
@@ -107,7 +110,10 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new ConfirmBoardParticipantCommand(boardId);
+        var command = new ConfirmBoardParticipantCommand()
+        {
+            BoardId = boardId
+        };
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
@@ -142,7 +148,11 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new RemoveBoardParticipantCommand(boardId, participantId);
+        var command = new RemoveBoardParticipantCommand()
+        {
+            BoardId = boardId,
+            ParticipantId = participantId
+        };
         var result = handler.Handle(command, user);
 
         return ParseResult(result);

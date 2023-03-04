@@ -1,19 +1,26 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Todo.Domain.Commands.Contracts;
 
 namespace Todo.Domain.Commands.UserCommands;
 
+public class LoginValidator : AbstractValidator<LoginCommand>
+{
+    public LoginValidator()
+    {
+        RuleFor(x => x.Email).NotNull().NotEmpty().EmailAddress();
+        RuleFor(x => x.Password).NotNull().NotEmpty();
+    }
+}
+
 public class LoginCommand : ICommand
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
 
-    public LoginCommand(string email, string password) {
-        Email = email;
-        Password = password;
-    }
-
-    public bool Validate()
+    public ValidationResult Validate()
     {
-        throw new NotImplementedException();
+        var validator = new LoginValidator();
+        return validator.Validate(this);
     }
 }

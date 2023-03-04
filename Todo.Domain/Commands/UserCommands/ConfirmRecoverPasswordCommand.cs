@@ -1,22 +1,28 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Todo.Domain.Commands.Contracts;
 
 namespace Todo.Domain.Commands.UserCommands;
 
+public class ConfirmRecoverPasswordValidator : AbstractValidator<ConfirmRecoverPasswordCommand>
+{
+    public ConfirmRecoverPasswordValidator()
+    {
+        RuleFor(x => x.Code).Must(x => x > 99999);
+        RuleFor(x => x.Email).EmailAddress();
+        RuleFor(x => x.Password).MinimumLength(8);
+    }
+}
+
 public class ConfirmRecoverPasswordCommand : ICommand
 {
-    public int Code { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public int Code { get; set; } = 0;
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
 
-    public ConfirmRecoverPasswordCommand(int code, string password, string email)
+    public ValidationResult Validate()
     {
-        Code = code;
-        Password = password;
-        Email = email;
-    }
-
-    public bool Validate()
-    {
-        throw new NotImplementedException();
+        var validator = new ConfirmRecoverPasswordValidator();
+        return validator.Validate(this);
     }
 }

@@ -36,7 +36,7 @@ public class ItemController : TodoBaseController
     [ProducesResponseType(typeof(ResumedItemResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic CreateItem(
-        CreateItemCommand command, 
+        CreateItemCommand command,
         [FromServices] ItemHandler handler
     )
     {
@@ -57,7 +57,11 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new ChangeItemColumnCommand(columnId, itemId);
+        var command = new ChangeItemColumnCommand()
+        {
+            ItemId = itemId,
+            ColumnId = columnId
+        };
         var result = handler.Handle(command, user);
 
         return ParseResult<TodoItem, ResumedItemResult>(result);
@@ -89,7 +93,10 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new DeleteItemCommand(itemId);
+        var command = new DeleteItemCommand()
+        {
+            ItemId = itemId
+        };
         var result = handler.Handle(command, user);
 
         return ParseResult(result);
@@ -105,7 +112,11 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        var result = handler.Handle(new MarkCommand(itemId, true), user);
+        var result = handler.Handle(new MarkCommand()
+        {
+            ItemId = itemId,
+            Done = true
+        }, user);
 
         return ParseResult<TodoItem, ResumedItemResult>(result);
     }
@@ -120,7 +131,11 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        var result = handler.Handle(new MarkCommand(itemId, true), user);
+        var result = handler.Handle(new MarkCommand()
+        {
+            ItemId = itemId,
+            Done = false
+        }, user);
 
         return ParseResult<TodoItem, ResumedItemResult>(result);
     }

@@ -16,7 +16,7 @@ public class ColumnController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 400)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic Create(
-        CreateColumnCommand command, 
+        CreateColumnCommand command,
         [FromServices] ColumnHandler handler
     )
     {
@@ -52,7 +52,10 @@ public class ColumnController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new DeleteColumnCommand(columnId);
+        var command = new DeleteColumnCommand()
+        {
+            ColumnId = columnId
+        };
         var result = handler.Handle(command, user);
 
         return ParseResult(result);

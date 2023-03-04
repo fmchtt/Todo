@@ -1,18 +1,24 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Todo.Domain.Commands.Contracts;
 
 namespace Todo.Domain.Commands.BoardCommands;
 
+public class DeleteBoardValidator : AbstractValidator<DeleteBoardCommand>
+{
+    public DeleteBoardValidator()
+    {
+        RuleFor(x => x.BoardId).NotNull().NotEmpty();
+    }
+}
+
 public class DeleteBoardCommand : ICommand
 {
-    public Guid BoardId { get; set; }
+    public Guid BoardId { get; set; } = Guid.Empty;
 
-    public DeleteBoardCommand(Guid boardId)
+    public ValidationResult Validate()
     {
-        BoardId = boardId;
-    }
-
-    public bool Validate()
-    {
-        throw new NotImplementedException();
+        var validator = new DeleteBoardValidator();
+        return validator.Validate(this);
     }
 }

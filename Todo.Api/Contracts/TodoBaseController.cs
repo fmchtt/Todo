@@ -13,6 +13,7 @@ public class TodoBaseController : ControllerBase
     protected dynamic ParseResult<T, TR>(CommandResult<T> result)
     {
         var message = result.Message;
+        var errors = result.Errors;
         var mapper = HttpContext.RequestServices.GetService<IMapper>();
 
         if (mapper == null)
@@ -25,7 +26,7 @@ public class TodoBaseController : ControllerBase
             Code.Ok => (result.Result != null ? Ok(mapper.Map<TR>(result.Result)) : Ok(message)),
             Code.Created => (result.Result != null ? Ok(mapper.Map<TR>(result.Result)) : Created(message)),
             Code.NotFound => NotFound(message),
-            Code.Invalid => BadRequest(message),
+            Code.Invalid => errors != null ? BadRequest(errors) : BadRequest(message),
             Code.Unauthorized => Unauthorized(message),
             _ => InternalServerError("Erro ao converter o resultado da operação")
         };
@@ -35,13 +36,14 @@ public class TodoBaseController : ControllerBase
     protected dynamic ParseResult(CommandResult result)
     {
         var message = result.Message;
+        var errors = result.Errors;
 
         return result.Code switch
         {
             Code.Ok => Ok(message),
             Code.Created => Created(message),
             Code.NotFound => NotFound(message),
-            Code.Invalid => BadRequest(message),
+            Code.Invalid => errors != null ? BadRequest(errors) : BadRequest(message),
             Code.Unauthorized => Unauthorized(message),
             _ => InternalServerError("Erro ao converter o resultado da operação")
         };

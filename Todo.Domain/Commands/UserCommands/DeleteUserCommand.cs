@@ -4,10 +4,10 @@ namespace Todo.Domain.Commands.UserCommands;
 
 public class DeleteUserCommand : ICommand
 {
-    public Guid UserId { get; set; }
-    
-    public bool Validate()
-    {
-        throw new NotImplementedException();
-    }
+  public Guid UserId { get; set; }
+
+  public ValidationResul
+  {
+    throw new NotImplementedException();
+  }
 }

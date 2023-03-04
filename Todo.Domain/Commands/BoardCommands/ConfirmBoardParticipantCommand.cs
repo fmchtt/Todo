@@ -1,18 +1,24 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Todo.Domain.Commands.Contracts;
 
 namespace Todo.Domain.Commands.BoardCommands;
 
+public class ConfirmBoardParticipantValidator : AbstractValidator<ConfirmBoardParticipantCommand>
+{
+    public ConfirmBoardParticipantValidator()
+    {
+        RuleFor(command => command.BoardId).NotEmpty().NotEqual(Guid.Empty);
+    }
+}
+
 public class ConfirmBoardParticipantCommand : ICommand
 {
-    public Guid BoardId { get; set; }
+    public Guid BoardId { get; set; } = Guid.Empty;
 
-    public ConfirmBoardParticipantCommand(Guid boardId)
+    public ValidationResult Validate()
     {
-        BoardId = boardId;
-    }
-
-    public bool Validate()
-    {
-        throw new NotImplementedException();
+        var validator = new ConfirmBoardParticipantValidator();
+        return validator.Validate(this);
     }
 }

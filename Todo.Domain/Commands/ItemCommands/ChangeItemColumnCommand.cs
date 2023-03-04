@@ -1,20 +1,26 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Todo.Domain.Commands.Contracts;
 
 namespace Todo.Domain.Commands.ItemCommands;
 
+public class ChangeItemColumnValidator : AbstractValidator<ChangeItemColumnCommand>
+{
+    public ChangeItemColumnValidator()
+    {
+        RuleFor(x => x.ColumnId).NotNull().NotEmpty();
+        RuleFor(x => x.ItemId).NotNull().NotEmpty();
+    }
+}
+
 public class ChangeItemColumnCommand : ICommand
 {
-    public Guid ColumnId { get; set; }
-    public Guid ItemId { get; set; }
+    public Guid ColumnId { get; set; } = Guid.Empty;
+    public Guid ItemId { get; set; } = Guid.Empty;
 
-    public ChangeItemColumnCommand(Guid columnId, Guid itemId)
+    public ValidationResult Validate()
     {
-        ColumnId = columnId;
-        ItemId = itemId;
-    }
-
-    public bool Validate()
-    {
-        throw new NotImplementedException();
+        var validator = new ChangeItemColumnValidator();
+        return validator.Validate(this);
     }
 }

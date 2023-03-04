@@ -1,20 +1,26 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Todo.Domain.Commands.Contracts;
 
 namespace Todo.Domain.Commands.ColumnCommands;
 
+public class CreateColumnValidator : AbstractValidator<CreateColumnCommand>
+{
+    public CreateColumnValidator()
+    {
+        RuleFor(x => x.BoardId).NotNull().NotEmpty();
+        RuleFor(x => x.Name).MinimumLength(5);
+    }
+}
+
 public class CreateColumnCommand : ICommand
 {
-    public string Name { get; set; }
-    public Guid BoardId { get; set; }
+    public Guid BoardId { get; set; } = Guid.Empty;
+    public string Name { get; set; } = string.Empty;
 
-    public CreateColumnCommand(string name, Guid boardId)
+    public ValidationResult Validate()
     {
-        Name = name;
-        BoardId = boardId;
-    }
-
-    public bool Validate()
-    {
-        throw new NotImplementedException();
+        var validator = new CreateColumnValidator();
+        return validator.Validate(this);
     }
 }

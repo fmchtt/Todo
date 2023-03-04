@@ -2,27 +2,38 @@
 using Todo.Domain.Entities;
 using Todo.Domain.Handlers.Contracts;
 using Todo.Domain.Repositories;
+using Todo.Domain.Results;
 using Todo.Domain.Utils;
 
 namespace Todo.Domain.Handlers;
 
-public class UserHandler : IHandlerPublic<LoginCommand, User>, IHandlerPublic<RegisterCommand, User>, IHandler<EditUserCommand, User>, IHandlerPublic<RecoverPasswordCommand>, IHandlerPublic<ConfirmRecoverPasswordCommand>
+public class UserHandler : IHandlerPublic<LoginCommand, User>, IHandlerPublic<RegisterCommand, User>,
+    IHandler<EditUserCommand, User>, IHandlerPublic<RecoverPasswordCommand>,
+    IHandlerPublic<ConfirmRecoverPasswordCommand>
 {
     private readonly IUserRepository _userRepository;
     private readonly IHasher _hasher;
     private readonly IRecoverCodeRepository _recoverCodeRepository;
     private readonly IMailer _mailer;
 
-    public UserHandler(IUserRepository userRepository, IHasher hasher, IRecoverCodeRepository recoverCodeRepository, IMailer mailer)
+    public UserHandler(IUserRepository userRepository, IHasher hasher, IRecoverCodeRepository recoverCodeRepository,
+        IMailer mailer)
     {
         _userRepository = userRepository;
         _hasher = hasher;
         _recoverCodeRepository = recoverCodeRepository;
         _mailer = mailer;
     }
-    
+
     public CommandResult<User> Handle(LoginCommand command)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult<User>(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var user = _userRepository.GetByEmail(command.Email);
         if (user == null || !_hasher.Verify(command.Password, user.Password))
         {
@@ -34,6 +45,13 @@ public class UserHandler : IHandlerPublic<LoginCommand, User>, IHandlerPublic<Re
 
     public CommandResult<User> Handle(RegisterCommand command)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult<User>(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var existingUser = _userRepository.GetByEmail(command.Email);
         if (existingUser != null)
         {
@@ -49,6 +67,13 @@ public class UserHandler : IHandlerPublic<LoginCommand, User>, IHandlerPublic<Re
 
     public CommandResult<User> Handle(EditUserCommand command, User user)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult<User>(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         if (command.Name != null && command.Name != user.Name)
         {
             user.Name = command.Name;
@@ -73,6 +98,13 @@ public class UserHandler : IHandlerPublic<LoginCommand, User>, IHandlerPublic<Re
 
     public CommandResult Handle(RecoverPasswordCommand command)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var user = _userRepository.GetByEmail(command.Email);
         if (user == null)
         {
@@ -100,6 +132,13 @@ public class UserHandler : IHandlerPublic<LoginCommand, User>, IHandlerPublic<Re
 
     public CommandResult Handle(ConfirmRecoverPasswordCommand command)
     {
+        var validation = command.Validate();
+        if (!validation.IsValid)
+        {
+            return new CommandResult(Code.Invalid, "Comando inválido",
+                validation.Errors.Select(error => new ErrorResult(error)).ToList());
+        }
+
         var code = _recoverCodeRepository.Get(command.Code, command.Email);
         if (code == null)
         {

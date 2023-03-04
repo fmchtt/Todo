@@ -1,6 +1,8 @@
-﻿namespace Todo.Domain.Commands.Contracts;
+﻿using FluentValidation.Results;
+
+namespace Todo.Domain.Commands.Contracts;
 
 public interface ICommand
 {
-    public bool Validate();
+    public ValidationResult Validate();
 }

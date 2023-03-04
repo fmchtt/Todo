@@ -1,4 +1,6 @@
-﻿namespace Todo.Domain.Results;
+﻿using FluentValidation.Results;
+
+namespace Todo.Domain.Results;
 
 public class ErrorResult
 {
@@ -9,5 +11,11 @@ public class ErrorResult
     {
         Title = title;
         Message = message;
+    }
+
+    public ErrorResult(ValidationFailure error)
+    {
+        Title = error.PropertyName;
+        Message = error.ErrorMessage;
     }
 }

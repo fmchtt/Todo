@@ -1,20 +1,25 @@
-﻿using Todo.Domain.Commands.Contracts;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Todo.Domain.Commands.Contracts;
 
 namespace Todo.Domain.Commands.UserCommands;
+
+public class EditUserValidator : AbstractValidator<EditUserCommand>
+{
+    public EditUserValidator()
+    {
+        RuleFor(x => x.Name).Must(x => x == null || x.Length > 4 || x.Contains(' '));
+    }
+}
 
 public class EditUserCommand : ICommand
 {
     public string? Name { get; set; }
     public string? AvatarUrl { get; set; }
 
-    public EditUserCommand(string? name, string? avatarUrl)
+    public ValidationResult Validate()
     {
-        Name = name;
-        AvatarUrl = avatarUrl;
-    }
-
-    public bool Validate()
-    {
-        throw new NotImplementedException();
+        var validator = new EditUserValidator();
+        return validator.Validate(this);
     }
 }
