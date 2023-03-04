@@ -1,137 +1,88 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Todo.Api.DTO;
-using Todo.Domain.DTO;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Todo.Domain.Entities;
+using Todo.Domain.Handlers.Contracts;
 using Todo.Domain.Repositories;
+using Todo.Domain.Results;
 
 namespace Todo.Api.Contracts;
 
 public class TodoBaseController : ControllerBase
 {
     [NonAction]
-    public dynamic ParseResult<T>(ResultDTO<T> result)
+    protected dynamic ParseResult<T, TR>(CommandResult<T> result)
+    {
+        var message = result.Message;
+        var mapper = HttpContext.RequestServices.GetService<IMapper>();
+
+        if (mapper == null)
+        {
+            return InternalServerError("Erro ao converter o resultado da operação");
+        }
+
+        return result.Code switch
+        {
+            Code.Ok => (result.Result != null ? Ok(mapper.Map<TR>(result.Result)) : Ok(message)),
+            Code.Created => (result.Result != null ? Ok(mapper.Map<TR>(result.Result)) : Created(message)),
+            Code.NotFound => NotFound(message),
+            Code.Invalid => BadRequest(message),
+            Code.Unauthorized => Unauthorized(message),
+            _ => InternalServerError("Erro ao converter o resultado da operação")
+        };
+    }
+
+    [NonAction]
+    protected dynamic ParseResult(CommandResult result)
     {
         var message = result.Message;
 
-        if (result.Code == 200)
+        return result.Code switch
         {
-            if (result.Result != null)
-            {
-                #pragma warning disable CS8603
-                return Ok(result.Result);
-            }
-
-            return Ok(message);
-        }
-
-        if (result.Code == 201)
-        {
-            if (result.Result != null)
-            {
-                #pragma warning disable CS8603
-                return Created(result.Result);
-            }
-
-            return Created(message);
-        }
-
-        if (result.Code == 400)
-        {
-            if (result.Errors != null)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            return BadRequest(message);
-        }
-
-        if (result.Code == 404)
-        {
-            return NotFound(message);
-        }
-
-        if (result.Code == 401)
-        {
-            return Unauthorized(message);
-        }
-
-        return InternalServerError("Erro ao converter o resultado da operação");
+            Code.Ok => Ok(message),
+            Code.Created => Created(message),
+            Code.NotFound => NotFound(message),
+            Code.Invalid => BadRequest(message),
+            Code.Unauthorized => Unauthorized(message),
+            _ => InternalServerError("Erro ao converter o resultado da operação")
+        };
     }
 
     [NonAction]
-    public dynamic ParseResult(ResultDTO result)
+    protected Guid GetUserId()
     {
-        var message = result.Message;
-
-        if (result.Code == 200)
-        {
-            return Ok(message);
-        }
-
-        if (result.Code == 201)
-        {
-            return Created(message);
-        }
-
-        if (result.Code == 400)
-        {
-            if (result.Errors != null)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            return BadRequest(message);
-        }
-
-        if (result.Code == 404)
-        {
-            return NotFound(message);
-        }
-
-        if (result.Code == 401)
-        {
-            return Unauthorized(message);
-        }
-
-        return InternalServerError("Erro ao converter o resultado da operação");
+        var userId = User.Identity?.Name;
+        return userId == null ? Guid.Empty : Guid.Parse(userId);
     }
 
     [NonAction]
-    public Guid GetUserId()
+    protected User GetUser()
     {
-        var userId = User?.Identity?.Name;
-        if (userId == null)
+        var userRepository = HttpContext.RequestServices.GetService<IUserRepository>();
+        if (userRepository == null)
         {
-            return Guid.Empty;
-        }
-
-        return Guid.Parse(userId);
-    }
-
-    [NonAction]
-    public User? GetUser()
-    {
-        var _userRepository = HttpContext.RequestServices.GetService<IUserRepository>();
-        if (_userRepository == null)
-        {
-            return null;
+            throw new UnauthorizedAccessException("Usuário não encontrado!");
         }
 
         var userId = GetUserId();
-        var user = _userRepository.GetById(userId);
+        var user = userRepository.GetById(userId);
+
+        if (user == null)
+        {
+            throw new UnauthorizedAccessException("Usuário não encontrado!");
+        }
 
         return user;
     }
 
     [NonAction]
-    public T Ok<T>(T data)
+    protected T Ok<T>(T data)
     {
         Response.StatusCode = 200;
 
         return data;
     }
 
-    public T Created<T>(T data)
+    private T Created<T>(T data)
     {
         Response.StatusCode = 201;
 
@@ -139,7 +90,7 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public MessageResult Ok(string message)
+    private MessageResult Ok(string message)
     {
         Response.StatusCode = 200;
 
@@ -147,7 +98,7 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public T NotFound<T>(T data)
+    protected T NotFound<T>(T data)
     {
         Response.StatusCode = 404;
 
@@ -155,7 +106,7 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public MessageResult NotFound(string message)
+    private MessageResult NotFound(string message)
     {
         Response.StatusCode = 404;
 
@@ -171,7 +122,7 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public MessageResult Unauthorized(string message)
+    private MessageResult Unauthorized(string message)
     {
         Response.StatusCode = 401;
 
@@ -187,7 +138,7 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public MessageResult BadRequest(string message)
+    private MessageResult BadRequest(string message)
     {
         Response.StatusCode = 400;
 
@@ -195,7 +146,7 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public MessageResult InternalServerError(string message)
+    private MessageResult InternalServerError(string message)
     {
         Response.StatusCode = 500;
 

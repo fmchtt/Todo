@@ -11,6 +11,8 @@ using Todo.Domain.Utils;
 using Todo.Infra.Utils;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.FileProviders;
+using Todo.Api.Mappers;
+using Todo.Domain.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 var secret = builder.Configuration.GetValue("SECRET_KEY", "") ?? Guid.NewGuid().ToString();
@@ -45,17 +47,31 @@ builder.Services.AddDbContext<TodoDBContext>(x =>
     }
 });
 
+// Utils
 builder.Services.AddTransient<ITokenService, TokenService>(x => new TokenService(key));
 builder.Services.AddTransient<IHasher, Hasher>(x => new Hasher(secret));
 builder.Services.AddTransient<IFileStorage, LocalFileStorage>(x => new LocalFileStorage(staticPath));
 builder.Services.AddTransient<IMailer, ConsoleMailer>();
 
+// Repositories
 builder.Services.AddTransient<IBoardRepository, BoardRepository>();
 builder.Services.AddTransient<IColumnRepository, ColumnRepository>();
 builder.Services.AddTransient<ITodoItemRepostory, TodoItemRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IRecoverCodeRepository, RecoverCodeRepository>();
 builder.Services.AddTransient<IInviteRepository, InviteRepository>();
+
+// Handlers
+builder.Services.AddTransient<BoardHandler>();
+builder.Services.AddTransient<ColumnHandler>();
+builder.Services.AddTransient<UserHandler>();
+builder.Services.AddTransient<ItemHandler>();
+
+// Mappers
+builder.Services.AddAutoMapper(typeof(BoardMapper));
+builder.Services.AddAutoMapper(typeof(ItemMapper));
+builder.Services.AddAutoMapper(typeof(UserMapper));
+builder.Services.AddAutoMapper(typeof(ColumnMapper));
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -78,7 +94,7 @@ builder.Services.AddSwaggerGen(options =>
                     Id = "Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });

@@ -12,17 +12,17 @@ public class SearchController : TodoBaseController
     [HttpGet, Authorize]
     public SearchResultDTO Search(
         [FromQuery] string s, 
-        [FromServices] ITodoItemRepostory itemRepostory, 
+        [FromServices] ITodoItemRepostory itemRepository, 
         [FromServices] IBoardRepository boardRepository
     )
     {
-        if (s == null || s == String.Empty)
+        if (string.IsNullOrEmpty(s))
         {
             return new SearchResultDTO();
         }
 
         var boards = boardRepository.GetAllByName(s, GetUserId());
-        var itens = itemRepostory.GetAllByTitle(s, GetUserId());
+        var itens = itemRepository.GetAllByTitle(s, GetUserId());
 
         var result = new SearchResultDTO();
         foreach (var board in boards)

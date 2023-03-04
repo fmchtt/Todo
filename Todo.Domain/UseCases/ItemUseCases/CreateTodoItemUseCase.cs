@@ -1,5 +1,5 @@
-﻿using Todo.Domain.DTO;
-using Todo.Domain.DTO.Input;
+﻿using Todo.Domain.Commands.ItemCommands;
+using Todo.Domain.DTO;
 using Todo.Domain.DTO.Output;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;

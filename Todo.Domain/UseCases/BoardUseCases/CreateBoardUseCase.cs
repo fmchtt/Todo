@@ -15,7 +15,7 @@ public class CreateBoardUseCase
         _boardRepository = boardRepository;
     }
 
-    public ResultDTO<BoardResultDTO> Handle(CreateBoardDTO data, User user)
+    public ResultDTO<BoardResultDTO> Handle(CreateBoardDto data, User user)
     {
         var board = new Board(data.Name, data.Description, user.Id);
         board.Participants = new List<User> { user };

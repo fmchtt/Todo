@@ -1,4 +1,5 @@
-﻿using Todo.Domain.DTO.Input;
+﻿using Todo.Domain.Commands.BoardCommands;
+using Todo.Domain.Handlers;
 using Todo.Domain.UseCases.BoardUseCases;
 using Todo.Tests.Repositories;
 
@@ -7,11 +8,12 @@ namespace Todo.Tests.UseCases;
 public class BoardTests
 {
     private readonly FakeBoardRepository boardRepository = new FakeBoardRepository();
+    private readonly BoardHandler handler;
 
     [Fact]
     public void ShouldCreateBoard()
     {
-        var data = new CreateBoardDTO("Teste", String.Empty);
+        var data = new CreateBoardCommand("Teste", String.Empty);
         var result = new CreateBoardUseCase(boardRepository).Handle(data, FakeBoardRepository.testUser);
 
         Assert.Equal(201, result.Code);

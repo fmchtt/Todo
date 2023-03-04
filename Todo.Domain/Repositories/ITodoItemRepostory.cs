@@ -1,5 +1,5 @@
-﻿using Todo.Domain.DTO.Output;
-using Todo.Domain.Entities;
+﻿using Todo.Domain.Entities;
+using Todo.Domain.Results;
 
 namespace Todo.Domain.Repositories;
 

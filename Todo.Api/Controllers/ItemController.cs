@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
-using Todo.Api.DTO;
-using Todo.Domain.DTO.Input;
-using Todo.Domain.DTO.Output;
+using Todo.Domain.Commands.ItemCommands;
+using Todo.Domain.Entities;
+using Todo.Domain.Handlers;
 using Todo.Domain.Repositories;
-using Todo.Domain.UseCases.ItemUseCases;
+using Todo.Domain.Results;
 
 namespace Todo.Api.Controllers;
 
@@ -13,8 +14,9 @@ namespace Todo.Api.Controllers;
 public class ItemController : TodoBaseController
 {
     [HttpGet, Authorize]
-    public PaginatedDTO<ExpandedTodoItemResultDTO> GetAll(
-        [FromServices] ITodoItemRepostory todoItemRepostory,
+    public PaginatedDTO<ExpandedItemResult> GetAll(
+        [FromServices] ITodoItemRepostory todoItemRepository,
+        [FromServices] IMapper mapper,
         [FromQuery] int page = 1
     )
     {
@@ -23,136 +25,103 @@ public class ItemController : TodoBaseController
             page = 1;
         }
 
-        var todos = todoItemRepostory.GetAll(GetUserId(), page - 1);
+        var todos = todoItemRepository.GetAll(GetUserId(), page - 1);
 
-        var result = new List<ExpandedTodoItemResultDTO>();
-        foreach (var item in todos.Results)
-        {
-            result.Add(new ExpandedTodoItemResultDTO(item));
-        }
+        var result = todos.Results.Select(item => mapper.Map<ExpandedItemResult>(item)).ToList();
 
-        return new PaginatedDTO<ExpandedTodoItemResultDTO>(result, todos.PageCount);
+        return new PaginatedDTO<ExpandedItemResult>(result, todos.PageCount);
     }
 
     [HttpPost, Authorize]
-    [ProducesResponseType(typeof(TodoItemResultDTO), 201)]
+    [ProducesResponseType(typeof(ResumedItemResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic CreateItem(
-        [FromBody] CreateTodoItemDTO data, 
-        [FromServices] ITodoItemRepostory itemRepostory, 
-        [FromServices] IBoardRepository boardRepository, 
-        [FromServices] IColumnRepository columnRepository
+        CreateItemCommand command, 
+        [FromServices] ItemHandler handler
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
+        var result = handler.Handle(command, user);
 
-        var result = new CreateTodoItemUseCase(itemRepostory, boardRepository, columnRepository).Handle(data, user);
-
-        return ParseResult(result);
+        return ParseResult<TodoItem, ResumedItemResult>(result);
     }
 
-    [HttpPost("{todoId}/column/{columnId}"), Authorize]
-    [ProducesResponseType(typeof(TodoItemResultDTO), 200)]
+    [HttpPost("{itemId:guid}/column/{columnId:guid}"), Authorize]
+    [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic ChangeColumn(
-        [FromRoute] string todoId, 
-        [FromRoute] string columnId, 
-        [FromServices] ITodoItemRepostory itemRepostory, 
-        [FromServices] IColumnRepository columnRepository
+        Guid itemId,
+        Guid columnId,
+        [FromServices] ItemHandler handler
     )
     {
         var user = GetUser();
-        if (user == null )
-        {
-            return NotFound();
-        }
+        var command = new ChangeItemColumnCommand(itemId, columnId);
+        var result = handler.Handle(command, user);
 
-        var result = new ChangeItemColumnUseCase(itemRepostory, columnRepository).Handle(Guid.Parse(columnId), Guid.Parse(todoId), user);
-
-        return ParseResult(result);
+        return ParseResult<TodoItem, ResumedItemResult>(result);
     }
 
-    [HttpPatch("{id}"), Authorize]
-    [ProducesResponseType(typeof(TodoItemResultDTO), 200)]
+    [HttpPatch("{itemId:guid}"), Authorize]
+    [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic UpdateItem(
-        [FromBody] EditTodoItemDTO data, 
-        [FromRoute] string id, 
-        [FromServices] ITodoItemRepostory itemRepostory
+        EditItemCommand command,
+        Guid itemId,
+        [FromServices] ItemHandler handler
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
+        command.ItemId = itemId;
+        var result = handler.Handle(command, user);
 
-        var result = new EditTodoItemUseCase(itemRepostory).Handle(data, Guid.Parse(id), user);
-
-        return ParseResult(result);
+        return ParseResult<TodoItem, ResumedItemResult>(result);
     }
 
-    [HttpDelete("{id}"), Authorize]
+    [HttpDelete("{itemId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic DeleteItem(
-        [FromRoute] string id, 
-        [FromServices] ITodoItemRepostory itemRepostory
+        Guid itemId,
+        [FromServices] ItemHandler handler
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-        var result = new DeleteTodoItemUseCase(itemRepostory).Handle(Guid.Parse(id), user);
+        var command = new DeleteItemCommand(itemId);
+        var result = handler.Handle(command, user);
 
         return ParseResult(result);
     }
 
-    [HttpPost("{id}/done"), Authorize]
-    [ProducesResponseType(typeof(TodoItemResultDTO), 200)]
+    [HttpPost("{itemId:guid}/done"), Authorize]
+    [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic MarkAsDone(
-        [FromRoute] string id,
-        [FromServices] ITodoItemRepostory todoItemRepostory
+        [FromRoute] Guid itemId,
+        [FromServices] ItemHandler handler
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
+        var result = handler.Handle(new MarkCommand(itemId, true), user);
 
-        var result = new MarkAsDoneUseCase(todoItemRepostory).Handle(Guid.Parse(id), user);
-
-        return ParseResult(result);
+        return ParseResult<TodoItem, ResumedItemResult>(result);
     }
 
-    [HttpPost("{id}/undone"), Authorize]
-    [ProducesResponseType(typeof(TodoItemResultDTO), 200)]
+    [HttpPost("{itemId:guid}/undone"), Authorize]
+    [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic MarkAsunDone(
-        [FromRoute] string id,
-        [FromServices] ITodoItemRepostory todoItemRepostory
+    public dynamic MarkAsUndone(
+        [FromRoute] Guid itemId,
+        [FromServices] ItemHandler handler
     )
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
+        var result = handler.Handle(new MarkCommand(itemId, true), user);
 
-        var result = new MarkAsUndoneUseCase(todoItemRepostory).Handle(Guid.Parse(id), user);
-
-        return ParseResult(result);
+        return ParseResult<TodoItem, ResumedItemResult>(result);
     }
 }

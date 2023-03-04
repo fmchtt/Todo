@@ -25,4 +25,16 @@
     <ProjectReference Include="..\Todo.Domain\Todo.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="UseCases\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="UseCases\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="UseCases\**" />
+  </ItemGroup>
+
 </Project>

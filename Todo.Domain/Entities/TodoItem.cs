@@ -55,7 +55,7 @@ public class TodoItem : Entity
         Done = false;
     }
 
-    public bool UserCandEdit(Guid userId)
+    public bool UserCanEdit(Guid userId)
     {
         var canEdit = CreatorId == userId || Board?.Participants.Find(x => x.Id == userId) != null;
 

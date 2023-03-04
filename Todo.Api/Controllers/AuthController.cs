@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
 using Todo.Api.DTO;
-using Todo.Domain.DTO.Input;
-using Todo.Domain.DTO.Output;
+using Todo.Domain.Commands.UserCommands;
+using Todo.Domain.Entities;
+using Todo.Domain.Handlers;
+using Todo.Domain.Handlers.Contracts;
 using Todo.Domain.Repositories;
-using Todo.Domain.UseCases.UserUseCases;
-using Todo.Domain.Utils;
+using Todo.Domain.Results;
 
 namespace Todo.Api.Controllers;
 
@@ -14,33 +16,27 @@ namespace Todo.Api.Controllers;
 public class AuthController : TodoBaseController
 {
     [HttpGet("me"), Authorize]
-    [ProducesResponseType(typeof(UserResumedResultDTO), 200)]
-    public dynamic Me()
+    [ProducesResponseType(typeof(ResumedUserResult), 200)]
+    public dynamic Me([FromServices] IMapper mapper)
     {
         var user = GetUser();
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        return new UserResumedResultDTO(user);
+        return mapper.Map<ResumedUserResult>(user);
     }
 
     [HttpPost("login")]
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic Login(
-        [FromBody] LoginDTO data, 
-        [FromServices] IUserRepository repository, 
-        [FromServices] IHasher hasher, 
-        [FromServices] ITokenService tokenService
+        LoginCommand command, 
+        [FromServices] ITokenService tokenService,
+        [FromServices] UserHandler handler
     )
     {
-        var result = new LoginUseCase(repository, hasher).Handle(data);
+        var result = handler.Handle(command);
 
-        if (result.Code != 200)
+        if (result.Code != Code.Ok)
         {
-            return ParseResult(result);
+            return ParseResult<User, ResumedUserResult>(result);
         }
 
         if (result.Result == null)
@@ -55,17 +51,16 @@ public class AuthController : TodoBaseController
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic Register(
-        [FromBody] UserCreateDTO data, 
-        [FromServices] IUserRepository repository, 
-        [FromServices] IHasher hasher, 
+        [FromBody] RegisterCommand command, 
+        [FromServices] UserHandler handler, 
         [FromServices] ITokenService tokenService
     )
     {
-        var result = new UserRegisterUseCase(repository, hasher).Handle(data);
+        var result = handler.Handle(command);
 
-        if (result.Code != 200)
+        if (result.Code != Code.Ok)
         {
-            return ParseResult(result);
+            return ParseResult<User, ResumedUserResult>(result);
         }
 
         if (result.Result == null)
@@ -79,13 +74,11 @@ public class AuthController : TodoBaseController
     [HttpPost("password/reset")]
     [ProducesResponseType(typeof(MessageResult), 200)]
     public dynamic PasswordReset(
-        [FromBody] RecoverPasswordDTO data,
-        [FromServices] IRecoverCodeRepository recoverCodeRepository,
-        [FromServices] IUserRepository userRepository,
-        [FromServices] IMailer mailer
+        RecoverPasswordCommand command,
+        [FromServices] UserHandler handler
     )
     {
-        _ = new RecoverPasswordUseCase(mailer, userRepository, recoverCodeRepository).Handle(data);
+        handler.Handle(command);
 
         return new MessageResult("Caso o email esteja registrado, um código será enviado ao email");
     }
@@ -110,13 +103,11 @@ public class AuthController : TodoBaseController
     [HttpPost("password/reset/confirm")]
     [ProducesResponseType(typeof(MessageResult), 200)]
     public dynamic PasswordResetConfirm(
-        [FromBody] ConfirmRecoverPasswordDTO data,
-        [FromServices] IRecoverCodeRepository recoverCodeRepository,
-        [FromServices] IUserRepository userRepository,
-        [FromServices] IHasher hasher
+        ConfirmRecoverPasswordCommand command,
+        [FromServices] UserHandler handler
     )
     {
-        var result = new ConfirmRecoverPasswordUseCase(recoverCodeRepository, hasher, userRepository).Handle(data);
+        var result = handler.Handle(command);
 
         return ParseResult(result);
     }

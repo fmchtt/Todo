@@ -1,4 +1,4 @@
-﻿using Todo.Domain.DTO.Input;
+﻿using Todo.Domain.Commands.ColumnCommands;
 using Todo.Domain.UseCases.ColumnUseCases;
 using Todo.Tests.Repositories;
 
