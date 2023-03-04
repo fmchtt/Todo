@@ -27,9 +27,9 @@ public class BoardRepository : IBoardRepository
         _dbContext.SaveChanges();
     }
 
-    public PaginatedDTO<Board> GetAll(Guid ownerId, int page)
+    public PaginatedResult<Board> GetAll(Guid ownerId, int page)
     {
-        int offset = page * 10;
+        var offset = page * 10;
         var user = _dbContext.Users.First(x => x.Id == ownerId);
 
         var query = _dbContext.Boards.Where(x => x.Participants.Contains(user)).Skip(offset).Take(10).OrderBy(x => x.Name);
@@ -37,7 +37,7 @@ public class BoardRepository : IBoardRepository
         var result = query.ToList();
         var count = query.Count() / 10;
 
-        return new PaginatedDTO<Board>(result, count);
+        return new PaginatedResult<Board>(result, count);
     }
 
     public List<Board> GetAllByName(string name, Guid ownerId)

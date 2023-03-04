@@ -14,7 +14,7 @@ public class DeleteItemValidator : AbstractValidator<DeleteItemCommand>
 
 public class DeleteItemCommand : ICommand
 {
-    public Guid ItemId { get; set; } = Guid.Empty;
+    public Guid ItemId { get; init; } = Guid.Empty;
 
     public ValidationResult Validate()
     {

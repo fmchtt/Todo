@@ -4,13 +4,6 @@ namespace Todo.Infra.Utils;
 
 public class Hasher : IHasher
 {
-    private string Secret;
-
-    public Hasher(string secret)
-    {
-        Secret = secret;
-    }
-
     public string Hash(string key)
     {
         return BCrypt.Net.BCrypt.HashPassword(key);

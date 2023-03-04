@@ -27,7 +27,7 @@ public class AuthController : TodoBaseController
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic Login(
-        LoginCommand command, 
+        LoginCommand command,
         [FromServices] ITokenService tokenService,
         [FromServices] UserHandler handler
     )
@@ -51,8 +51,8 @@ public class AuthController : TodoBaseController
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic Register(
-        [FromBody] RegisterCommand command, 
-        [FromServices] UserHandler handler, 
+        [FromBody] RegisterCommand command,
+        [FromServices] UserHandler handler,
         [FromServices] ITokenService tokenService
     )
     {
@@ -92,11 +92,9 @@ public class AuthController : TodoBaseController
     )
     {
         var foundCode = codeRepository.Get(data.Code, data.Email);
-        if (foundCode == null) {
-            return Ok(new MessageResult("Código encontrado!"));
-        }
-
-        return NotFound(new MessageResult("Código não encontrado!"));
+        return foundCode == null
+            ? Ok(new MessageResult("Código encontrado!"))
+            : NotFound(new MessageResult("Código não encontrado!"));
     }
 
 

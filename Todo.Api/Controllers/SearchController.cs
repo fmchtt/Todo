@@ -12,7 +12,7 @@ public class SearchController : TodoBaseController
     [HttpGet, Authorize]
     public SearchResultDTO Search(
         [FromQuery] string s, 
-        [FromServices] ITodoItemRepostory itemRepository, 
+        [FromServices] ITodoItemRepository itemRepository, 
         [FromServices] IBoardRepository boardRepository
     )
     {

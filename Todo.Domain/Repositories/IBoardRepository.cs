@@ -6,7 +6,7 @@ namespace Todo.Domain.Repositories;
 public interface IBoardRepository
 {
     public Board? GetById(Guid id);
-    public PaginatedDTO<Board> GetAll(Guid ownerId, int page);
+    public PaginatedResult<Board> GetAll(Guid ownerId, int page);
     public List<Board> GetAllByName(string name, Guid ownerId);
     public void Create(Board board);
     public void Update(Board board);

@@ -15,8 +15,8 @@ public class MarkValidator : AbstractValidator<MarkCommand>
 
 public class MarkCommand : ICommand
 {
-    public Guid ItemId { get; set; } = Guid.Empty;
-    public bool Done { get; set; }
+    public Guid ItemId { get; init; } = Guid.Empty;
+    public bool Done { get; init; }
 
     public ValidationResult Validate()
     {

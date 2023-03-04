@@ -5,7 +5,7 @@ using Todo.Infra.Contexts;
 
 namespace Todo.Infra.Repositories;
 
-public class TodoItemRepository : ITodoItemRepostory
+public class TodoItemRepository : ITodoItemRepository
 {
     private readonly TodoDBContext _dbContext;
 
@@ -26,16 +26,16 @@ public class TodoItemRepository : ITodoItemRepostory
         _dbContext.SaveChanges();
     }
 
-    public PaginatedDTO<TodoItem> GetAll(Guid ownerId, int page)
+    public PaginatedResult<TodoItem> GetAll(Guid ownerId, int page)
     {
-        int offset = page * 10;
+        var offset = page * 10;
 
         var query = _dbContext.Itens.Where(x => x.CreatorId == ownerId).Skip(offset).Take(10).OrderByDescending(x => x.CreatedDate);
         
         var results = query.ToList();
         var pageCount = query.Count() / 10;
 
-        return new PaginatedDTO<TodoItem>(results, pageCount);
+        return new PaginatedResult<TodoItem>(results, pageCount);
     }
 
     public List<TodoItem> GetAllByTitle(string title, Guid ownerId)

@@ -11,10 +11,10 @@ public class ItemHandler : IHandler<CreateItemCommand, TodoItem>, IHandler<EditI
 {
     private readonly IBoardRepository _boardRepository;
     private readonly IColumnRepository _columnRepository;
-    private readonly ITodoItemRepostory _itemRepository;
+    private readonly ITodoItemRepository _itemRepository;
 
     public ItemHandler(IBoardRepository boardRepository, IColumnRepository columnRepository,
-        ITodoItemRepostory itemRepository)
+        ITodoItemRepository itemRepository)
     {
         _boardRepository = boardRepository;
         _columnRepository = columnRepository;

@@ -14,8 +14,8 @@ public class EditUserValidator : AbstractValidator<EditUserCommand>
 
 public class EditUserCommand : ICommand
 {
-    public string? Name { get; set; }
-    public string? AvatarUrl { get; set; }
+    public string? Name { get; init; }
+    public string? AvatarUrl { get; init; }
 
     public ValidationResult Validate()
     {

@@ -15,8 +15,8 @@ public class RemoveBoardParticipantValidator : AbstractValidator<RemoveBoardPart
 
 public class RemoveBoardParticipantCommand : ICommand
 {
-    public Guid BoardId { get; set; } = Guid.Empty;
-    public Guid ParticipantId { get; set; } = Guid.Empty;
+    public Guid BoardId { get; init; } = Guid.Empty;
+    public Guid ParticipantId { get; init; } = Guid.Empty;
 
     public ValidationResult Validate()
     {

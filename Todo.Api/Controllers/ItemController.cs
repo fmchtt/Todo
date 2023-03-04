@@ -13,9 +13,9 @@ namespace Todo.Api.Controllers;
 [ApiController, Route("itens")]
 public class ItemController : TodoBaseController
 {
-    [HttpGet, Authorize]
-    public PaginatedDTO<ExpandedItemResult> GetAll(
-        [FromServices] ITodoItemRepostory todoItemRepository,
+    [HttpGet(""), Authorize]
+    public PaginatedResult<ExpandedItemResult> GetAll(
+        [FromServices] ITodoItemRepository todoItemRepository,
         [FromServices] IMapper mapper,
         [FromQuery] int page = 1
     )
@@ -27,9 +27,9 @@ public class ItemController : TodoBaseController
 
         var todos = todoItemRepository.GetAll(GetUserId(), page - 1);
 
-        var result = todos.Results.Select(item => mapper.Map<ExpandedItemResult>(item)).ToList();
+        var result = todos.Results.Select(mapper.Map<ExpandedItemResult>).ToList();
 
-        return new PaginatedDTO<ExpandedItemResult>(result, todos.PageCount);
+        return new PaginatedResult<ExpandedItemResult>(result, todos.PageCount);
     }
 
     [HttpPost, Authorize]
@@ -57,7 +57,7 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new ChangeItemColumnCommand()
+        var command = new ChangeItemColumnCommand
         {
             ItemId = itemId,
             ColumnId = columnId
@@ -93,7 +93,7 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new DeleteItemCommand()
+        var command = new DeleteItemCommand
         {
             ItemId = itemId
         };
@@ -112,7 +112,7 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        var result = handler.Handle(new MarkCommand()
+        var result = handler.Handle(new MarkCommand
         {
             ItemId = itemId,
             Done = true
@@ -131,7 +131,7 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        var result = handler.Handle(new MarkCommand()
+        var result = handler.Handle(new MarkCommand
         {
             ItemId = itemId,
             Done = false

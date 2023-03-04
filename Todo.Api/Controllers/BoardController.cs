@@ -14,7 +14,7 @@ namespace Todo.Api.Controllers;
 public class BoardController : TodoBaseController
 {
     [HttpGet, Authorize]
-    public PaginatedDTO<ResumedBoardResult> GetAll(
+    public PaginatedResult<ResumedBoardResult> GetAll(
         [FromServices] IBoardRepository boardRepository,
         [FromServices] IMapper mapper,
         [FromQuery] int page = 1
@@ -29,7 +29,7 @@ public class BoardController : TodoBaseController
 
         var result = todos.Results.Select(mapper.Map<ResumedBoardResult>).ToList();
 
-        return new PaginatedDTO<ResumedBoardResult>(result, todos.PageCount);
+        return new PaginatedResult<ResumedBoardResult>(result, todos.PageCount);
     }
 
     [HttpGet("{id:guid}"), Authorize]
@@ -91,7 +91,7 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new DeleteBoardCommand()
+        var command = new DeleteBoardCommand
         {
             BoardId = boardId
         };
@@ -110,7 +110,7 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new ConfirmBoardParticipantCommand()
+        var command = new ConfirmBoardParticipantCommand
         {
             BoardId = boardId
         };
@@ -148,7 +148,7 @@ public class BoardController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new RemoveBoardParticipantCommand()
+        var command = new RemoveBoardParticipantCommand
         {
             BoardId = boardId,
             ParticipantId = participantId

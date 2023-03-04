@@ -11,7 +11,7 @@ namespace Todo.Api.Controllers;
 [ApiController, Route("columns")]
 public class ColumnController : TodoBaseController
 {
-    [HttpPost, Authorize]
+    [HttpPost(""), Authorize]
     [ProducesResponseType(typeof(ResumedColumnResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 400)]
     [ProducesResponseType(typeof(MessageResult), 401)]
@@ -52,7 +52,7 @@ public class ColumnController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new DeleteColumnCommand()
+        var command = new DeleteColumnCommand
         {
             ColumnId = columnId
         };

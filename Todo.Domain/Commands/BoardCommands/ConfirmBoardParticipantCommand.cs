@@ -14,7 +14,7 @@ public class ConfirmBoardParticipantValidator : AbstractValidator<ConfirmBoardPa
 
 public class ConfirmBoardParticipantCommand : ICommand
 {
-    public Guid BoardId { get; set; } = Guid.Empty;
+    public Guid BoardId { get; init; } = Guid.Empty;
 
     public ValidationResult Validate()
     {

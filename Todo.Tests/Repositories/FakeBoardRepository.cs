@@ -25,9 +25,9 @@ public class FakeBoardRepository : IBoardRepository
         Boards.Remove(board);
     }
 
-    public PaginatedDTO<Board> GetAll(Guid ownerId, int page)
+    public PaginatedResult<Board> GetAll(Guid ownerId, int page)
     {
-        return new PaginatedDTO<Board>(Boards, Boards.Count);
+        return new PaginatedResult<Board>(Boards, Boards.Count);
     }
 
     public List<Board> GetAllByName(string name, Guid ownerId)

@@ -23,8 +23,8 @@ public class TodoBaseController : ControllerBase
 
         return result.Code switch
         {
-            Code.Ok => (result.Result != null ? Ok(mapper.Map<TR>(result.Result)) : Ok(message)),
-            Code.Created => (result.Result != null ? Ok(mapper.Map<TR>(result.Result)) : Created(message)),
+            Code.Ok => result.Result != null ? Ok(mapper.Map<TR>(result.Result)) : Ok(message),
+            Code.Created => result.Result != null ? Ok(mapper.Map<TR>(result.Result)) : Created(message),
             Code.NotFound => NotFound(message),
             Code.Invalid => errors != null ? BadRequest(errors) : BadRequest(message),
             Code.Unauthorized => Unauthorized(message),
@@ -116,14 +116,6 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public T Unauthorized<T>(T data)
-    {
-        Response.StatusCode = 401;
-
-        return data;
-    }
-
-    [NonAction]
     private MessageResult Unauthorized(string message)
     {
         Response.StatusCode = 401;
@@ -132,7 +124,7 @@ public class TodoBaseController : ControllerBase
     }
 
     [NonAction]
-    public T BadRequest<T>(T data)
+    private T BadRequest<T>(T data)
     {
         Response.StatusCode = 400;
 

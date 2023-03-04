@@ -27,7 +27,7 @@ public class UserController : TodoBaseController
             avatarUrl = await fileStorage.SaveFile(data.File);
         }
 
-        var command = new EditUserCommand()
+        var command = new EditUserCommand
         {
             Name = data.Name,
             AvatarUrl = avatarUrl
