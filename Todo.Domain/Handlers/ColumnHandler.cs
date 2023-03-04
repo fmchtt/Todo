@@ -24,7 +24,7 @@ public class ColumnHandler : IHandler<CreateColumnCommand, Column>, IHandler<Edi
             return new CommandResult<Column>(Code.Invalid, "Quadro não encontrado!");
         }
         
-        if (board.UserCanEdit(user.Id))
+        if (!board.UserCanEdit(user.Id))
         {
             return new CommandResult<Column>(Code.Unauthorized, "Sem permissão para alterar o quadro!");
         }
@@ -45,7 +45,7 @@ public class ColumnHandler : IHandler<CreateColumnCommand, Column>, IHandler<Edi
             return new CommandResult<Column>(Code.NotFound, "Coluna não encontrada!");
         }
 
-        if (column.Board.UserCanEdit(user.Id))
+        if (!column.Board.UserCanEdit(user.Id))
         {
             return new CommandResult<Column>(Code.NotFound, "Sem permissão para apagar a coluna!");
         }
@@ -74,7 +74,7 @@ public class ColumnHandler : IHandler<CreateColumnCommand, Column>, IHandler<Edi
             return new CommandResult(Code.NotFound, "Coluna não encontrada!");
         }
 
-        if (column.Board.UserCanEdit(user.Id))
+        if (!column.Board.UserCanEdit(user.Id))
         {
             return new CommandResult(Code.Unauthorized, "Sem permissão para apagar a coluna!");
         }

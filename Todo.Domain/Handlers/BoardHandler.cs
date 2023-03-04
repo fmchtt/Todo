@@ -61,7 +61,7 @@ public class BoardHandler : IHandler<CreateBoardCommand, Board>, IHandler<Delete
             return new CommandResult<Board>(Code.NotFound, "Quadro não encontrado!");
         }
 
-        if (board.Participants.Find(x => x.Id == user.Id) == null)
+        if (!board.UserCanEdit(user.Id))
         {
             return new CommandResult<Board>(Code.Unauthorized, "Sem permissão para alterar o quadro");
         }

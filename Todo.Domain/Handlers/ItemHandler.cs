@@ -102,7 +102,7 @@ public class ItemHandler : IHandler<CreateItemCommand, TodoItem>, IHandler<EditI
             return new CommandResult<TodoItem>(Code.NotFound, "Tarefa ou coluna não encontrados!");
         }
 
-        if (column.Board.UserCanEdit(user.Id))
+        if (!column.Board.UserCanEdit(user.Id))
         {
             return new CommandResult<TodoItem>(Code.NotFound, "Sem permissão para alterar a tarefa!");
         }
