@@ -8,7 +8,6 @@ entre usuários
 
 ## 💻 Pré-requisitos
 
----
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
 
 ```
@@ -17,7 +16,6 @@ Você instalou a versão mais recente do .NET, Postgres e do Node.JS
 
 ## 🚀 Instalando Taskerizer
 
----
 Para instalar o Taskerizer, siga estas etapas:
 
 ```
@@ -44,7 +42,6 @@ Execute o comando 'npm run dev' ou 'yarn dev'
 
 ## 💜 Participantes
 
----
 <table>
   <tr>
     <td align="center"><a href="https://github.com/fmchtt"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/63958315?v=4" width="100px;" alt=""/><br /><sub><b>Felipe Micheletto</b></sub></a><br /><a href="https://github.com/fmchtt" title="Perfil Felipe">🚀</a></td>
