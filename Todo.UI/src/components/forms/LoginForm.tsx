@@ -52,7 +52,7 @@ export default function LoginForm() {
         .then(() => {
           setLoading(false);
         })
-        .catch((e) => {
+        .catch(() => {
           setLoading(false);
           setError(true);
         });

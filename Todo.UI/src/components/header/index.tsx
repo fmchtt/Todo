@@ -4,13 +4,12 @@ import useAuth from "@/context/auth";
 import {
   DropDownButton,
   DropDownMenu,
-  RoundedAvatar,
   StyledHeader,
   UserContainer,
   UserMenu,
 } from "./styles";
 import { Link } from "react-router-dom";
-import profilePlaceholder from "@/assets/images/profile.svg";
+import RoundedAvatar from "@/components/roundedAvatar";
 
 export default function Header() {
   const { user } = useAuth();
@@ -27,10 +26,8 @@ export default function Header() {
           <UserContainer>
             <Text margin="0 10px">{user?.name}</Text>
             <RoundedAvatar
-              src={
-                user?.avatarUrl
-                  ? import.meta.env.VITE_API_URL + user.avatarUrl
-                  : profilePlaceholder
+              avatarUrl={
+                user?.avatarUrl && import.meta.env.VITE_API_URL + user.avatarUrl
               }
             />
           </UserContainer>

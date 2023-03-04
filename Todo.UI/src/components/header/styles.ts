@@ -11,17 +11,6 @@ export const StyledHeader = styled.header`
   justify-content: space-between;
 `;
 
-type RoundedAvatarProps = {
-  over?: number;
-};
-export const RoundedAvatar = styled.img<RoundedAvatarProps>`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-
-  margin-left: ${(props) => (props.over ? "-16px" : "unset")};
-`;
-
 export const UserMenu = styled.div`
   cursor: pointer;
   position: relative;

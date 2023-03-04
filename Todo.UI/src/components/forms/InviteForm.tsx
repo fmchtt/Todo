@@ -6,12 +6,14 @@ import { Text } from "@/assets/css/global.styles";
 import { TbTrash } from "react-icons/tb";
 import { removeParticipant, sendInvite } from "@/services/api/boards";
 import useAuth from "@/context/auth";
+import RoundedAvatar from "@/components/roundedAvatar";
 
 interface InviteFormProps {
   participants?: User[];
   ownerId?: string;
   boardId: string;
 }
+
 export default function InviteForm(props: InviteFormProps) {
   const [emails, setEmails] = useState("");
   const [loading, setLoading] = useState(false);
@@ -64,14 +66,23 @@ export default function InviteForm(props: InviteFormProps) {
       <Text>Participantes: </Text>
       {props.participants?.map((participant) => {
         return (
-          <Group justify="space-between" key={participant.id}>
-            <Text weight={200}>{participant.name}</Text>
+          <Group justify="space-between" align="center" key={participant.id}>
+            <Group align="center">
+              <RoundedAvatar
+                avatarUrl={
+                  participant.avatarUrl &&
+                  import.meta.env.VITE_API_URL + participant.avatarUrl
+                }
+                name={participant.name}
+              />
+              <Text weight={200}>{participant.name}</Text>
+            </Group>
             <Group>
               {participant.id !== user?.id &&
                 participant.id !== props.ownerId && (
                   <TbTrash
                     role="button"
-                    size={20}
+                    size={22}
                     cursor="pointer"
                     onClick={() => {
                       handleRemoveParticipant(participant.id);

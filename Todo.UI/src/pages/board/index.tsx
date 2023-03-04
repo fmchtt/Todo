@@ -111,7 +111,6 @@ export default function Board() {
   let overColumnId = "";
 
   function handleColumnDrag() {
-
     if (dragColumnId === "" || overColumnId === "") {
       return;
     }
@@ -140,7 +139,7 @@ export default function Board() {
         const overColumnIdx = prev.columns.findIndex(
           (x) => x.id === overColumnId
         );
-        
+
         if (columnIdx < 0) {
           throw new Error("Coluna alvo nao encontrada!");
         }
