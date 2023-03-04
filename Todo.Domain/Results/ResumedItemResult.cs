@@ -2,7 +2,7 @@
 
 namespace Todo.Domain.Results;
 
-public class ItemResult
+public class ResumedItemResult
 {
     public Guid Id { get; set; }
     public string Title { get; set; }
@@ -13,5 +13,5 @@ public class ItemResult
     public ResumedUserResult? Creator { get; set; }
     public bool Done { get; set; }
     
-    public ItemResult() {}
+    public ResumedItemResult() {}
 }

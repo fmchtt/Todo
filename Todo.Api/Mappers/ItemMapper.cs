@@ -8,6 +8,7 @@ public class ItemMapper : Profile
 {
     public ItemMapper()
     {
-        CreateMap<TodoItem, ItemResult>();
+        CreateMap<TodoItem, ResumedItemResult>();
+        CreateMap<TodoItem, ExpandedItemResult>();
     }
 }

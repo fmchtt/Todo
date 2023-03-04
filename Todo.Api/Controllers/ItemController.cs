@@ -33,7 +33,7 @@ public class ItemController : TodoBaseController
     }
 
     [HttpPost, Authorize]
-    [ProducesResponseType(typeof(ItemResult), 201)]
+    [ProducesResponseType(typeof(ResumedItemResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public dynamic CreateItem(
         CreateItemCommand command, 
@@ -43,11 +43,11 @@ public class ItemController : TodoBaseController
         var user = GetUser();
         var result = handler.Handle(command, user);
 
-        return ParseResult<TodoItem, ItemResult>(result);
+        return ParseResult<TodoItem, ResumedItemResult>(result);
     }
 
     [HttpPost("{itemId:guid}/column/{columnId:guid}"), Authorize]
-    [ProducesResponseType(typeof(ItemResult), 200)]
+    [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic ChangeColumn(
@@ -60,11 +60,11 @@ public class ItemController : TodoBaseController
         var command = new ChangeItemColumnCommand(itemId, columnId);
         var result = handler.Handle(command, user);
 
-        return ParseResult<TodoItem, ItemResult>(result);
+        return ParseResult<TodoItem, ResumedItemResult>(result);
     }
 
     [HttpPatch("{itemId:guid}"), Authorize]
-    [ProducesResponseType(typeof(ItemResult), 200)]
+    [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic UpdateItem(
@@ -77,7 +77,7 @@ public class ItemController : TodoBaseController
         command.ItemId = itemId;
         var result = handler.Handle(command, user);
 
-        return ParseResult<TodoItem, ItemResult>(result);
+        return ParseResult<TodoItem, ResumedItemResult>(result);
     }
 
     [HttpDelete("{itemId:guid}"), Authorize]
@@ -96,7 +96,7 @@ public class ItemController : TodoBaseController
     }
 
     [HttpPost("{itemId:guid}/done"), Authorize]
-    [ProducesResponseType(typeof(ItemResult), 200)]
+    [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic MarkAsDone(
@@ -107,11 +107,11 @@ public class ItemController : TodoBaseController
         var user = GetUser();
         var result = handler.Handle(new MarkCommand(itemId, true), user);
 
-        return ParseResult<TodoItem, ItemResult>(result);
+        return ParseResult<TodoItem, ResumedItemResult>(result);
     }
 
     [HttpPost("{itemId:guid}/undone"), Authorize]
-    [ProducesResponseType(typeof(ItemResult), 200)]
+    [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public dynamic MarkAsUndone(
@@ -122,6 +122,6 @@ public class ItemController : TodoBaseController
         var user = GetUser();
         var result = handler.Handle(new MarkCommand(itemId, true), user);
 
-        return ParseResult<TodoItem, ItemResult>(result);
+        return ParseResult<TodoItem, ResumedItemResult>(result);
     }
 }
