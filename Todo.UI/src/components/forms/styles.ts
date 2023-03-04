@@ -14,6 +14,13 @@ export const FormContainer = styled.div<FormBoardProps>`
   overflow-y: auto;
 `;
 
+export const FormStyled = styled.div`
+  background-image: ${(props) => props.theme.gradients.semi};
+  border-radius: 20px;
+  padding: 30px;
+  height: fit-content;
+`;
+
 export const FormHeading = styled.div``;
 
 type FormProps = {

@@ -122,6 +122,9 @@ export default function LoginForm() {
             <LinkSpan>Registre-se</LinkSpan>
           </Link>
         </Text>
+        <Link to="/password-reset" style={{ textDecoration: "none" }}>
+          <LinkSpan>Recuperar senha</LinkSpan>
+        </Link>
       </Form>
     </FormContainer>
   );
