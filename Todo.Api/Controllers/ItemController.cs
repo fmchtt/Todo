@@ -57,7 +57,7 @@ public class ItemController : TodoBaseController
     )
     {
         var user = GetUser();
-        var command = new ChangeItemColumnCommand(itemId, columnId);
+        var command = new ChangeItemColumnCommand(columnId, itemId);
         var result = handler.Handle(command, user);
 
         return ParseResult<TodoItem, ResumedItemResult>(result);
