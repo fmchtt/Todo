@@ -59,8 +59,8 @@ export default function LoginForm() {
     },
 
     validationSchema: Yup.object({
-      email: Yup.string().required("Este campo é obrigatório"),
-      password: Yup.string().required("Este campo é obrigatório"),
+      email: Yup.string().required("O email é obrigatório"),
+      password: Yup.string().required("A senha é obrigatório"),
     }),
     validateOnMount: false,
     validateOnBlur: false,

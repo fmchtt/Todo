@@ -18,6 +18,7 @@ export default function ResetPasswordForm() {
         setLoading(false);
       })
       .catch((e) => {
+        setLoading(false);
         console.log(e);
       });
   }

@@ -6,6 +6,8 @@ import { EditColumn } from "@/types/column";
 import { createColumn, editColumn } from "@/services/api/column";
 import { useQueryClient } from "react-query";
 import { ExpandedBoard } from "@/types/board";
+import * as Yup from "yup";
+import ErrorMessage from "@/components/forms/ErrorMessage";
 
 type ColumnFormProps = {
   data?: EditColumn;
@@ -24,6 +26,11 @@ export default function ColumnForm({
     initialValues: {
       name: data?.name || "",
     },
+    validationSchema: Yup.object().shape({
+      name: Yup.string()
+        .required("O nome da coluna é obrigatório!")
+        .min(5, "O nome deve ter no mínimo 5 caracteres!"),
+    }),
     onSubmit: async (values) => {
       setLoading(true);
       try {
@@ -74,6 +81,9 @@ export default function ColumnForm({
           value={formik.values.name}
           onChange={formik.handleChange}
         />
+        {formik.errors.name && (
+          <ErrorMessage>{formik.errors.name}</ErrorMessage>
+        )}
       </InputGroup>
       <FilledButton loading={loading ? 1 : 0} type="submit">
         Salvar

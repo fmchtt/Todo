@@ -1,6 +1,5 @@
 import { H1, Text } from "@/assets/css/global.styles";
 import { ExpandedItem, getPriorityDisplay } from "@/types/item";
-import { RoundedAvatar } from "../header/styles";
 import {
   PresentationBody,
   PresentationContainer,
@@ -22,8 +21,8 @@ import {
 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
-import profilePlaceholder from "@/assets/images/profile.svg";
 import { ExpandedBoard, ResumedBoard } from "@/types/board";
+import RoundedAvatar from "@/components/roundedAvatar";
 
 type ItemPresentationProps = {
   data: ExpandedItem;
@@ -163,11 +162,11 @@ export default function ItemPresentation({
           <Text>Criador:</Text>
           <PresentationDataGroup>
             <RoundedAvatar
-              src={
-                data.creator.avatarUrl
-                  ? import.meta.env.VITE_API_URL + data.creator.avatarUrl
-                  : profilePlaceholder
+              avatarUrl={
+                data.creator.avatarUrl &&
+                import.meta.env.VITE_API_URL + data.creator.avatarUrl
               }
+              name={data.creator.name}
             />
             <Text>{data.creator.name}</Text>
           </PresentationDataGroup>

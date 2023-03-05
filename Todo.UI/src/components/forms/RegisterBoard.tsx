@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { FormBoardProps } from "./types";
 import { Form, Label, InputGroup, Input, TextArea } from "./styles";
 import FilledButton from "../filledButton";
@@ -8,11 +7,11 @@ import { patchBoard, postBoard } from "@/services/api/boards";
 import * as Yup from "yup";
 import { useMutation, useQueryClient } from "react-query";
 import { ExpandedBoard, ResumedBoard } from "@/types/board";
+import ErrorMessage from "@/components/forms/ErrorMessage";
 
 const BoardRegister = (props: FormBoardProps) => {
-  const [loading, setLoading] = useState(false);
   const client = useQueryClient();
-  const create = useMutation(postBoard, {
+  const createMutation = useMutation(postBoard, {
     onSuccess: (res) => {
       client.setQueryData<ResumedBoard[]>(["boards"], (prev) => {
         if (!prev) {
@@ -24,14 +23,13 @@ const BoardRegister = (props: FormBoardProps) => {
         return prev;
       });
 
-      setLoading(false);
       if (props.closeModal) {
         props.closeModal();
       }
     },
   });
 
-  const update = useMutation(patchBoard, {
+  const updateMutation = useMutation(patchBoard, {
     onSuccess: (res) => {
       try {
         client.setQueryData<ResumedBoard[]>(["boards"], (prev) => {
@@ -62,7 +60,6 @@ const BoardRegister = (props: FormBoardProps) => {
         return prev;
       });
 
-      setLoading(false);
       if (props.closeModal) {
         props.closeModal();
       }
@@ -75,16 +72,19 @@ const BoardRegister = (props: FormBoardProps) => {
       description: props.data?.description || "",
     },
     onSubmit: (values) => {
-      setLoading(true);
-
       if (props.data?.id) {
-        update.mutate({ id: props.data.id, values });
+        updateMutation.mutate({ id: props.data.id, values });
       } else {
-        create.mutate(values);
+        createMutation.mutate(values);
       }
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Este campo é obrigatório"),
+      name: Yup.string()
+        .required("O nome do Quadro é obrigatório!")
+        .min(5, "O nome deve ter no mínimo 5 caracteres!"),
+      description: Yup.string()
+        .required("A descrição do Quadro é obrigatório!")
+        .min(10, "A descrição deve ter no mínimo 10 caracteres!"),
     }),
     validateOnMount: false,
     validateOnBlur: false,
@@ -102,6 +102,9 @@ const BoardRegister = (props: FormBoardProps) => {
           value={formik.values.name}
           onChange={formik.handleChange}
         />
+        {formik.errors.name && (
+          <ErrorMessage>{formik.errors.name}</ErrorMessage>
+        )}
       </InputGroup>
       <InputGroup>
         <Label>Descrição</Label>
@@ -111,8 +114,14 @@ const BoardRegister = (props: FormBoardProps) => {
           value={formik.values.description}
           onChange={formik.handleChange}
         />
+        {formik.errors.description && (
+          <ErrorMessage>{formik.errors.description}</ErrorMessage>
+        )}
       </InputGroup>
-      <FilledButton type="submit" loading={loading ? 1 : 0}>
+      <FilledButton
+        type="submit"
+        loading={createMutation.isLoading || updateMutation.isLoading ? 1 : 0}
+      >
         Cadastrar
       </FilledButton>
     </Form>

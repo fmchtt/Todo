@@ -5,6 +5,8 @@ import { useQueryClient } from "react-query";
 import { createItem } from "@/services/api/itens";
 import { CreateItemProps, Item } from "@/types/item";
 import { ExpandedBoard } from "@/types/board";
+import * as Yup from "yup";
+import ErrorMessage from "@/components/forms/ErrorMessage";
 
 const priorityChoices = [
   {
@@ -35,11 +37,11 @@ const priorityChoices = [
 
 type CreateItemFormProps = {
   boardId?: string;
-  onSucess: () => void;
+  onSuccess: () => void;
   columns?: { label: string; value: string }[];
 };
 export default function CreateItemForm({
-  onSucess,
+  onSuccess,
   boardId,
   columns,
 }: CreateItemFormProps) {
@@ -52,6 +54,17 @@ export default function CreateItemForm({
       columnId: columns ? columns[0].value : "",
       boardId: "",
     },
+    validationSchema: Yup.object().shape({
+      title: Yup.string()
+        .required("O nome da tarefa é obrigatório!")
+        .min(5, "O nome deve ter no mínimo 5 caracteres!"),
+      description: Yup.string()
+        .required("A descrição da tarefa é obrigatório!")
+        .min(10, "A descrição deve ter no mínimo 10 caracteres!"),
+      priority: Yup.number()
+        .required("A prioridade é obrigatória!")
+        .min(0, "Prioridade inválida!"),
+    }),
     onSubmit: async (values) => {
       const reqData: CreateItemProps = {
         title: values.title,
@@ -92,8 +105,7 @@ export default function CreateItemForm({
           return prev;
         });
       }
-
-      onSucess();
+      onSuccess();
     },
   });
 
@@ -106,6 +118,9 @@ export default function CreateItemForm({
           onChange={formik.handleChange}
           value={formik.values.title}
         />
+        {formik.errors.title && (
+          <ErrorMessage>{formik.errors.title}</ErrorMessage>
+        )}
       </InputGroup>
       <InputGroup>
         <Label>Descrição</Label>
@@ -115,6 +130,9 @@ export default function CreateItemForm({
           onChange={formik.handleChange}
           value={formik.values.description}
         />
+        {formik.errors.description && (
+          <ErrorMessage>{formik.errors.description}</ErrorMessage>
+        )}
       </InputGroup>
       <InputGroup>
         <Label>Prioridade</Label>
@@ -131,6 +149,9 @@ export default function CreateItemForm({
             );
           })}
         </Select>
+        {formik.errors.priority && (
+          <ErrorMessage>{formik.errors.priority}</ErrorMessage>
+        )}
       </InputGroup>
       {columns && (
         <InputGroup>

@@ -32,7 +32,7 @@ export default function Dashboard() {
     false
   );
   const [handleCreateItemModal, createItemModal] = useModal(
-    <CreateItemForm onSucess={handleCreateItemSuccess} />
+    <CreateItemForm onSuccess={handleCreateItemSuccess} />
   );
 
   function handleCreateItemSuccess() {

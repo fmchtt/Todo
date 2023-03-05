@@ -50,7 +50,7 @@ export default function Board() {
   const [handleCreateItemModal, createItemModal] = useModal(
     <CreateItem
       boardId={data?.id}
-      onSucess={handleCreateItemSuccess}
+      onSuccess={handleCreateItemSuccess}
       columns={data?.columns.map((column) => {
         return { label: column.name, value: column.id };
       })}

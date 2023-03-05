@@ -64,9 +64,9 @@ export default function RegisterForm() {
     },
 
     validationSchema: Yup.object({
-      name: Yup.string().required("Este campo é obrigatório"),
-      email: Yup.string().required("Este campo é obrigatório"),
-      password: Yup.string().required("Este campo é obrigatório"),
+      name: Yup.string().required("O nome é obrigatório!"),
+      email: Yup.string().required("O email é obrigatório!"),
+      password: Yup.string().required("A senha é obrigatória!"),
     }),
     validateOnMount: false,
     validateOnBlur: false,
