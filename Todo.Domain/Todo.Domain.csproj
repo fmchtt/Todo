@@ -11,47 +11,4 @@
     <PackageReference Include="FluentValidation" Version="11.5.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="UseCases\BoardUseCases\CreateBoardUseCase.cs" />
-    <Compile Remove="UseCases\BoardUseCases\DeleteBoardUseCase.cs" />
-    <Compile Remove="UseCases\BoardUseCases\EditBoardUseCase.cs" />
-    <Compile Remove="UseCases\BoardUseCases\RemoveParticipantUseCase.cs" />
-    <Compile Remove="UseCases\BoardUseCases\**" />
-    <Compile Remove="UseCases\InviteUseCases\ConfirmInviteUseCase.cs" />
-    <Compile Remove="UseCases\InviteUseCases\**" />
-    <Compile Remove="UseCases\ColumnUseCases\CreateColumnUseCase.cs" />
-    <Compile Remove="UseCases\ColumnUseCases\EditColumnUseCase.cs" />
-    <Compile Remove="UseCases\ColumnUseCases\**" />
-    <Compile Remove="UseCases\UserUseCases\LoginUseCase.cs" />
-    <Compile Remove="UseCases\UserUseCases\UserRegisterUseCase.cs" />
-    <Compile Remove="UseCases\UserUseCases\EditUserUseCase.cs" />
-    <Compile Remove="Commands\UserCommands\DeleteUserCommand.cs" />
-    <Compile Remove="UseCases\UserUseCases\DeleteUserUseCase.cs" />
-    <Compile Remove="UseCases\UserUseCases\**" />
-    <Compile Remove="UseCases\ItemUseCases\CreateTodoItemUseCase.cs" />
-    <Compile Remove="UseCases\ItemUseCases\EditTodoItemUseCase.cs" />
-    <Compile Remove="UseCases\ItemUseCases\DeleteTodoItemUseCase.cs" />
-    <Compile Remove="UseCases\ItemUseCases\ChangeItemColumnUseCase.cs" />
-    <Compile Remove="UseCases\ItemUseCases\**" />
-    <Compile Remove="UseCases\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="UseCases\BoardUseCases\**" />
-    <EmbeddedResource Remove="UseCases\InviteUseCases\**" />
-    <EmbeddedResource Remove="UseCases\ColumnUseCases\**" />
-    <EmbeddedResource Remove="UseCases\UserUseCases\**" />
-    <EmbeddedResource Remove="UseCases\ItemUseCases\**" />
-    <EmbeddedResource Remove="UseCases\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="UseCases\BoardUseCases\**" />
-    <None Remove="UseCases\InviteUseCases\**" />
-    <None Remove="UseCases\ColumnUseCases\**" />
-    <None Remove="UseCases\UserUseCases\**" />
-    <None Remove="UseCases\ItemUseCases\**" />
-    <None Remove="UseCases\**" />
-  </ItemGroup>
-
 </Project>
