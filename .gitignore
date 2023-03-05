@@ -365,5 +365,6 @@ FodyWeavers.xsd
 /Todo.UI/.env
 /Todo.UI/dist
 wwwroot/
+.idea
 
 Uploads/
