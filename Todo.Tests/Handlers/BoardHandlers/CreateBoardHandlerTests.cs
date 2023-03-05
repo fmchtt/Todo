@@ -1,6 +1,6 @@
 ﻿using Todo.Domain.Commands.BoardCommands;
 using Todo.Domain.Handlers.Contracts;
-using Todo.Tests.Utils;
+using Todo.Domain.Utils;
 
 namespace Todo.Tests.Handlers.BoardHandlers;
 
@@ -14,13 +14,14 @@ public class CreateBoardHandlerTests
     {
         _boardRepository = new Mock<IBoardRepository>();
         Mock<IInviteRepository> inviteRepository = new();
+        Mock<IMailer> mailer = new();
 
         _fixture = new Fixture();
         
         _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         
-        _handler = new BoardHandler(_boardRepository.Object, inviteRepository.Object, new FakeMailer());
+        _handler = new BoardHandler(_boardRepository.Object, inviteRepository.Object, mailer.Object);
     }
 
     [Fact]
