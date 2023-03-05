@@ -14,7 +14,7 @@ public class DeleteColumnValidator : AbstractValidator<DeleteColumnCommand>
 
 public class DeleteColumnCommand : ICommand
 {
-    public Guid ColumnId { get; init; } = Guid.Empty;
+    public Guid ColumnId { get; set; } = Guid.Empty;
 
     public ValidationResult Validate()
     {

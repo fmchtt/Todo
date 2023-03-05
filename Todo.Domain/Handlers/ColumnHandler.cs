@@ -30,7 +30,7 @@ public class ColumnHandler : IHandler<CreateColumnCommand, Column>, IHandler<Edi
         var board = _boardRepository.GetById(command.BoardId);
         if (board == null)
         {
-            return new CommandResult<Column>(Code.Invalid, "Quadro não encontrado!");
+            return new CommandResult<Column>(Code.NotFound, "Quadro não encontrado!");
         }
 
         if (!board.UserCanEdit(user.Id))
@@ -63,7 +63,7 @@ public class ColumnHandler : IHandler<CreateColumnCommand, Column>, IHandler<Edi
 
         if (!column.Board.UserCanEdit(user.Id))
         {
-            return new CommandResult<Column>(Code.NotFound, "Sem permissão para apagar a coluna!");
+            return new CommandResult<Column>(Code.Unauthorized, "Sem permissão para apagar a coluna!");
         }
 
         if (command.Name != null && column.Name != command.Name)
