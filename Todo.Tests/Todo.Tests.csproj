@@ -30,14 +30,17 @@
   <ItemGroup>
     <Compile Remove="UseCases\**" />
     <Compile Remove="Handlers\BoardHandlerTests.cs" />
+    <Compile Remove="Utils\**" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Remove="UseCases\**" />
+    <EmbeddedResource Remove="Utils\**" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="UseCases\**" />
+    <None Remove="Utils\**" />
   </ItemGroup>
 
 </Project>
