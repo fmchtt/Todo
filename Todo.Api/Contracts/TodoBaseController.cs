@@ -10,7 +10,7 @@ namespace Todo.Api.Contracts;
 public class TodoBaseController : ControllerBase
 {
     [NonAction]
-    protected dynamic ParseResult<T, TR>(CommandResult<T> result)
+    protected IActionResult ParseResult<T, TR>(CommandResult<T> result)
     {
         var message = result.Message;
         var errors = result.Errors;
@@ -18,18 +18,22 @@ public class TodoBaseController : ControllerBase
 
         if (mapper == null)
         {
-            return InternalServerError("Erro ao converter o resultado da operação");
+            return StatusCode(500, "Erro ao converter o resultado da operação");
         }
 
-        return result.Code switch
+        var finalResult = result.Code switch
         {
             Code.Ok => result.Result != null ? Ok(mapper.Map<TR>(result.Result)) : Ok(message),
-            Code.Created => result.Result != null ? Ok(mapper.Map<TR>(result.Result)) : Created(message),
+            Code.Created => result.Result != null
+                ? StatusCode(201, mapper.Map<TR>(result.Result))
+                : StatusCode(201, message),
             Code.NotFound => NotFound(message),
             Code.Invalid => errors != null ? BadRequest(errors) : BadRequest(message),
             Code.Unauthorized => Unauthorized(message),
-            _ => InternalServerError("Erro ao converter o resultado da operação")
+            _ => StatusCode(500, "Erro ao converter o resultado da operação")
         };
+
+        return finalResult;
     }
 
     [NonAction]
@@ -41,11 +45,11 @@ public class TodoBaseController : ControllerBase
         return result.Code switch
         {
             Code.Ok => Ok(message),
-            Code.Created => Created(message),
+            Code.Created => StatusCode(201, message),
             Code.NotFound => NotFound(message),
             Code.Invalid => errors != null ? BadRequest(errors) : BadRequest(message),
             Code.Unauthorized => Unauthorized(message),
-            _ => InternalServerError("Erro ao converter o resultado da operação")
+            _ => StatusCode(500, "Erro ao converter o resultado da operação")
         };
     }
 
@@ -74,76 +78,5 @@ public class TodoBaseController : ControllerBase
         }
 
         return user;
-    }
-
-    [NonAction]
-    protected T Ok<T>(T data)
-    {
-        Response.StatusCode = 200;
-
-        return data;
-    }
-
-    private T Created<T>(T data)
-    {
-        Response.StatusCode = 201;
-
-        return data;
-    }
-
-    [NonAction]
-    private MessageResult Ok(string message)
-    {
-        Response.StatusCode = 200;
-
-        return new MessageResult(message);
-    }
-
-    [NonAction]
-    protected T NotFound<T>(T data)
-    {
-        Response.StatusCode = 404;
-
-        return data;
-    }
-
-    [NonAction]
-    private MessageResult NotFound(string message)
-    {
-        Response.StatusCode = 404;
-
-        return new MessageResult(message);
-    }
-
-    [NonAction]
-    private MessageResult Unauthorized(string message)
-    {
-        Response.StatusCode = 401;
-
-        return new MessageResult(message);
-    }
-
-    [NonAction]
-    private T BadRequest<T>(T data)
-    {
-        Response.StatusCode = 400;
-
-        return data;
-    }
-
-    [NonAction]
-    private MessageResult BadRequest(string message)
-    {
-        Response.StatusCode = 400;
-
-        return new MessageResult(message);
-    }
-
-    [NonAction]
-    private MessageResult InternalServerError(string message)
-    {
-        Response.StatusCode = 500;
-
-        return new MessageResult(message);
     }
 }

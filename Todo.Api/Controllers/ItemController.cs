@@ -35,7 +35,7 @@ public class ItemController : TodoBaseController
     [HttpPost, Authorize]
     [ProducesResponseType(typeof(ResumedItemResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public dynamic CreateItem(
+    public IActionResult CreateItem(
         CreateItemCommand command,
         [FromServices] ItemHandler handler
     )
@@ -50,7 +50,7 @@ public class ItemController : TodoBaseController
     [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic ChangeColumn(
+    public IActionResult ChangeColumn(
         Guid itemId,
         Guid columnId,
         [FromServices] ItemHandler handler
@@ -71,7 +71,7 @@ public class ItemController : TodoBaseController
     [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic UpdateItem(
+    public IActionResult UpdateItem(
         EditItemCommand command,
         Guid itemId,
         [FromServices] ItemHandler handler
@@ -87,7 +87,7 @@ public class ItemController : TodoBaseController
     [HttpDelete("{itemId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public dynamic DeleteItem(
+    public IActionResult DeleteItem(
         Guid itemId,
         [FromServices] ItemHandler handler
     )
@@ -106,7 +106,7 @@ public class ItemController : TodoBaseController
     [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic MarkAsDone(
+    public IActionResult MarkAsDone(
         [FromRoute] Guid itemId,
         [FromServices] ItemHandler handler
     )
@@ -125,7 +125,7 @@ public class ItemController : TodoBaseController
     [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic MarkAsUndone(
+    public IActionResult MarkAsUndone(
         [FromRoute] Guid itemId,
         [FromServices] ItemHandler handler
     )

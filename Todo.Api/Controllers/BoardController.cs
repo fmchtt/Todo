@@ -35,7 +35,7 @@ public class BoardController : TodoBaseController
     [HttpGet("{id:guid}"), Authorize]
     [ProducesResponseType(typeof(ExpandedBoardResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic GetById(
+    public IActionResult GetById(
         [FromRoute] Guid id,
         [FromServices] IBoardRepository boardRepository,
         [FromServices] IMapper mapper
@@ -48,12 +48,12 @@ public class BoardController : TodoBaseController
             return NotFound(new MessageResult("Quadro não encontrado!"));
         }
 
-        return mapper.Map<ExpandedBoardResult>(board);
+        return Ok(mapper.Map<ExpandedBoardResult>(board));
     }
 
     [HttpPost, Authorize]
     [ProducesResponseType(typeof(ResumedBoardResult), 201)]
-    public dynamic Create(
+    public IActionResult Create(
         CreateBoardCommand command,
         [FromServices] BoardHandler handler
     )
@@ -68,7 +68,7 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(ResumedBoardResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic EditBoard(
+    public IActionResult EditBoard(
         EditBoardCommand command,
         Guid boardId,
         [FromServices] BoardHandler handler
@@ -85,7 +85,7 @@ public class BoardController : TodoBaseController
     [HttpDelete("{boardId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public dynamic DeleteBoard(
+    public IActionResult DeleteBoard(
         Guid boardId,
         [FromServices] BoardHandler handler
     )
@@ -104,7 +104,7 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic ConfirmInvite(
+    public IActionResult ConfirmInvite(
         Guid boardId,
         [FromServices] BoardHandler handler
     )
@@ -123,7 +123,7 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic InviteParticipant(
+    public IActionResult InviteParticipant(
         AddBoardParticipantCommand command,
         Guid boardId,
         [FromServices] BoardHandler handler
@@ -141,7 +141,7 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic RemoveParticipant(
+    public IActionResult RemoveParticipant(
         Guid boardId,
         Guid participantId,
         [FromServices] BoardHandler handler

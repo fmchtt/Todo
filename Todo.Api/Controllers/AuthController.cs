@@ -17,16 +17,16 @@ public class AuthController : TodoBaseController
 {
     [HttpGet("me"), Authorize]
     [ProducesResponseType(typeof(ResumedUserResult), 200)]
-    public dynamic Me([FromServices] IMapper mapper)
+    public IActionResult Me([FromServices] IMapper mapper)
     {
         var user = GetUser();
-        return mapper.Map<ResumedUserResult>(user);
+        return Ok(mapper.Map<ResumedUserResult>(user));
     }
 
     [HttpPost("login")]
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic Login(
+    public IActionResult Login(
         LoginCommand command,
         [FromServices] ITokenService tokenService,
         [FromServices] UserHandler handler
@@ -44,13 +44,13 @@ public class AuthController : TodoBaseController
             return NotFound();
         }
 
-        return tokenService.GenerateToken(result.Result);
+        return Ok(tokenService.GenerateToken(result.Result));
     }
 
     [HttpPost("register")]
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic Register(
+    public IActionResult Register(
         [FromBody] RegisterCommand command,
         [FromServices] UserHandler handler,
         [FromServices] ITokenService tokenService
@@ -68,25 +68,25 @@ public class AuthController : TodoBaseController
             return NotFound();
         }
 
-        return tokenService.GenerateToken(result.Result);
+        return Ok(tokenService.GenerateToken(result.Result));
     }
 
     [HttpPost("password/reset")]
     [ProducesResponseType(typeof(MessageResult), 200)]
-    public dynamic PasswordReset(
+    public IActionResult PasswordReset(
         RecoverPasswordCommand command,
         [FromServices] UserHandler handler
     )
     {
         handler.Handle(command);
 
-        return new MessageResult("Caso o email esteja registrado, um código será enviado ao email");
+        return Ok(new MessageResult("Caso o email esteja registrado, um código será enviado ao email"));
     }
 
     [HttpPost("password/reset/verify")]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public MessageResult VerifyCode(
+    public IActionResult VerifyCode(
         [FromBody] CodeVerifyDTO data,
         [FromServices] IRecoverCodeRepository codeRepository
     )
@@ -100,7 +100,7 @@ public class AuthController : TodoBaseController
 
     [HttpPost("password/reset/confirm")]
     [ProducesResponseType(typeof(MessageResult), 200)]
-    public dynamic PasswordResetConfirm(
+    public IActionResult PasswordResetConfirm(
         ConfirmRecoverPasswordCommand command,
         [FromServices] UserHandler handler
     )

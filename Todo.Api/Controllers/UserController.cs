@@ -14,7 +14,7 @@ public class UserController : TodoBaseController
 {
     [HttpPatch, Authorize]
     [ProducesResponseType(typeof(ResumedUserResult), 200)]
-    public async Task<dynamic> ChangeAvatar(
+    public async Task<IActionResult> ChangeAvatar(
         [FromForm] EditUserApiDTO data,
         [FromServices] IFileStorage fileStorage,
         [FromServices] UserHandler handler
@@ -39,7 +39,7 @@ public class UserController : TodoBaseController
 
     [HttpDelete, Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
-    public dynamic DeleteUser([FromServices] UserHandler handler)
+    public IActionResult DeleteUser([FromServices] UserHandler handler)
     {
         var user = GetUser();
         var result = handler.HandleDelete(user);

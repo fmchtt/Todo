@@ -15,7 +15,7 @@ public class ColumnController : TodoBaseController
     [ProducesResponseType(typeof(ResumedColumnResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 400)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public dynamic Create(
+    public IActionResult Create(
         CreateColumnCommand command,
         [FromServices] ColumnHandler handler
     )
@@ -30,7 +30,7 @@ public class ColumnController : TodoBaseController
     [ProducesResponseType(typeof(ResumedColumnResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public dynamic EditColumn(
+    public IActionResult EditColumn(
         EditColumnCommand command,
         Guid columnId,
         [FromServices] ColumnHandler handler
@@ -46,7 +46,7 @@ public class ColumnController : TodoBaseController
     [HttpDelete("{columnId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public dynamic DeleteColumn(
+    public IActionResult DeleteColumn(
         Guid columnId,
         [FromServices] ColumnHandler handler
     )
