@@ -19,6 +19,9 @@ public static class DependencyInjection
         services.AddDbContext<TodoDBContext>(x =>
         {
             x.UseLazyLoadingProxies();
+            x.EnableSensitiveDataLogging();
+            x.EnableDetailedErrors();
+            
             x.UseNpgsql(configuration.GetSection("CONNECTION_STRING").Value,
                 b => b.MigrationsAssembly(typeof(TodoDBContext).Assembly.FullName));
         });
@@ -26,6 +29,8 @@ public static class DependencyInjection
         // Utils
         services.AddTransient<IHasher, Hasher>();
         services.AddTransient<IMailer, ConsoleMailer>();
+        services.AddTransient<ITokenService, TokenService>(x =>
+            new TokenService(configuration.GetSection("SECRET_KEY").Value ?? Guid.NewGuid().ToString()));
 
         // Repositories
         services.AddTransient<IBoardRepository, BoardRepository>();
@@ -40,7 +45,7 @@ public static class DependencyInjection
         services.AddTransient<ColumnHandler>();
         services.AddTransient<UserHandler>();
         services.AddTransient<ItemHandler>();
-        
+
         // Mappers
         services.AddAutoMapper(typeof(BoardMapper));
         services.AddAutoMapper(typeof(ItemMapper));

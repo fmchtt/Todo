@@ -16,23 +16,45 @@ public class ColumnRepository : IColumnRepository
 
     public void ColumnReorder(Guid boardId)
     {
-        var columns = _dbContext.Columns.Where(x => x.BoardId == boardId).OrderBy(x => x.Order).ToList();
+        var columns = _dbContext.Columns.Where(x => x.BoardId == boardId).OrderBy(x => x.Order).ToList();using var transaction = _dbContext.Database.BeginTransaction();
+
+        for (var i = 0; i < columns.Count; i++)
+        {
+            columns[i].Order = columns.Count + (1 + i);
+        }
+        _dbContext.UpdateRange(columns);
+        _dbContext.SaveChanges();
+        
         for (var i = 0; i < columns.Count; i++)
         {
             columns[i].Order = i;
         }
 
         _dbContext.UpdateRange(columns);
+        _dbContext.SaveChanges();
+        
+        transaction.Commit();
     }
 
     public void ColumnReorder(Guid boardId, Guid columnId, int order)
     {
         var columns = _dbContext.Columns.Where(x => x.BoardId == boardId).OrderBy(x => x.Order).ToList();
+
+        using var transaction = _dbContext.Database.BeginTransaction();
+
+        for (var i = 0; i < columns.Count; i++)
+        {
+            columns[i].Order = columns.Count + (1 + i);
+        }
+        _dbContext.UpdateRange(columns);
+        _dbContext.SaveChanges();
+
         var columnIdx = columns.FindIndex(x => x.Id == columnId);
 
         var oldColumn = columns[columnIdx];
-        columns.Remove(oldColumn);
+        oldColumn.Order = order;
 
+        columns.Remove(oldColumn);
         for (var i = 0; i < columns.Count; i++)
         {
             if (i < order)
@@ -47,6 +69,9 @@ public class ColumnRepository : IColumnRepository
         columns.Add(oldColumn);
 
         _dbContext.UpdateRange(columns);
+        _dbContext.SaveChanges();
+        
+        transaction.Commit();
     }
 
     public void Create(Column column)

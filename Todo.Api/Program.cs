@@ -31,7 +31,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddTransient<ITokenService, TokenService>(x => new TokenService(key));
 builder.Services.AddTransient<IFileStorage, LocalFileStorage>(x => new LocalFileStorage(staticPath));
 
 builder.Services.AddSwaggerGen(options =>

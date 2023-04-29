@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
 using Todo.Api.DTO;
 using Todo.Domain.Commands.UserCommands;
-using Todo.Domain.Entities;
 using Todo.Domain.Handlers;
-using Todo.Domain.Handlers.Contracts;
 using Todo.Domain.Repositories;
 using Todo.Domain.Results;
 
@@ -28,23 +26,17 @@ public class AuthController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 404)]
     public IActionResult Login(
         LoginCommand command,
-        [FromServices] ITokenService tokenService,
         [FromServices] UserHandler handler
     )
     {
         var result = handler.Handle(command);
-
-        if (result.Code != Code.Ok)
-        {
-            return ParseResult<User, ResumedUserResult>(result);
-        }
 
         if (result.Result == null)
         {
             return NotFound();
         }
 
-        return Ok(tokenService.GenerateToken(result.Result));
+        return Ok(result.Result);
     }
 
     [HttpPost("register")]
@@ -52,23 +44,17 @@ public class AuthController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 404)]
     public IActionResult Register(
         [FromBody] RegisterCommand command,
-        [FromServices] UserHandler handler,
-        [FromServices] ITokenService tokenService
+        [FromServices] UserHandler handler
     )
     {
         var result = handler.Handle(command);
-
-        if (result.Code != Code.Ok)
-        {
-            return ParseResult<User, ResumedUserResult>(result);
-        }
 
         if (result.Result == null)
         {
             return NotFound();
         }
 
-        return Ok(tokenService.GenerateToken(result.Result));
+        return Ok(result.Result);
     }
 
     [HttpPost("password/reset")]

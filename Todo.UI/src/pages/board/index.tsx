@@ -221,27 +221,29 @@ export default function Board() {
         )}
       </HeadingContainer>
       <ColumnContainer>
-        {data?.columns.map((column) => {
-          return (
-            <Column
-              onItemClick={(item: Item) => {
-                setItemClicked(item);
-                handleItemModal();
-              }}
-              key={column.id}
-              totalItems={data.itemCount}
-              data={column}
-              boardId={data.id}
-              onDragStart={(columnId) => {
-                dragColumnId = columnId;
-              }}
-              onDragOver={(columnId) => {
-                overColumnId = columnId;
-              }}
-              onDragEnd={handleColumnDrag}
-            />
-          );
-        })}
+        {data?.columns
+          .sort((x, y) => (x.order > y.order ? 1 : -1))
+          .map((column) => {
+            return (
+              <Column
+                onItemClick={(item: Item) => {
+                  setItemClicked(item);
+                  handleItemModal();
+                }}
+                key={column.id}
+                totalItems={data.itemCount}
+                data={column}
+                boardId={data.id}
+                onDragStart={(columnId) => {
+                  dragColumnId = columnId;
+                }}
+                onDragOver={(columnId) => {
+                  overColumnId = columnId;
+                }}
+                onDragEnd={handleColumnDrag}
+              />
+            );
+          })}
       </ColumnContainer>
     </Container>
   );

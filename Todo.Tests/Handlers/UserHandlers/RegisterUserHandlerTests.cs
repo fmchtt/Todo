@@ -14,16 +14,18 @@ public class RegisterUserHandlerTests
     public RegisterUserHandlerTests()
     {
         _userRepository = new Mock<IUserRepository>();
-        Mock<IRecoverCodeRepository> codeRepository = new();
         _hasher = new Mock<IHasher>();
         Mock<IMailer> mailer = new();
+        Mock<ITokenService> tokenService = new();
+        Mock<IRecoverCodeRepository> codeRepository = new();
 
         _fixture = new Fixture();
 
         _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        _handler = new UserHandler(_userRepository.Object, _hasher.Object, codeRepository.Object, mailer.Object);
+        _handler = new UserHandler(_userRepository.Object, _hasher.Object, codeRepository.Object, mailer.Object,
+            tokenService.Object);
     }
 
     [Fact]
@@ -36,22 +38,22 @@ public class RegisterUserHandlerTests
             Password = "12345678"
         };
 
-        _userRepository.Setup(repo => repo.GetByEmail(command.Email)).Returns((User) null).Verifiable();
+        _userRepository.Setup(repo => repo.GetByEmail(command.Email)).Returns((User)null).Verifiable();
         _hasher.Setup(repo => repo.Hash(command.Password)).Returns(command.Password).Verifiable();
 
         var result = _handler.Handle(command);
-        
+
         Assert.Equal(Code.Created, result.Code);
-        
+
         _userRepository.Verify();
         _hasher.Verify();
     }
-    
+
     [Fact]
     public void ShouldNotRegisterUser()
     {
         var user = _fixture.Create<User>();
-        
+
         var command = new RegisterCommand
         {
             Email = "teste@teste.com",
@@ -63,9 +65,9 @@ public class RegisterUserHandlerTests
         _hasher.Setup(repo => repo.Hash(command.Password)).Throws(new Exception("Hash method accessed"));
 
         var result = _handler.Handle(command);
-        
+
         Assert.Equal(Code.Invalid, result.Code);
-        
+
         _userRepository.Verify();
     }
 }

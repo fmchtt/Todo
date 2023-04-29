@@ -14,16 +14,18 @@ public class LoginUserHandlerTests
     public LoginUserHandlerTests()
     {
         _userRepository = new Mock<IUserRepository>();
-        Mock<IRecoverCodeRepository> codeRepository = new();
         _hasher = new Mock<IHasher>();
+        Mock<IRecoverCodeRepository> codeRepository = new();
         Mock<IMailer> mailer = new();
+        Mock<ITokenService> tokenService = new();
 
         _fixture = new Fixture();
 
         _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        _handler = new UserHandler(_userRepository.Object, _hasher.Object, codeRepository.Object, mailer.Object);
+        _handler = new UserHandler(_userRepository.Object, _hasher.Object, codeRepository.Object, mailer.Object,
+            tokenService.Object);
     }
 
     [Fact]
@@ -33,23 +35,23 @@ public class LoginUserHandlerTests
             .With(builder => builder.Email, "teste@email.com")
             .With(builder => builder.Password, "12345678")
             .Create();
-        
+
         var command = new LoginCommand
         {
             Email = user.Email,
             Password = user.Password
         };
-        
+
         _userRepository.Setup(repo => repo.GetByEmail(It.IsAny<string>())).Returns(user).Verifiable();
         _hasher.Setup(repo => repo.Verify(command.Password, user.Password)).Returns(true).Verifiable();
 
         var result = _handler.Handle(command);
-        
+
         Assert.Equal(Code.Ok, result.Code);
         _userRepository.Verify();
         _hasher.Verify();
     }
-    
+
     [Fact]
     public void ShouldNotFindUser()
     {
@@ -57,22 +59,23 @@ public class LoginUserHandlerTests
             .With(builder => builder.Email, "teste@email.com")
             .With(builder => builder.Password, "12345678")
             .Create();
-        
+
         var command = new LoginCommand
         {
             Email = user.Email,
             Password = user.Password
         };
-        
-        _userRepository.Setup(repo => repo.GetByEmail(It.IsAny<string>())).Returns((User) null).Verifiable();
-        _hasher.Setup(repo => repo.Verify(command.Password, user.Password)).Throws(new Exception("Verify method accessed"));
+
+        _userRepository.Setup(repo => repo.GetByEmail(It.IsAny<string>())).Returns((User)null).Verifiable();
+        _hasher.Setup(repo => repo.Verify(command.Password, user.Password))
+            .Throws(new Exception("Verify method accessed"));
 
         var result = _handler.Handle(command);
-        
+
         Assert.Equal(Code.NotFound, result.Code);
         _userRepository.Verify();
     }
-    
+
     [Fact]
     public void ShouldPermitLoginUser()
     {
@@ -80,18 +83,18 @@ public class LoginUserHandlerTests
             .With(builder => builder.Email, "teste@email.com")
             .With(builder => builder.Password, "12345678")
             .Create();
-        
+
         var command = new LoginCommand
         {
             Email = user.Email,
             Password = user.Password
         };
-        
+
         _userRepository.Setup(repo => repo.GetByEmail(It.IsAny<string>())).Returns(user).Verifiable();
         _hasher.Setup(repo => repo.Verify(command.Password, user.Password)).Returns(false).Verifiable();
 
         var result = _handler.Handle(command);
-        
+
         Assert.Equal(Code.NotFound, result.Code);
         _userRepository.Verify();
         _hasher.Verify();

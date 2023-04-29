@@ -1,4 +1,4 @@
-﻿namespace Todo.Api.DTO;
+﻿namespace Todo.Domain.Results;
 
 public class TokenResult
 {

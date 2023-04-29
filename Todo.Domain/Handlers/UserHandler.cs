@@ -7,7 +7,7 @@ using Todo.Domain.Utils;
 
 namespace Todo.Domain.Handlers;
 
-public class UserHandler : IHandlerPublic<LoginCommand, User>, IHandlerPublic<RegisterCommand, User>,
+public class UserHandler : IHandlerPublic<LoginCommand, TokenResult>, IHandlerPublic<RegisterCommand, TokenResult>,
     IHandler<EditUserCommand, User>, IHandlerPublic<RecoverPasswordCommand>,
     IHandlerPublic<ConfirmRecoverPasswordCommand>
 {
@@ -15,54 +15,65 @@ public class UserHandler : IHandlerPublic<LoginCommand, User>, IHandlerPublic<Re
     private readonly IHasher _hasher;
     private readonly IRecoverCodeRepository _recoverCodeRepository;
     private readonly IMailer _mailer;
+    private readonly ITokenService _tokenService;
 
-    public UserHandler(IUserRepository userRepository, IHasher hasher, IRecoverCodeRepository recoverCodeRepository,
-        IMailer mailer)
+    public UserHandler(
+        IUserRepository userRepository,
+        IHasher hasher,
+        IRecoverCodeRepository recoverCodeRepository,
+        IMailer mailer,
+        ITokenService tokenService
+    )
     {
         _userRepository = userRepository;
         _hasher = hasher;
         _recoverCodeRepository = recoverCodeRepository;
         _mailer = mailer;
+        _tokenService = tokenService;
     }
 
-    public CommandResult<User> Handle(LoginCommand command)
+    public CommandResult<TokenResult> Handle(LoginCommand command)
     {
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            return new CommandResult<User>(Code.Invalid, "Comando inválido",
+            return new CommandResult<TokenResult>(Code.Invalid, "Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
         var user = _userRepository.GetByEmail(command.Email);
         if (user == null || !_hasher.Verify(command.Password, user.Password))
         {
-            return new CommandResult<User>(Code.NotFound, "Usuário ou senha inválidos");
+            return new CommandResult<TokenResult>(Code.NotFound, "Usuário ou senha inválidos");
         }
 
-        return new CommandResult<User>(Code.Ok, "Logado com sucesso!", user);
+        var token = _tokenService.GenerateToken(user);
+
+        return new CommandResult<TokenResult>(Code.Ok, "Logado com sucesso!", new TokenResult(token));
     }
 
-    public CommandResult<User> Handle(RegisterCommand command)
+    public CommandResult<TokenResult> Handle(RegisterCommand command)
     {
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            return new CommandResult<User>(Code.Invalid, "Comando inválido",
+            return new CommandResult<TokenResult>(Code.Invalid, "Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
         var existingUser = _userRepository.GetByEmail(command.Email);
         if (existingUser != null)
         {
-            return new CommandResult<User>(Code.Invalid, "Usuário com o email já existe");
+            return new CommandResult<TokenResult>(Code.Invalid, "Usuário com o email já existe");
         }
 
         var password = _hasher.Hash(command.Password);
         var user = new User(command.Name, command.Email, password, null);
         _userRepository.Create(user);
 
-        return new CommandResult<User>(Code.Created, "Usuário criado com sucesso!", user);
+        var token = _tokenService.GenerateToken(user);
+
+        return new CommandResult<TokenResult>(Code.Created, "Usuário criado com sucesso!", new TokenResult(token));
     }
 
     public CommandResult<User> Handle(EditUserCommand command, User user)
