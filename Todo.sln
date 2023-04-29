@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Infra", "Todo.Infra\Todo.Infra.csproj", "{A3E2BFD7-8628-4A51-B400-0A190C8B12FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Infra.Data", "Todo.Infra.Data\Todo.Infra.Data.csproj", "{A3E2BFD7-8628-4A51-B400-0A190C8B12FB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Domain", "Todo.Domain\Todo.Domain.csproj", "{69233669-A11B-4361-9E9A-02C5E8D2C763}"
 EndProject
