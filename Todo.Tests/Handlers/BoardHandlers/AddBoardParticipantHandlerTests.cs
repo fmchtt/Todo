@@ -33,7 +33,7 @@ public class AddBoardParticipantHandlerTests
         var board = _fixture.Create<Board>();
         board.OwnerId = user.Id;
 
-        _boardRepository.Setup(repo => repo.GetById(It.IsAny<Guid>())).Returns(board);
+        _boardRepository.Setup(repo => repo.GetById(board.Id)).Returns(board);
         _mailer.Setup(repo => repo.SendMail(It.IsAny<string>(), It.IsAny<string>())).Returns(new Task<bool>(() => true))
             .Verifiable();
         _inviteRepository.Setup(repo => repo.CreateMany(It.IsAny<ICollection<Invite>>())).Verifiable();

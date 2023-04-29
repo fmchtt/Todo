@@ -2,7 +2,7 @@
 using Todo.Domain.Entities;
 using Todo.Domain.Results;
 
-namespace Todo.Api.Mappers;
+namespace Todo.Infra.Mappers;
 
 public class BoardMapper : Profile
 {

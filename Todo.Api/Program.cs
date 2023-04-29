@@ -5,14 +5,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Todo.Api.Utils;
 using Todo.Api.Contracts;
-using Todo.Domain.Repositories;
-using Todo.Infra.Repositories;
-using Todo.Domain.Utils;
-using Todo.Infra.Utils;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.FileProviders;
-using Todo.Api.Mappers;
-using Todo.Domain.Handlers;
+using Todo.Infra.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
 var secret = builder.Configuration.GetValue("SECRET_KEY", "") ?? Guid.NewGuid().ToString();
@@ -34,44 +29,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<TodoDBContext>(x =>
-{
-    x.UseLazyLoadingProxies();
-    if (builder.Environment.IsProduction())
-    {
-        x.UseSqlite("Data Source=./database/Todo.db");
-    }
-    else
-    {
-        x.UseNpgsql(builder.Configuration.GetValue("CONNECTION_STRING", ""));
-    }
-});
+builder.Services.AddInfrastructure(builder.Configuration);
 
-// Utils
 builder.Services.AddTransient<ITokenService, TokenService>(x => new TokenService(key));
-builder.Services.AddTransient<IHasher, Hasher>();
 builder.Services.AddTransient<IFileStorage, LocalFileStorage>(x => new LocalFileStorage(staticPath));
-builder.Services.AddTransient<IMailer, ConsoleMailer>();
-
-// Repositories
-builder.Services.AddTransient<IBoardRepository, BoardRepository>();
-builder.Services.AddTransient<IColumnRepository, ColumnRepository>();
-builder.Services.AddTransient<ITodoItemRepository, TodoItemRepository>();
-builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IRecoverCodeRepository, RecoverCodeRepository>();
-builder.Services.AddTransient<IInviteRepository, InviteRepository>();
-
-// Handlers
-builder.Services.AddTransient<BoardHandler>();
-builder.Services.AddTransient<ColumnHandler>();
-builder.Services.AddTransient<UserHandler>();
-builder.Services.AddTransient<ItemHandler>();
-
-// Mappers
-builder.Services.AddAutoMapper(typeof(BoardMapper));
-builder.Services.AddAutoMapper(typeof(ItemMapper));
-builder.Services.AddAutoMapper(typeof(UserMapper));
-builder.Services.AddAutoMapper(typeof(ColumnMapper));
 
 builder.Services.AddSwaggerGen(options =>
 {

@@ -53,7 +53,7 @@ public class ItemHandler : IHandler<CreateItemCommand, TodoItem>, IHandler<EditI
         }
 
         var todoItem = new TodoItem(command.Title, command.Description, command.BoardId, user.Id, false,
-            (EPriority)command.Priority, command.ColumnId);
+            command.Priority, command.ColumnId);
         _itemRepository.Create(todoItem);
 
         return new CommandResult<TodoItem>(Code.Created, "Item criado com sucesso!", todoItem);
