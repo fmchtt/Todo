@@ -16,7 +16,7 @@ import { Text } from "@/assets/css/global.styles";
 import BoardCard from "@/components/boardCard";
 import { getItens } from "@/services/api/itens";
 import ItemCard from "@/components/itemCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Item } from "@/types/item";
 import ItemPresentation from "@/components/itemPresentation";
 import CreateItemForm from "@/components/forms/CreateItemForm";
@@ -24,14 +24,18 @@ import CreateItemForm from "@/components/forms/CreateItemForm";
 export default function Dashboard() {
   const boardQuery = useQuery("boards", getBoards);
   const itemQuery = useQuery("itens", getItens);
-  const [itemClicked, setItemClicked] = useState<Item>({} as Item);
-  const [handleBoardModal, boardModal] = useModal(<BoardRegister />);
-  const [handleItemModal, itemModal] = useModal(
-    <ItemPresentation data={itemClicked} onCloseClick={handleItemCloseClick} />,
-    false,
+  const [itemClicked, setItemClicked] = useState<Item | null>();
+  const handleBoardModal = useModal(<BoardRegister />);
+  const handleItemModal = useModal(
+    itemClicked && (
+      <ItemPresentation
+        data={itemClicked}
+        onCloseClick={handleItemCloseClick}
+      />
+    ),
     false
   );
-  const [handleCreateItemModal, createItemModal] = useModal(
+  const handleCreateItemModal = useModal(
     <CreateItemForm onSuccess={handleCreateItemSuccess} />
   );
 
@@ -43,14 +47,17 @@ export default function Dashboard() {
     handleItemModal();
   }
 
+  useEffect(() => {
+    if (itemClicked) {
+      handleItemModal();
+    }
+  }, [itemClicked]);
+
   return (
     <Container>
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
-      {boardModal}
-      {itemModal}
-      {createItemModal}
       <HeadingContainer>
         <Text size="large">Quadros</Text>
         <ActionContainer>
@@ -90,7 +97,6 @@ export default function Dashboard() {
                   data={item}
                   onClick={() => {
                     setItemClicked(item);
-                    handleItemModal();
                   }}
                 />
               );

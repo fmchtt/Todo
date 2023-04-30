@@ -1,9 +1,9 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import http from "../services/http";
 import User from "../types/user";
-import { TokenResponse } from "../types/responses/auth";
+import { TokenResponse } from "@/types/responses/auth";
 import { useQuery, useQueryClient } from "react-query";
-import { getActualUser } from "../services/api/user";
+import { getActualUser } from "@/services/api/user";
 import { LoginProps, RegisterProps, ContextProps, Context } from "./types";
 
 const authContext = createContext({} as Context);

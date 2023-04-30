@@ -38,16 +38,15 @@ export default function Board() {
   const { user } = useAuth();
 
   const [itemClicked, setItemClicked] = useState<Item>({} as Item);
-  const [handleItemModal, itemModal] = useModal(
+  const handleItemModal = useModal(
     <ItemPresentation
       data={itemClicked}
       onCloseClick={handleItemCloseClick}
       boardId={data?.id}
     />,
-    false,
     false
   );
-  const [handleCreateItemModal, createItemModal] = useModal(
+  const handleCreateItemModal = useModal(
     <CreateItem
       boardId={data?.id}
       onSuccess={handleCreateItemSuccess}
@@ -56,7 +55,7 @@ export default function Board() {
       })}
     />
   );
-  const [handleBoardModal, boardModal] = useModal(
+  const handleBoardModal = useModal(
     <BoardRegister
       data={{
         id: data?.id || "",
@@ -66,15 +65,15 @@ export default function Board() {
       closeModal={handleBoardModalSuccess}
     />
   );
-  const [handleConfirmation, confirmationModal] = useConfirmationModal({
+  const handleConfirmation = useConfirmationModal({
     message: `Tem certeza que deseja apagar o quadro: ${data?.name} ?`,
     onConfirm: handleBoardDelete,
   });
-  const [handleColumnModal, columnModal] = useModal(
+  const handleColumnModal = useModal(
     <ColumnForm boardId={data?.id || ""} onSuccess={handleColumnModalSuccess} />
   );
 
-  const [handleInviteModal, inviteModal] = useModal(
+  const handleInviteModal = useModal(
     <InviteForm
       participants={data?.participants}
       boardId={data?.id || ""}
@@ -179,12 +178,6 @@ export default function Board() {
           <title>Quadro - {data?.name}</title>
         </Helmet>
       )}
-      {boardModal}
-      {itemModal}
-      {createItemModal}
-      {confirmationModal}
-      {columnModal}
-      {inviteModal}
       <HeadingContainer>
         <H2>{data?.name}</H2>
         {data?.participants && (

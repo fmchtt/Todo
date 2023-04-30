@@ -39,7 +39,7 @@ export default function ItemPresentation({
   const navigate = useNavigate();
   const client = useQueryClient();
 
-  const [handleConfirmation, confirmationModal] = useConfirmationModal({
+  const handleConfirmation = useConfirmationModal({
     message: `Tem certeza que deseja apagar a tarefa ${data.title} ?`,
     onConfirm: handleDeleteItem,
   });
@@ -120,7 +120,6 @@ export default function ItemPresentation({
 
   return (
     <PresentationContainer>
-      {confirmationModal}
       <PresentationBody>
         <PresentationGroup flex={true}>
           <H1>{data.title}</H1>
