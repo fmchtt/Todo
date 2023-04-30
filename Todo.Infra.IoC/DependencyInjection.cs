@@ -19,9 +19,6 @@ public static class DependencyInjection
         services.AddDbContext<TodoDBContext>(x =>
         {
             x.UseLazyLoadingProxies();
-            x.EnableSensitiveDataLogging();
-            x.EnableDetailedErrors();
-            
             x.UseNpgsql(configuration.GetSection("CONNECTION_STRING").Value,
                 b => b.MigrationsAssembly(typeof(TodoDBContext).Assembly.FullName));
         });
