@@ -1,42 +1,16 @@
-import { ReactNode, useState } from "react";
-import { ContainerModal, ModalStyled } from "./styles";
-import { createPortal } from "react-dom";
-import { TbX } from "react-icons/tb";
+import { ReactNode, useContext } from "react";
+import { modalContext } from "@/context/modal";
 
-export default function useModal(
-  component: ReactNode,
-  initialState = false,
-  withControls = true
-): [() => void, ReactNode] {
-  const [open, setOpen] = useState(initialState);
+export default function useModal(component: ReactNode, withControls = true) {
+  const { isOpen, closeModal, openModal } = useContext(modalContext);
 
-  function handleState() {
-    setOpen((state) => !state);
+  if (isOpen == undefined) {
+    throw new Error("Contexto de Modal não inicializado!");
   }
 
-  return [
-    handleState,
-    <>
-      {open &&
-        createPortal(
-          <ContainerModal>
-            {withControls ? (
-              <ModalStyled>
-                <TbX
-                  role="button"
-                  color="#fff"
-                  cursor="pointer"
-                  size={30}
-                  onClick={handleState}
-                />
-                {component}
-              </ModalStyled>
-            ) : (
-              component
-            )}
-          </ContainerModal>,
-          document.body
-        )}
-    </>,
-  ];
+  function modalOpen() {
+    openModal(withControls, component);
+  }
+
+  return [modalOpen, closeModal];
 }

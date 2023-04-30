@@ -16,45 +16,52 @@ import { Text } from "@/assets/css/global.styles";
 import BoardCard from "@/components/boardCard";
 import { getItens } from "@/services/api/itens";
 import ItemCard from "@/components/itemCard";
-import { useState } from "react";
-import { Item } from "@/types/item";
+import { useState, useEffect } from "react";
 import ItemPresentation from "@/components/itemPresentation";
 import CreateItemForm from "@/components/forms/CreateItemForm";
 
 export default function Dashboard() {
   const boardQuery = useQuery("boards", getBoards);
   const itemQuery = useQuery("itens", getItens);
-  const [itemClicked, setItemClicked] = useState<Item>({} as Item);
-  const [handleBoardModal, boardModal] = useModal(<BoardRegister />);
-  const [handleItemModal, itemModal] = useModal(
-    <ItemPresentation data={itemClicked} onCloseClick={handleItemCloseClick} />,
-    false,
+  const [itemClicked, setItemClicked] = useState<number | undefined>(undefined);
+  const [openBoardModal] = useModal(<BoardRegister />);
+  const [openItemModal, closeItemModal] = useModal(
+    itemQuery.data && itemClicked !== undefined && (
+      <ItemPresentation
+        data={itemQuery.data[itemClicked]}
+        onCloseClick={handleItemCloseClick}
+      />
+    ),
     false
   );
-  const [handleCreateItemModal, createItemModal] = useModal(
+  const [openCreateItemModal, closeCreateItemModal] = useModal(
     <CreateItemForm onSuccess={handleCreateItemSuccess} />
   );
 
   function handleCreateItemSuccess() {
-    handleCreateItemModal();
+    closeCreateItemModal();
   }
 
   function handleItemCloseClick() {
-    handleItemModal();
+    setItemClicked(undefined);
+    closeItemModal();
   }
+
+  useEffect(() => {
+    if (itemClicked !== undefined) {
+      openItemModal();
+    }
+  }, [itemClicked]);
 
   return (
     <Container>
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
-      {boardModal}
-      {itemModal}
-      {createItemModal}
       <HeadingContainer>
         <Text size="large">Quadros</Text>
         <ActionContainer>
-          <ActionButton onClick={handleBoardModal}>
+          <ActionButton onClick={openBoardModal}>
             <TbPlus size={28} />
             <Text>Adicionar Quadro</Text>
           </ActionButton>
@@ -75,7 +82,7 @@ export default function Dashboard() {
             Tarefas
           </Text>
           <ActionContainer>
-            <ActionButton onClick={handleCreateItemModal}>
+            <ActionButton onClick={openCreateItemModal}>
               <TbPlus size={28} />
               <Text>Adicionar Tarefa</Text>
             </ActionButton>
@@ -83,14 +90,13 @@ export default function Dashboard() {
         </HeadingContainer>
         <Carousel>
           {itemQuery.data
-            ?.map((item) => {
+            ?.map((item, idx) => {
               return (
                 <ItemCard
                   key={item.id}
                   data={item}
                   onClick={() => {
-                    setItemClicked(item);
-                    handleItemModal();
+                    setItemClicked(idx);
                   }}
                 />
               );
