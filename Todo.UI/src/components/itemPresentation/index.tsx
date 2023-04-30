@@ -39,7 +39,7 @@ export default function ItemPresentation({
   const navigate = useNavigate();
   const client = useQueryClient();
 
-  const handleConfirmation = useConfirmationModal({
+  const [openConfirmation] = useConfirmationModal({
     message: `Tem certeza que deseja apagar a tarefa ${data.title} ?`,
     onConfirm: handleDeleteItem,
   });
@@ -133,7 +133,7 @@ export default function ItemPresentation({
             role="button"
             size={26}
             cursor="pointer"
-            onClick={handleConfirmation}
+            onClick={openConfirmation}
           />
           {data.done ? (
             <TbCircleOff

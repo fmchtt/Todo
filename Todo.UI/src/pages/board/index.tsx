@@ -12,7 +12,7 @@ import Column from "@/components/column";
 import { Helmet } from "react-helmet";
 import { useModal } from "@/hooks";
 import ItemPresentation from "@/components/itemPresentation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Item } from "@/types/item";
 import CreateItem from "@/components/forms/CreateItemForm";
 import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
@@ -37,16 +37,25 @@ export default function Board() {
   const client = useQueryClient();
   const { user } = useAuth();
 
-  const [itemClicked, setItemClicked] = useState<Item>({} as Item);
-  const handleItemModal = useModal(
-    <ItemPresentation
-      data={itemClicked}
-      onCloseClick={handleItemCloseClick}
-      boardId={data?.id}
-    />,
+  const [itemClicked, setItemClicked] = useState<Item | undefined>();
+
+  useEffect(() => {
+    if (itemClicked !== undefined) {
+      openItemModal();
+    }
+  }, [itemClicked]);
+
+  const [openItemModal, closeItemModal] = useModal(
+    itemClicked && (
+      <ItemPresentation
+        data={itemClicked}
+        onCloseClick={handleItemCloseClick}
+        boardId={data?.id}
+      />
+    ),
     false
   );
-  const handleCreateItemModal = useModal(
+  const [openCreateItemModal, closeCreateItemModal] = useModal(
     <CreateItem
       boardId={data?.id}
       onSuccess={handleCreateItemSuccess}
@@ -55,7 +64,7 @@ export default function Board() {
       })}
     />
   );
-  const handleBoardModal = useModal(
+  const [openBoardModal, closeBoardModal] = useModal(
     <BoardRegister
       data={{
         id: data?.id || "",
@@ -65,15 +74,15 @@ export default function Board() {
       closeModal={handleBoardModalSuccess}
     />
   );
-  const handleConfirmation = useConfirmationModal({
+  const [openConfirmationModal] = useConfirmationModal({
     message: `Tem certeza que deseja apagar o quadro: ${data?.name} ?`,
     onConfirm: handleBoardDelete,
   });
-  const handleColumnModal = useModal(
+  const [openColumnModal, closeColumnModal] = useModal(
     <ColumnForm boardId={data?.id || ""} onSuccess={handleColumnModalSuccess} />
   );
 
-  const handleInviteModal = useModal(
+  const [openInviteModal] = useModal(
     <InviteForm
       participants={data?.participants}
       boardId={data?.id || ""}
@@ -82,7 +91,7 @@ export default function Board() {
   );
 
   function handleColumnModalSuccess() {
-    handleColumnModal();
+    closeColumnModal();
   }
 
   function handleBoardDelete() {
@@ -95,15 +104,15 @@ export default function Board() {
   }
 
   function handleItemCloseClick() {
-    handleItemModal();
+    closeItemModal();
   }
 
   function handleCreateItemSuccess() {
-    handleCreateItemModal();
+    closeCreateItemModal();
   }
 
   function handleBoardModalSuccess() {
-    handleBoardModal();
+    closeBoardModal();
   }
 
   let dragColumnId = "";
@@ -183,16 +192,16 @@ export default function Board() {
         {data?.participants && (
           <ParticipantWrapper
             participants={data.participants}
-            onClick={handleInviteModal}
+            onClick={openInviteModal}
           />
         )}
         {data && (
           <ActionsContainer>
-            <ActionsContainer clickable onClick={handleCreateItemModal}>
+            <ActionsContainer clickable onClick={openCreateItemModal}>
               <TbPlus role="button" size={28} />
               <Text>Adicionar Tarefa</Text>
             </ActionsContainer>
-            <ActionsContainer clickable onClick={handleColumnModal}>
+            <ActionsContainer clickable onClick={openColumnModal}>
               <TbPlus role="button" size={28} />
               <Text>Adicionar Coluna</Text>
             </ActionsContainer>
@@ -200,14 +209,14 @@ export default function Board() {
               role="button"
               size={28}
               cursor="pointer"
-              onClick={handleBoardModal}
+              onClick={openBoardModal}
             />
             {data?.owner === user?.id && (
               <TbTrash
                 role="button"
                 size={28}
                 cursor="pointer"
-                onClick={handleConfirmation}
+                onClick={openConfirmationModal}
               />
             )}
           </ActionsContainer>
@@ -221,7 +230,6 @@ export default function Board() {
               <Column
                 onItemClick={(item: Item) => {
                   setItemClicked(item);
-                  handleItemModal();
                 }}
                 key={column.id}
                 totalItems={data.itemCount}

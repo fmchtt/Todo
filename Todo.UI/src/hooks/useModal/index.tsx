@@ -1,22 +1,16 @@
-import { ReactNode, useState } from "react";
-import { useModalContext } from "@/context/modal";
+import { ReactNode, useContext } from "react";
+import { modalContext } from "@/context/modal";
 
-export default function useModal(
-  component: ReactNode,
-  withControls = true
-): () => void {
-  const { isOpen, modalId, closeModal, openModal } = useModalContext();
-  const [id] = useState(crypto.randomUUID());
+export default function useModal(component: ReactNode, withControls = true) {
+  const { isOpen, closeModal, openModal } = useContext(modalContext);
 
   if (isOpen == undefined) {
     throw new Error("Contexto de Modal não inicializado!");
   }
 
-  function handleState() {
-    isOpen && modalId === id
-      ? closeModal()
-      : openModal(withControls, component, id);
+  function modalOpen() {
+    openModal(withControls, component);
   }
 
-  return handleState;
+  return [modalOpen, closeModal];
 }

@@ -79,33 +79,38 @@ export default function CreateItemForm({
         reqData["columnId"] = values.columnId;
       }
 
-      const data = await createItem(reqData);
+      try {
+        const data = await createItem(reqData);
 
-      client.setQueryData<Item[]>(["itens"], (previous) => {
-        if (!previous) {
-          return [data];
-        }
-        return [...previous, data];
-      });
-
-      if (boardId) {
-        client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
-          if (!prev) {
-            throw new Error("Cache invalido!");
+        client.setQueryData<Item[]>(["itens"], (previous) => {
+          if (!previous) {
+            return [data];
           }
-
-          const colIdx = prev.columns.findIndex(
-            (x) => x.id === values.columnId
-          );
-          if (colIdx >= 0) {
-            prev.columns[colIdx].itens.push(data);
-            prev.columns[colIdx].itemCount += 1;
-          }
-
-          return prev;
+          return [data, ...previous];
         });
+
+        if (boardId) {
+          client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
+            if (!prev) {
+              throw new Error("Cache invalido!");
+            }
+
+            const colIdx = prev.columns.findIndex(
+              (x) => x.id === values.columnId
+            );
+            if (colIdx >= 0) {
+              prev.columns[colIdx].itens.push(data);
+              prev.columns[colIdx].itemCount += 1;
+            }
+
+            return prev;
+          });
+        }
+
+        onSuccess();
+      } catch (e) {
+        console.log(e);
       }
-      onSuccess();
     },
   });
 

@@ -1,86 +1,58 @@
-﻿import { createContext, ReactNode, useContext, useReducer } from "react";
+﻿import { createContext, ReactNode, useState, useEffect } from "react";
 import { ContainerModal, ModalStyled } from "./styles";
 import { TbX } from "react-icons/tb";
 
 type ModalContextProps = {
   isOpen: boolean;
-  modalId: string;
   closeModal: () => void;
-  openModal: (withControls: boolean, component: ReactNode, id: string) => void;
+  openModal: (withControls: boolean, component: ReactNode) => void;
 };
 
-const modalContext = createContext<ModalContextProps>({} as ModalContextProps);
+export const modalContext = createContext<ModalContextProps>(
+  {} as ModalContextProps
+);
 
 type ModalProviderProps = {
   children: ReactNode;
 };
 
-type ModalState = {
-  withControls: boolean;
-  component: ReactNode;
-  modalId: string;
-  isOpen: boolean;
-};
-
-type ModalAction = {
-  component?: ReactNode;
-  withControls?: boolean;
-  modalId?: string;
-  type: "OPEN" | "CLOSE";
-};
-
 export function ModalProvider({ children }: ModalProviderProps) {
-  function reducer(state: ModalState, action: ModalAction): ModalState {
-    console.log(state, action);
+  const [component, setComponent] = useState<ReactNode>();
+  const [withControls, setWithControls] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
-    if (action.type == "OPEN") {
-      return {
-        component: action.component,
-        withControls: action.withControls == null ? true : action.withControls,
-        modalId: action.modalId || "",
-        isOpen: !!action.component,
-      };
+  function openModal(controls: boolean, component: ReactNode) {
+    if (withControls !== controls) {
+      setWithControls(controls);
     }
-
-    return { isOpen: false, component: null, withControls: true, modalId: "" };
-  }
-
-  const [state, dispatch] = useReducer(reducer, {
-    isOpen: false,
-    modalId: "",
-    withControls: true,
-    component: null,
-  });
-
-  function openModal(withControls: boolean, component: ReactNode, id: string) {
-    console.log(id, state);
-
-    dispatch({
-      component: component,
-      withControls: withControls,
-      modalId: id,
-      type: "OPEN",
-    });
+    if (component) {
+      setComponent(component);
+    }
   }
 
   function closeModal() {
-    console.log(state);
-
-    dispatch({ type: "CLOSE" });
+    setComponent(null);
   }
+
+  useEffect(() => {
+    if (component) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  }, [component]);
 
   return (
     <modalContext.Provider
       value={{
-        isOpen: state.isOpen,
-        modalId: state.modalId,
+        isOpen: isOpen,
         closeModal: closeModal,
         openModal: openModal,
       }}
     >
-      {state.isOpen && (
+      {isOpen && (
         <ContainerModal>
-          {state.withControls ? (
+          {withControls ? (
             <ModalStyled>
               <TbX
                 role="button"
@@ -89,18 +61,14 @@ export function ModalProvider({ children }: ModalProviderProps) {
                 size={30}
                 onClick={closeModal}
               />
-              {state.component}
+              {component}
             </ModalStyled>
           ) : (
-            state.component
+            component
           )}
         </ContainerModal>
       )}
       {children}
     </modalContext.Provider>
   );
-}
-
-export function useModalContext() {
-  return useContext(modalContext);
 }

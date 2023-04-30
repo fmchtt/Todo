@@ -38,14 +38,14 @@ export default function Column({
 }: ColumnProps) {
   const client = useQueryClient();
 
-  const handleColumnModal = useModal(
+  const [openColumnModal, closeColumnModal] = useModal(
     <ColumnForm
       data={{ id: data.id, name: data.name }}
       boardId={boardId}
       onSuccess={handleColumnModalSuccess}
     />
   );
-  const handleConfirmationModal = useConfirmationModal({
+  const [openConfirmationModal] = useConfirmationModal({
     message: `Tem certeza que deseja apagar a coluna: ${data.name} ?`,
     onConfirm: handleConfirmationModalSuccess,
   });
@@ -64,11 +64,11 @@ export default function Column({
       return prev;
     });
 
-    handleConfirmationModal();
+    closeColumnModal();
   }
 
   function handleColumnModalSuccess() {
-    handleColumnModal();
+    closeColumnModal();
   }
 
   async function handleColumnChange() {
@@ -128,13 +128,13 @@ export default function Column({
             role="button"
             size={24}
             cursor="pointer"
-            onClick={handleConfirmationModal}
+            onClick={openConfirmationModal}
           />
           <TbEdit
             role="button"
             size={24}
             cursor="pointer"
-            onClick={handleColumnModal}
+            onClick={openColumnModal}
           />
           <Text>
             {data.itemCount} / {totalItems}
