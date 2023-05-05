@@ -1,16 +1,65 @@
-import { ReactNode, useContext } from "react";
-import { modalContext } from "@/context/modal";
+import { ReactNode, useState } from "react";
+import { createPortal } from "react-dom";
+import { TbX } from "react-icons/tb";
+import { ContainerModal, ModalStyled } from "./styles";
 
-export default function useModal(component: ReactNode, withControls = true) {
-  const { isOpen, closeModal, openModal } = useContext(modalContext);
+type ModalProps = {
+  isOpen: boolean;
+  withControls: boolean;
+  closeModal: () => void;
+  component: ReactNode;
+};
 
-  if (isOpen == undefined) {
-    throw new Error("Contexto de Modal não inicializado!");
+function Modal({ isOpen, withControls, closeModal, component }: ModalProps) {
+  if (isOpen) {
+    return createPortal(
+      <ContainerModal>
+        {withControls ? (
+          <ModalStyled>
+            <TbX
+              role="button"
+              color="#fff"
+              cursor="pointer"
+              size={30}
+              onClick={closeModal}
+            />
+            {component}
+          </ModalStyled>
+        ) : (
+          component
+        )}
+        )
+      </ContainerModal>,
+      document.body
+    );
   }
 
-  function modalOpen() {
-    openModal(withControls, component);
+  return null;
+}
+
+export default function useModal(
+  component: ReactNode,
+  withControls = true
+): [ReactNode, () => void, () => void] {
+  const [isOpen, setOpen] = useState(false);
+
+  function closeModal() {
+    setOpen(false);
   }
 
-  return [modalOpen, closeModal];
+  function openModal() {
+    setOpen(true);
+  }
+
+  return [
+    <Modal
+      key={crypto.randomUUID()}
+      isOpen={isOpen}
+      withControls={withControls}
+      closeModal={closeModal}
+      component={component}
+    />,
+    openModal,
+    closeModal,
+  ];
 }

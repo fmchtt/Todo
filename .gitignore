@@ -364,6 +364,7 @@ FodyWeavers.xsd
 /Todo.Api/appsettings.Development.json
 /Todo.UI/.env
 /Todo.UI/dist
+pnpm-lock.yaml
 wwwroot/
 .idea
 

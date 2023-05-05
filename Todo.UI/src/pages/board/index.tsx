@@ -33,7 +33,10 @@ type ParamProps = {
 export default function Board() {
   const params = useParams<ParamProps>();
   const navigate = useNavigate();
-  const { data, isLoading } = useQuery(["board", params.id], getBoardById);
+  const { data, isLoading } = useQuery({
+    queryKey: ["board", params.id],
+    queryFn: getBoardById,
+  });
   const client = useQueryClient();
   const { user } = useAuth();
 
@@ -45,7 +48,7 @@ export default function Board() {
     }
   }, [itemClicked]);
 
-  const [openItemModal, closeItemModal] = useModal(
+  const [itemModal, openItemModal, closeItemModal] = useModal(
     itemClicked && (
       <ItemPresentation
         data={itemClicked}
@@ -55,7 +58,7 @@ export default function Board() {
     ),
     false
   );
-  const [openCreateItemModal, closeCreateItemModal] = useModal(
+  const [createItemModal, openCreateItemModal, closeCreateItemModal] = useModal(
     <CreateItem
       boardId={data?.id}
       onSuccess={handleCreateItemSuccess}
@@ -64,7 +67,7 @@ export default function Board() {
       })}
     />
   );
-  const [openBoardModal, closeBoardModal] = useModal(
+  const [boardModal, openBoardModal, closeBoardModal] = useModal(
     <BoardRegister
       data={{
         id: data?.id || "",
@@ -74,15 +77,15 @@ export default function Board() {
       closeModal={handleBoardModalSuccess}
     />
   );
-  const [openConfirmationModal] = useConfirmationModal({
+  const [confirmationModal, openConfirmationModal] = useConfirmationModal({
     message: `Tem certeza que deseja apagar o quadro: ${data?.name} ?`,
     onConfirm: handleBoardDelete,
   });
-  const [openColumnModal, closeColumnModal] = useModal(
+  const [columnModal, openColumnModal, closeColumnModal] = useModal(
     <ColumnForm boardId={data?.id || ""} onSuccess={handleColumnModalSuccess} />
   );
 
-  const [openInviteModal] = useModal(
+  const [inviteModal, openInviteModal] = useModal(
     <InviteForm
       participants={data?.participants}
       boardId={data?.id || ""}
@@ -182,6 +185,12 @@ export default function Board() {
 
   return (
     <Container>
+      {boardModal}
+      {itemModal}
+      {inviteModal}
+      {createItemModal}
+      {confirmationModal}
+      {columnModal}
       {!isLoading && data && (
         <Helmet>
           <title>Quadro - {data?.name}</title>

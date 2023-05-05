@@ -9,26 +9,23 @@ import Board from "./pages/board";
 import Profile from "./pages/profile";
 import Invite from "./pages/invite";
 import RecoverPassword from "./pages/recoverPassord";
-import { ModalProvider } from "@/context/modal";
 
 function App() {
   return (
     <ThemeProvider theme={Default}>
       <BrowserRouter>
-        <ModalProvider>
-          <Routes>
-            <Route path="/" index={true} element={<Navigate to="/login" />} />
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route path="invite/:id" element={<Invite />} />
-            <Route path="/" element={<BaseLayout />}>
-              <Route path="home" element={<Dashboard />} />
-              <Route path="board/:id" element={<Board />} />
-              <Route path="profile" element={<Profile />} />
-            </Route>
-            <Route path="password-reset" element={<RecoverPassword />} />
-          </Routes>
-        </ModalProvider>
+        <Routes>
+          <Route path="/" index={true} element={<Navigate to="/login" />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="invite/:id" element={<Invite />} />
+          <Route path="/" element={<BaseLayout />}>
+            <Route path="home" element={<Dashboard />} />
+            <Route path="board/:id" element={<Board />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+          <Route path="password-reset" element={<RecoverPassword />} />
+        </Routes>
       </BrowserRouter>
     </ThemeProvider>
   );

@@ -15,7 +15,7 @@ import { TbEdit } from "react-icons/tb";
 export default function ProfileForm() {
   const client = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
-  const meQuery = useQuery(["me"], getActualUser);
+  const meQuery = useQuery({ queryKey: ["me"], queryFn: getActualUser });
   const [imageBase64, setImageBase64] = useState<string>();
   const [hover, setHover] = useState<boolean>(false);
 

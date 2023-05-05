@@ -21,20 +21,21 @@ import ItemPresentation from "@/components/itemPresentation";
 import CreateItemForm from "@/components/forms/CreateItemForm";
 
 export default function Dashboard() {
-  const boardQuery = useQuery("boards", getBoards);
-  const itemQuery = useQuery("itens", getItens);
+  const boardQuery = useQuery({ queryKey: ["boards"], queryFn: getBoards });
+  const itemQuery = useQuery({ queryKey: ["itens"], queryFn: getItens });
   const [itemClicked, setItemClicked] = useState<number | undefined>(undefined);
-  const [openBoardModal] = useModal(<BoardRegister />);
-  const [openItemModal, closeItemModal] = useModal(
+  const [boardModal, openBoardModal] = useModal(<BoardRegister />);
+  const [itemModal, openItemModal, closeItemModal] = useModal(
     itemQuery.data && itemClicked !== undefined && (
       <ItemPresentation
+        key="modalItem"
         data={itemQuery.data[itemClicked]}
         onCloseClick={handleItemCloseClick}
       />
     ),
     false
   );
-  const [openCreateItemModal, closeCreateItemModal] = useModal(
+  const [createItemModal, openCreateItemModal, closeCreateItemModal] = useModal(
     <CreateItemForm onSuccess={handleCreateItemSuccess} />
   );
 
@@ -55,6 +56,9 @@ export default function Dashboard() {
 
   return (
     <Container>
+      {createItemModal}
+      {boardModal}
+      {itemModal}
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
