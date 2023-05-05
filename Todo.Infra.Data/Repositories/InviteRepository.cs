@@ -1,8 +1,8 @@
 ﻿using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
-using Todo.Infra.Contexts;
+using Todo.Infra.Data.Contexts;
 
-namespace Todo.Infra.Repositories;
+namespace Todo.Infra.Data.Repositories;
 
 public class InviteRepository : IInviteRepository
 {

@@ -2,7 +2,7 @@
 using Todo.Domain.Entities;
 using Todo.Domain.Results;
 
-namespace Todo.Infra.Mappers;
+namespace Todo.Infra.Data.Mappers;
 
 public class ItemMapper : Profile
 {

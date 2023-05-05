@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
 using Todo.Api.DTO;
 using Todo.Domain.Commands.UserCommands;
+using Todo.Domain.DTO;
 using Todo.Domain.Handlers;
 using Todo.Domain.Results;
 using Todo.Domain.Entities;
@@ -16,23 +17,16 @@ public class UserController : TodoBaseController
     [ProducesResponseType(typeof(ResumedUserResult), 200)]
     public async Task<IActionResult> ChangeAvatar(
         [FromForm] EditUserApiDTO data,
-        [FromServices] IFileStorage fileStorage,
         [FromServices] UserHandler handler
     )
     {
-        var user = GetUser();
-        string? avatarUrl = null;
-        if (data.File != null)
-        {
-            avatarUrl = await fileStorage.SaveFile(data.File);
-        }
-
         var command = new EditUserCommand
         {
             Name = data.Name,
-            AvatarUrl = avatarUrl
+            Avatar = data.File != null ? new FileDTO(data.File.OpenReadStream(), data.File.FileName, data.File.ContentType) : null,
+            User = GetUser()
         };
-        var result = handler.Handle(command, user);
+        var result = await handler.Handle(command);
 
         return ParseResult<User, ResumedUserResult>(result);
     }

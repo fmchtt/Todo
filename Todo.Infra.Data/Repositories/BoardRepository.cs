@@ -2,9 +2,9 @@
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Results;
-using Todo.Infra.Contexts;
+using Todo.Infra.Data.Contexts;
 
-namespace Todo.Infra.Repositories;
+namespace Todo.Infra.Data.Repositories;
 
 public class BoardRepository : IBoardRepository
 {

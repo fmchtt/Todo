@@ -8,7 +8,7 @@ using Todo.Domain.Utils;
 namespace Todo.Domain.Handlers;
 
 public class UserHandler : IHandlerPublic<LoginCommand, TokenResult>, IHandlerPublic<RegisterCommand, TokenResult>,
-    IHandler<EditUserCommand, User>, IHandlerPublic<RecoverPasswordCommand>,
+    IHandlerAsync<EditUserCommand, User>, IHandlerPublic<RecoverPasswordCommand>,
     IHandlerPublic<ConfirmRecoverPasswordCommand>
 {
     private readonly IUserRepository _userRepository;
@@ -16,13 +16,15 @@ public class UserHandler : IHandlerPublic<LoginCommand, TokenResult>, IHandlerPu
     private readonly IRecoverCodeRepository _recoverCodeRepository;
     private readonly IMailer _mailer;
     private readonly ITokenService _tokenService;
+    private readonly IFileStorage _fileStorage;
 
     public UserHandler(
         IUserRepository userRepository,
         IHasher hasher,
         IRecoverCodeRepository recoverCodeRepository,
         IMailer mailer,
-        ITokenService tokenService
+        ITokenService tokenService,
+        IFileStorage fileStorage
     )
     {
         _userRepository = userRepository;
@@ -30,6 +32,7 @@ public class UserHandler : IHandlerPublic<LoginCommand, TokenResult>, IHandlerPu
         _recoverCodeRepository = recoverCodeRepository;
         _mailer = mailer;
         _tokenService = tokenService;
+        _fileStorage = fileStorage;
     }
 
     public CommandResult<TokenResult> Handle(LoginCommand command)
@@ -76,7 +79,7 @@ public class UserHandler : IHandlerPublic<LoginCommand, TokenResult>, IHandlerPu
         return new CommandResult<TokenResult>(Code.Created, "Usuário criado com sucesso!", new TokenResult(token));
     }
 
-    public CommandResult<User> Handle(EditUserCommand command, User user)
+    public async Task<CommandResult<User>> Handle(EditUserCommand command)
     {
         var validation = command.Validate();
         if (!validation.IsValid)
@@ -85,19 +88,19 @@ public class UserHandler : IHandlerPublic<LoginCommand, TokenResult>, IHandlerPu
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
-        if (command.Name != null && command.Name != user.Name)
+        if (command.Name != null && command.Name != command.User.Name)
         {
-            user.Name = command.Name;
+            command.User.Name = command.Name;
         }
 
-        if (command.AvatarUrl != null && command.AvatarUrl != user.AvatarUrl)
+        if (command.Avatar != null)
         {
-            user.AvatarUrl = command.AvatarUrl;
+            command.User.AvatarUrl = await _fileStorage.SaveFileAsync(command.Avatar);
         }
 
-        _userRepository.Update(user);
+        _userRepository.Update(command.User);
 
-        return new CommandResult<User>(Code.Ok, "Usuario editado com sucesso!", user);
+        return new CommandResult<User>(Code.Ok, "Usuario editado com sucesso!", command.User);
     }
 
     public CommandResult HandleDelete(User user)

@@ -18,6 +18,7 @@ public class RegisterUserHandlerTests
         Mock<IMailer> mailer = new();
         Mock<ITokenService> tokenService = new();
         Mock<IRecoverCodeRepository> codeRepository = new();
+        Mock<IFileStorage> fileStorage = new();
 
         _fixture = new Fixture();
 
@@ -25,7 +26,7 @@ public class RegisterUserHandlerTests
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
         _handler = new UserHandler(_userRepository.Object, _hasher.Object, codeRepository.Object, mailer.Object,
-            tokenService.Object);
+            tokenService.Object, fileStorage.Object);
     }
 
     [Fact]

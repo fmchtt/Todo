@@ -22,3 +22,8 @@ public interface IHandlerPublic<in T> where T : ICommand
 {
     CommandResult Handle(T command);
 }
+
+public interface IHandlerAsync<in T, TR> where T : ICommand
+{
+    Task<CommandResult<TR>> Handle(T command);
+}

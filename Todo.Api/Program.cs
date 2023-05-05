@@ -1,12 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Todo.Infra.Contexts;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Todo.Api.Utils;
-using Todo.Api.Contracts;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.FileProviders;
+using Todo.Infra.Data.Contexts;
 using Todo.Infra.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,8 +28,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration);
-
-builder.Services.AddTransient<IFileStorage, LocalFileStorage>(x => new LocalFileStorage(staticPath));
 
 builder.Services.AddSwaggerGen(options =>
 {

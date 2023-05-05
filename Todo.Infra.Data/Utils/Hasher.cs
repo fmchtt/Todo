@@ -1,6 +1,6 @@
 ﻿using Todo.Domain.Utils;
 
-namespace Todo.Infra.Utils;
+namespace Todo.Infra.Data.Utils;
 
 public class Hasher : IHasher
 {

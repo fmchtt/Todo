@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Todo.Domain.Commands.Contracts;
+using Todo.Domain.DTO;
+using Todo.Domain.Entities;
 
 namespace Todo.Domain.Commands.UserCommands;
 
@@ -15,7 +17,8 @@ public class EditUserValidator : AbstractValidator<EditUserCommand>
 public class EditUserCommand : ICommand
 {
     public string? Name { get; init; }
-    public string? AvatarUrl { get; init; }
+    public FileDTO? Avatar { get; init; }
+    public User User { get; init; }
 
     public ValidationResult Validate()
     {

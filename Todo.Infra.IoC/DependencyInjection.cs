@@ -4,10 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Todo.Domain.Handlers;
 using Todo.Domain.Repositories;
 using Todo.Domain.Utils;
-using Todo.Infra.Contexts;
-using Todo.Infra.Mappers;
-using Todo.Infra.Repositories;
-using Todo.Infra.Utils;
+using Todo.Infra.Data.Contexts;
+using Todo.Infra.Data.Mappers;
+using Todo.Infra.Data.Repositories;
+using Todo.Infra.Data.Utils;
 
 namespace Todo.Infra.IoC;
 
@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddTransient<IMailer, ConsoleMailer>();
         services.AddTransient<ITokenService, TokenService>(x =>
             new TokenService(configuration.GetSection("SECRET_KEY").Value ?? Guid.NewGuid().ToString()));
+        services.AddTransient<IFileStorage, LocalFileStorage>();
 
         // Repositories
         services.AddTransient<IBoardRepository, BoardRepository>();
