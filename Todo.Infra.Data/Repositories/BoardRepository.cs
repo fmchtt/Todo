@@ -15,44 +15,44 @@ public class BoardRepository : IBoardRepository
         _dbContext = dbContext;
     }
 
-    public void Create(Board board)
+    public async Task Create(Board board)
     {
-        _dbContext.Boards.Add(board);
-        _dbContext.SaveChanges();
+        await _dbContext.Boards.AddAsync(board);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public void Delete(Board board)
+    public async Task Delete(Board board)
     {
         _dbContext.Boards.Remove(board); 
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
-    public PaginatedResult<Board> GetAll(Guid ownerId, int page)
+    public async Task<PaginatedResult<Board>> GetAll(Guid ownerId, int page)
     {
         var offset = page * 10;
-        var user = _dbContext.Users.First(x => x.Id == ownerId);
+        var user = await _dbContext.Users.FirstAsync(x => x.Id == ownerId);
 
         var query = _dbContext.Boards.Where(x => x.Participants.Contains(user)).Skip(offset).Take(10).OrderBy(x => x.Name);
 
-        var result = query.ToList();
+        var result = await query.ToListAsync();
         var count = query.Count() / 10;
 
         return new PaginatedResult<Board>(result, count);
     }
 
-    public List<Board> GetAllByName(string name, Guid ownerId)
+    public async Task<List<Board>> GetAllByName(string name, Guid ownerId)
     {
-        return _dbContext.Boards.Where(x => x.OwnerId == ownerId && x.Name.Contains(name)).ToList();
+        return await _dbContext.Boards.Where(x => x.OwnerId == ownerId && x.Name.Contains(name)).ToListAsync();
     }
 
-    public Board? GetById(Guid id)
+    public async Task<Board?> GetById(Guid id)
     {
-        return _dbContext.Boards.Include(x => x.Participants).Include(x => x.Columns).FirstOrDefault(x => x.Id == id);
+        return await _dbContext.Boards.Include(x => x.Participants).Include(x => x.Columns).FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public void Update(Board board)
+    public async Task Update(Board board)
     {
         _dbContext.Boards.Update(board);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 }

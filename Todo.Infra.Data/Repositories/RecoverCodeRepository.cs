@@ -1,4 +1,5 @@
-﻿using Todo.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Infra.Contexts;
 
@@ -13,25 +14,25 @@ public class RecoverCodeRepository : IRecoverCodeRepository
         _dbContext = dbContext;
     }
 
-    public void Create(RecoverCode recoverCode)
+    public async Task Create(RecoverCode recoverCode)
     {
-        _dbContext.RecoverCodes.Add(recoverCode);
-        _dbContext.SaveChanges();
+        await _dbContext.RecoverCodes.AddAsync(recoverCode);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public void Delete(RecoverCode recoverCode)
+    public async Task Delete(RecoverCode recoverCode)
     {
         _dbContext.RecoverCodes.Remove(recoverCode); 
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
-    public RecoverCode Get(int code, string email)
+    public async Task<RecoverCode?> Get(int code, string email)
     {
-        return _dbContext.RecoverCodes.First(x => x.Code == code && x.User.Email == email);
+        return await _dbContext.RecoverCodes.FirstAsync(x => x.Code == code && x.User.Email == email);
     }
 
-    public RecoverCode Get(string email)
+    public  async Task<RecoverCode?> Get(string email)
     {
-        return _dbContext.RecoverCodes.First(x => x.User.Email == email);
+        return await _dbContext.RecoverCodes.FirstAsync(x => x.User.Email == email);
     }
 }

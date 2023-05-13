@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Todo.Domain.Handlers;
+using Todo.Application.Handlers;
 using Todo.Domain.Repositories;
-using Todo.Domain.Utils;
+using Todo.Application.Utils;
 using Todo.Infra.Contexts;
 using Todo.Infra.Mappers;
 using Todo.Infra.Repositories;
@@ -48,6 +49,8 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(ItemMapper));
         services.AddAutoMapper(typeof(UserMapper));
         services.AddAutoMapper(typeof(ColumnMapper));
+
+        services.AddMediatR(conf => conf.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.Load("Todo.Domain")));
 
         return services;
     }

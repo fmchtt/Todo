@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Todo.Application.Results;
 using Todo.Domain.Entities;
-using Todo.Domain.Results;
 
 namespace Todo.Infra.Mappers;
 

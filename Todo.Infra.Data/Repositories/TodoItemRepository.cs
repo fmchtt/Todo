@@ -1,6 +1,7 @@
-﻿using Todo.Domain.Entities;
-using Todo.Domain.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
 using Todo.Domain.Results;
+using Todo.Domain.Entities;
+using Todo.Domain.Repositories;
 using Todo.Infra.Contexts;
 
 namespace Todo.Infra.Repositories;
@@ -14,43 +15,43 @@ public class TodoItemRepository : ITodoItemRepository
         _dbContext = dbContext;
     }
 
-    public void Create(TodoItem item)
+    public async Task Create(TodoItem item)
     {
-        _dbContext.Itens.Add(item);
-        _dbContext.SaveChanges();
+        await _dbContext.Itens.AddAsync(item);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public void Delete(TodoItem item)
+    public async Task Delete(TodoItem item)
     {
         _dbContext.Itens.Remove(item);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
-    public PaginatedResult<TodoItem> GetAll(Guid ownerId, int page)
+    public async Task<PaginatedResult<TodoItem>> GetAll(Guid ownerId, int page)
     {
         var offset = page * 10;
 
         var query = _dbContext.Itens.Where(x => x.CreatorId == ownerId).Skip(offset).Take(10).OrderByDescending(x => x.CreatedDate);
         
-        var results = query.ToList();
+        var results = await query.ToListAsync();
         var pageCount = query.Count() / 10;
 
         return new PaginatedResult<TodoItem>(results, pageCount);
     }
 
-    public List<TodoItem> GetAllByTitle(string title, Guid ownerId)
+    public async Task<List<TodoItem>> GetAllByTitle(string title, Guid ownerId)
     {
-        return _dbContext.Itens.Where(x => x.CreatorId == ownerId && x.Title.Contains(title)).ToList();
+        return await _dbContext.Itens.Where(x => x.CreatorId == ownerId && x.Title.Contains(title)).ToListAsync();
     }
 
-    public TodoItem? GetById(Guid id)
+    public async Task<TodoItem?> GetById(Guid id)
     {
-        return _dbContext.Itens.FirstOrDefault(x => x.Id == id);
+        return await _dbContext.Itens.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public void Update(TodoItem item)
+    public async Task Update(TodoItem item)
     {
         _dbContext.Itens.Update(item);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 }

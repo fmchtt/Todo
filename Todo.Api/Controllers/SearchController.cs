@@ -1,38 +1,34 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
-using Todo.Api.DTO;
-using Todo.Domain.Repositories;
+using Todo.Application.Queries;
+using Todo.Application.Results;
 
 namespace Todo.Api.Controllers;
 
 [ApiController, Route("search")]
 public class SearchController : TodoBaseController
 {
+    private readonly IMediator _mediator;
+    
+    public SearchController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+    
     [HttpGet, Authorize]
-    public SearchResultDTO Search(
-        [FromQuery] string s, 
-        [FromServices] ITodoItemRepository itemRepository, 
-        [FromServices] IBoardRepository boardRepository
+    public async Task<SearchResult> Search(
+        [FromQuery] string s
     )
     {
         if (string.IsNullOrEmpty(s))
         {
-            return new SearchResultDTO();
+            return new SearchResult();
         }
 
-        var boards = boardRepository.GetAllByName(s, GetUserId());
-        var itens = itemRepository.GetAllByTitle(s, GetUserId());
-
-        var result = new SearchResultDTO();
-        foreach (var board in boards)
-        {
-            result.Boards.Add(new BoardSearchResultDTO(board.Id, board.Name));
-        }
-        foreach (var item in itens)
-        {
-            result.Itens.Add(new TodoItemSearchResultDTO(item.Id, item.Title));
-        }
+        var query = new SearchQuery(s, GetUser());
+        var result = await _mediator.Send(query);
 
         return result;
     }

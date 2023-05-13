@@ -4,11 +4,11 @@ namespace Todo.Domain.Repositories;
 
 public interface IColumnRepository
 {
-    public Column? GetById(Guid id);
-    public int GetMaxOrder(Guid boardId);
-    public void Create(Column column);
-    public void Update(Column column);
-    public void ColumnReorder(Guid boardId);
-    public void ColumnReorder(Guid boardId, Guid columnId, int order);
-    public void Delete(Column column);
+    public Task<Column?> GetById(Guid id);
+    public Task<int> GetMaxOrder(Guid boardId);
+    public Task Create(Column column);
+    public Task Update(Column column);
+    public Task ColumnReorder(Guid boardId);
+    public Task ColumnReorder(Guid boardId, Guid columnId, int order);
+    public Task Delete(Column column);
 }
