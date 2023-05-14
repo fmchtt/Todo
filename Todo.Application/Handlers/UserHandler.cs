@@ -17,13 +17,15 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
     private readonly IRecoverCodeRepository _recoverCodeRepository;
     private readonly IMailer _mailer;
     private readonly ITokenService _tokenService;
+    private readonly IFileStorage _fileStorage;
 
     public UserHandler(
         IUserRepository userRepository,
         IHasher hasher,
         IRecoverCodeRepository recoverCodeRepository,
         IMailer mailer,
-        ITokenService tokenService
+        ITokenService tokenService,
+        IFileStorage fileStorage
     )
     {
         _userRepository = userRepository;
@@ -31,6 +33,7 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
         _recoverCodeRepository = recoverCodeRepository;
         _mailer = mailer;
         _tokenService = tokenService;
+        _fileStorage = fileStorage;
     }
 
     public async Task<TokenResult> Handle(LoginCommand command, CancellationToken cancellationToken)
@@ -91,9 +94,10 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
             command.User.Name = command.Name;
         }
 
-        if (command.AvatarUrl != null && command.AvatarUrl != command.User.AvatarUrl)
+        if (command.Avatar != null)
         {
-            command.User.AvatarUrl = command.AvatarUrl;
+            var avatarUrl = await _fileStorage.SaveFileAsync(command.Avatar);
+            command.User.AvatarUrl = avatarUrl;
         }
 
         await _userRepository.Update(command.User);
@@ -130,7 +134,7 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
             code = new Random().Next(100000, 999999);
 
             var recoverCode = new RecoverCode(user.Id, code);
-            _recoverCodeRepository.Create(recoverCode);
+            await _recoverCodeRepository.Create(recoverCode);
         }
         else
         {

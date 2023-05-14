@@ -1,11 +1,11 @@
-﻿using Todo.Domain.DTO;
-using Todo.Domain.Utils;
+﻿using Todo.Application.DTO;
+using Todo.Application.Utils;
 
 namespace Todo.Infra.Data.Utils;
 
 public class LocalFileStorage : IFileStorage
 {
-    public async Task<string> SaveFileAsync(FileDTO file)
+    public async Task<string> SaveFileAsync(UploadedFile file)
     {
         var datetime = DateTime.Now;
         var timestamp = $"{datetime.Day}-{datetime.Month}-{datetime.Year}";
