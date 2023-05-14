@@ -1,6 +1,6 @@
 ﻿using Todo.Application.Utils;
 
-namespace Todo.Infra.Utils;
+namespace Todo.Infra.Data.Utils;
 
 public class ConsoleMailer : IMailer
 {

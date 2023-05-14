@@ -38,14 +38,14 @@ export default function Column({
 }: ColumnProps) {
   const client = useQueryClient();
 
-  const [openColumnModal, closeColumnModal] = useModal(
+  const [columnModal, openColumnModal, closeColumnModal] = useModal(
     <ColumnForm
       data={{ id: data.id, name: data.name }}
       boardId={boardId}
       onSuccess={handleColumnModalSuccess}
     />
   );
-  const [openConfirmationModal] = useConfirmationModal({
+  const [confirmationModal, openConfirmationModal] = useConfirmationModal({
     message: `Tem certeza que deseja apagar a coluna: ${data.name} ?`,
     onConfirm: handleConfirmationModalSuccess,
   });
@@ -121,6 +121,8 @@ export default function Column({
       onDragEnd={onDragEnd}
       draggable
     >
+      {columnModal}
+      {confirmationModal}
       <ColumnHeading>
         <Text lineLimiter>{data.name}</Text>
         <ColumnActions>
