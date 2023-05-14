@@ -8,7 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.5.1" />
+    <Compile Remove="DTO\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="DTO\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="DTO\**" />
   </ItemGroup>
 
 </Project>

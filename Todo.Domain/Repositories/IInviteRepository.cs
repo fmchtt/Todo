@@ -4,7 +4,7 @@ namespace Todo.Domain.Repositories;
 
 public interface IInviteRepository
 {
-    public Invite? GetInvite(string email, Guid boardId);
-    public void CreateMany(ICollection<Invite> invite);
-    public void Delete(Invite invite);
+    public Task<Invite?> GetInvite(string email, Guid boardId);
+    public Task CreateMany(ICollection<Invite> invite);
+    public Task Delete(Invite invite);
 }

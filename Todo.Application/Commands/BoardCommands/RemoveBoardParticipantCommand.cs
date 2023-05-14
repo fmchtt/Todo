@@ -1,0 +1,30 @@
+﻿using System.Text.Json.Serialization;
+using FluentValidation;
+using FluentValidation.Results;
+using Todo.Application.Commands.Contracts;
+using Todo.Domain.Entities;
+
+namespace Todo.Application.Commands.BoardCommands;
+
+public class RemoveBoardParticipantValidator : AbstractValidator<RemoveBoardParticipantCommand>
+{
+    public RemoveBoardParticipantValidator()
+    {
+        RuleFor(x => x.BoardId).NotNull().NotEmpty();
+        RuleFor(x => x.ParticipantId).NotNull().NotEmpty();
+        RuleFor(x => x.User).NotNull();
+    }
+}
+
+public class RemoveBoardParticipantCommand : ICommand<string>
+{
+    public Guid BoardId { get; init; } = Guid.Empty;
+    public Guid ParticipantId { get; init; } = Guid.Empty;
+    [JsonIgnore] public User User { get; set; }
+
+    public ValidationResult Validate()
+    {
+        var validator = new RemoveBoardParticipantValidator();
+        return validator.Validate(this);
+    }
+}

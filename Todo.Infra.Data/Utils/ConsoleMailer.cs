@@ -1,4 +1,4 @@
-﻿using Todo.Domain.Utils;
+﻿using Todo.Application.Utils;
 
 namespace Todo.Infra.Data.Utils;
 

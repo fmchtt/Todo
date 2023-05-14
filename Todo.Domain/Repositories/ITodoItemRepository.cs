@@ -5,10 +5,10 @@ namespace Todo.Domain.Repositories;
 
 public interface ITodoItemRepository
 {
-    public TodoItem? GetById(Guid id);
-    public PaginatedResult<TodoItem> GetAll(Guid ownerId, int page);
-    public List<TodoItem> GetAllByTitle(string title, Guid ownerId);
-    public void Create(TodoItem item);
-    public void Update(TodoItem item);
-    public void Delete(TodoItem item);
+    public Task<TodoItem?> GetById(Guid id);
+    public Task<PaginatedResult<TodoItem>> GetAll(Guid ownerId, int page);
+    public Task<List<TodoItem>> GetAllByTitle(string title, Guid ownerId);
+    public Task Create(TodoItem item);
+    public Task Update(TodoItem item);
+    public Task Delete(TodoItem item);
 }

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
-using Todo.Domain.Commands.BoardCommands;
-using Todo.Domain.Entities;
-using Todo.Domain.Handlers;
-using Todo.Domain.Repositories;
+using Todo.Application.Commands.BoardCommands;
+using Todo.Application.Handlers;
+using Todo.Application.Queries;
+using Todo.Application.Results;
 using Todo.Domain.Results;
 
 namespace Todo.Api.Controllers;
@@ -13,10 +14,17 @@ namespace Todo.Api.Controllers;
 [ApiController, Route("boards")]
 public class BoardController : TodoBaseController
 {
+    private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
+
+    public BoardController(IMediator mediator, IMapper mapper)
+    {
+        _mediator = mediator;
+        _mapper = mapper;
+    }
+
     [HttpGet, Authorize]
-    public PaginatedResult<ResumedBoardResult> GetAll(
-        [FromServices] IBoardRepository boardRepository,
-        [FromServices] IMapper mapper,
+    public async Task<PaginatedResult<ResumedBoardResult>> GetAll(
         [FromQuery] int page = 1
     )
     {
@@ -25,136 +33,127 @@ public class BoardController : TodoBaseController
             page = 1;
         }
 
-        var todos = boardRepository.GetAll(GetUserId(), page - 1);
+        var query = new GetAllBoardsQuery(page, GetUser());
 
-        var result = todos.Results.Select(mapper.Map<ResumedBoardResult>).ToList();
+        var boards = await _mediator.Send(query);
 
-        return new PaginatedResult<ResumedBoardResult>(result, todos.PageCount);
+        var result = boards.Results.Select(_mapper.Map<ResumedBoardResult>).ToList();
+
+        return new PaginatedResult<ResumedBoardResult>(result, boards.PageCount);
     }
 
     [HttpGet("{id:guid}"), Authorize]
     [ProducesResponseType(typeof(ExpandedBoardResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult GetById(
-        [FromRoute] Guid id,
-        [FromServices] IBoardRepository boardRepository,
-        [FromServices] IMapper mapper
+    public async Task<ExpandedBoardResult> GetById(
+        [FromRoute] Guid id
     )
     {
-        var board = boardRepository.GetById(id);
-        var user = GetUser();
-        if (board == null || !board.Participants.Contains(user))
-        {
-            return NotFound(new MessageResult("Quadro não encontrado!"));
-        }
+        var query = new GetBoardByIdQuery(id, GetUser());
+        var board = await _mediator.Send(query);
 
-        return Ok(mapper.Map<ExpandedBoardResult>(board));
+        return _mapper.Map<ExpandedBoardResult>(board);
     }
 
     [HttpPost, Authorize]
     [ProducesResponseType(typeof(ResumedBoardResult), 201)]
-    public IActionResult Create(
-        CreateBoardCommand command,
-        [FromServices] BoardHandler handler
+    public async Task<ResumedBoardResult> Create(
+        CreateBoardCommand command
     )
     {
-        var user = GetUser();
-        var result = handler.Handle(command, user);
+        command.User = GetUser();
+        var result = await _mediator.Send(command);
 
-        return ParseResult<Board, ResumedBoardResult>(result);
+        return _mapper.Map<ResumedBoardResult>(result);
     }
 
     [HttpPatch("{boardId:guid}"), Authorize]
     [ProducesResponseType(typeof(ResumedBoardResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult EditBoard(
+    public async Task<ResumedBoardResult> EditBoard(
         EditBoardCommand command,
-        Guid boardId,
-        [FromServices] BoardHandler handler
+        Guid boardId
     )
     {
-        var user = GetUser();
         command.BoardId = boardId;
-        var result = handler.Handle(command, user);
+        command.User = GetUser();
+        var result = await _mediator.Send(command);
 
-        return ParseResult<Board, ResumedBoardResult>(result);
+        return _mapper.Map<ResumedBoardResult>(result);
     }
 
 
     [HttpDelete("{boardId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public IActionResult DeleteBoard(
-        Guid boardId,
-        [FromServices] BoardHandler handler
+    public async Task<MessageResult> DeleteBoard(
+        Guid boardId
     )
     {
-        var user = GetUser();
         var command = new DeleteBoardCommand
         {
-            BoardId = boardId
+            BoardId = boardId,
+            User = GetUser()
         };
-        var result = handler.Handle(command, user);
+        var result = await _mediator.Send(command);
 
-        return ParseResult(result);
+        return new MessageResult(result);
     }
 
     [HttpGet("{boardId:guid}/invite/confirm")]
     [ProducesResponseType(typeof(MessageResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult ConfirmInvite(
+    public async Task<MessageResult> ConfirmInvite(
         Guid boardId,
         [FromServices] BoardHandler handler
     )
     {
-        var user = GetUser();
         var command = new ConfirmBoardParticipantCommand
         {
-            BoardId = boardId
+            BoardId = boardId,
+            User = GetUser()
         };
-        var result = handler.Handle(command, user);
+        var result = await _mediator.Send(command);
 
-        return ParseResult(result);
+        return new MessageResult(result);
     }
 
     [HttpPost("{boardId:guid}/invite"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult InviteParticipant(
+    public async Task<MessageResult> InviteParticipant(
         AddBoardParticipantCommand command,
-        Guid boardId,
-        [FromServices] BoardHandler handler
+        Guid boardId
     )
     {
-        var user = GetUser();
         command.BoardId = boardId;
         command.Domain = HttpContext.Request.Host.ToString();
-        var result = handler.Handle(command, user);
+        command.User = GetUser();
+        var result = await _mediator.Send(command);
 
-        return ParseResult(result);
+        return new MessageResult(result);
     }
 
     [HttpDelete("{boardId:guid}/participant/{participantId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult RemoveParticipant(
+    public async Task<MessageResult> RemoveParticipant(
         Guid boardId,
-        Guid participantId,
-        [FromServices] BoardHandler handler
+        Guid participantId
     )
     {
-        var user = GetUser();
         var command = new RemoveBoardParticipantCommand
         {
             BoardId = boardId,
-            ParticipantId = participantId
+            ParticipantId = participantId,
+            User = GetUser()
         };
-        var result = handler.Handle(command, user);
+        var result = await _mediator.Send(command);
 
-        return ParseResult(result);
+        return new MessageResult(result);
     }
 }

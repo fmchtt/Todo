@@ -1,83 +1,79 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
 using Todo.Api.DTO;
-using Todo.Domain.Commands.UserCommands;
-using Todo.Domain.Handlers;
+using Todo.Application.Commands.UserCommands;
+using Todo.Application.Results;
 using Todo.Domain.Repositories;
-using Todo.Domain.Results;
 
 namespace Todo.Api.Controllers;
 
 [ApiController, Route("auth")]
 public class AuthController : TodoBaseController
 {
+    private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
+
+    public AuthController(IMediator mediator, IMapper mapper)
+    {
+        _mediator = mediator;
+        _mapper = mapper;
+    }
+    
     [HttpGet("me"), Authorize]
     [ProducesResponseType(typeof(ResumedUserResult), 200)]
-    public IActionResult Me([FromServices] IMapper mapper)
+    public ResumedUserResult Me()
     {
         var user = GetUser();
-        return Ok(mapper.Map<ResumedUserResult>(user));
+        return _mapper.Map<ResumedUserResult>(user);
     }
 
     [HttpPost("login")]
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult Login(
-        LoginCommand command,
-        [FromServices] UserHandler handler
+    public async Task<TokenResult> Login(
+        LoginCommand command
     )
     {
-        var result = handler.Handle(command);
+        var result = await _mediator.Send(command);
 
-        if (result.Result == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(result.Result);
+        return result;
     }
 
     [HttpPost("register")]
     [ProducesResponseType(typeof(TokenResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult Register(
-        [FromBody] RegisterCommand command,
-        [FromServices] UserHandler handler
+    public async Task<TokenResult> Register(
+        [FromBody] RegisterCommand command
     )
     {
-        var result = handler.Handle(command);
+        var result = await _mediator.Send(command);
 
-        if (result.Result == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(result.Result);
+        return result;
     }
 
     [HttpPost("password/reset")]
     [ProducesResponseType(typeof(MessageResult), 200)]
-    public IActionResult PasswordReset(
-        RecoverPasswordCommand command,
-        [FromServices] UserHandler handler
+    public async Task<MessageResult> PasswordReset(
+        RecoverPasswordCommand command
     )
     {
-        handler.Handle(command);
+        await _mediator.Send(command);
 
-        return Ok(new MessageResult("Caso o email esteja registrado, um código será enviado ao email"));
+        return new MessageResult("Caso o email esteja registrado, um código será enviado ao email");
     }
 
     [HttpPost("password/reset/verify")]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult VerifyCode(
+    public async Task<IActionResult> VerifyCode(
         [FromBody] CodeVerifyDTO data,
         [FromServices] IRecoverCodeRepository codeRepository
     )
     {
-        var foundCode = codeRepository.Get(data.Code, data.Email);
+        var foundCode = await codeRepository.Get(data.Code, data.Email);
         return foundCode == null
             ? Ok(new MessageResult("Código encontrado!"))
             : NotFound(new MessageResult("Código não encontrado!"));
@@ -86,13 +82,12 @@ public class AuthController : TodoBaseController
 
     [HttpPost("password/reset/confirm")]
     [ProducesResponseType(typeof(MessageResult), 200)]
-    public IActionResult PasswordResetConfirm(
-        ConfirmRecoverPasswordCommand command,
-        [FromServices] UserHandler handler
+    public async Task<MessageResult> PasswordResetConfirm(
+        ConfirmRecoverPasswordCommand command
     )
     {
-        var result = handler.Handle(command);
+        var result = await _mediator.Send(command);
 
-        return ParseResult(result);
+        return new MessageResult(result);
     }
 }

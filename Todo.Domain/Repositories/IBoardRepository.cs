@@ -5,10 +5,10 @@ namespace Todo.Domain.Repositories;
 
 public interface IBoardRepository
 {
-    public Board? GetById(Guid id);
-    public PaginatedResult<Board> GetAll(Guid ownerId, int page);
-    public List<Board> GetAllByName(string name, Guid ownerId);
-    public void Create(Board board);
-    public void Update(Board board);
-    public void Delete(Board board);
+    public Task<Board?> GetById(Guid id);
+    public Task<PaginatedResult<Board>> GetAll(Guid ownerId, int page);
+    public Task<List<Board>> GetAllByName(string name, Guid ownerId);
+    public Task Create(Board board);
+    public Task Update(Board board);
+    public Task Delete(Board board);
 }

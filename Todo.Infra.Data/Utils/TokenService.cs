@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Todo.Domain.Entities;
-using Todo.Domain.Utils;
+using Todo.Application.Utils;
 
 namespace Todo.Infra.Data.Utils;
 

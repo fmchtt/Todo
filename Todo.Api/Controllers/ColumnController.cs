@@ -1,52 +1,62 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
-using Todo.Domain.Commands.ColumnCommands;
+using Todo.Application.Commands.ColumnCommands;
+using Todo.Application.Handlers;
+using Todo.Application.Results;
 using Todo.Domain.Entities;
-using Todo.Domain.Handlers;
-using Todo.Domain.Results;
 
 namespace Todo.Api.Controllers;
 
 [ApiController, Route("columns")]
 public class ColumnController : TodoBaseController
 {
+    private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
+
+    public ColumnController(IMediator mediator, IMapper mapper)
+    {
+        _mediator = mediator;
+        _mapper = mapper;
+    }
+
     [HttpPost(""), Authorize]
     [ProducesResponseType(typeof(ResumedColumnResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 400)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public IActionResult Create(
-        CreateColumnCommand command,
-        [FromServices] ColumnHandler handler
+    public async Task<ResumedColumnResult> Create(
+        CreateColumnCommand command
     )
     {
-        var user = GetUser();
-        var result = handler.Handle(command, user);
+        command.User = GetUser();
 
-        return ParseResult<Column, ResumedColumnResult>(result);
+        var result = await _mediator.Send(command);
+
+        return _mapper.Map<Column, ResumedColumnResult>(result);
     }
 
     [HttpPatch("{columnId:guid}"), Authorize]
     [ProducesResponseType(typeof(ResumedColumnResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult EditColumn(
+    public async Task<ResumedColumnResult> EditColumn(
         EditColumnCommand command,
-        Guid columnId,
-        [FromServices] ColumnHandler handler
+        Guid columnId
     )
     {
-        var user = GetUser();
         command.ColumnId = columnId;
-        var result = handler.Handle(command, user);
+        command.User = GetUser();
+        var result = await _mediator.Send(command);
 
-        return ParseResult<Column, ResumedColumnResult>(result);
+        return _mapper.Map<Column, ResumedColumnResult>(result);
     }
 
     [HttpDelete("{columnId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public IActionResult DeleteColumn(
+    public async Task<MessageResult> DeleteColumn(
         Guid columnId,
         [FromServices] ColumnHandler handler
     )
@@ -54,10 +64,11 @@ public class ColumnController : TodoBaseController
         var user = GetUser();
         var command = new DeleteColumnCommand
         {
-            ColumnId = columnId
+            ColumnId = columnId,
+            User = GetUser()
         };
-        var result = handler.Handle(command, user);
+        var result = await _mediator.Send(command);
 
-        return ParseResult(result);
+        return new MessageResult(result);
     }
 }

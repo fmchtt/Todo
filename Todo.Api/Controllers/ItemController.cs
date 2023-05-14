@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
-using Todo.Domain.Commands.ItemCommands;
-using Todo.Domain.Entities;
-using Todo.Domain.Handlers;
-using Todo.Domain.Repositories;
+using Todo.Application.Commands.ItemCommands;
+using Todo.Application.Queries;
+using Todo.Application.Results;
 using Todo.Domain.Results;
 
 namespace Todo.Api.Controllers;
@@ -13,10 +13,17 @@ namespace Todo.Api.Controllers;
 [ApiController, Route("itens")]
 public class ItemController : TodoBaseController
 {
+    private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
+
+    public ItemController(IMediator mediator, IMapper mapper)
+    {
+        _mediator = mediator;
+        _mapper = mapper;
+    }
+
     [HttpGet(""), Authorize]
-    public PaginatedResult<ExpandedItemResult> GetAll(
-        [FromServices] ITodoItemRepository todoItemRepository,
-        [FromServices] IMapper mapper,
+    public async Task<PaginatedResult<ExpandedItemResult>> GetAll(
         [FromQuery] int page = 1
     )
     {
@@ -25,9 +32,11 @@ public class ItemController : TodoBaseController
             page = 1;
         }
 
-        var todos = todoItemRepository.GetAll(GetUserId(), page - 1);
+        var query = new GetAllTodoItemQuery(GetUser(), page);
 
-        var result = todos.Results.Select(mapper.Map<ExpandedItemResult>).ToList();
+        var todos = await _mediator.Send(query);
+
+        var result = todos.Results.Select(_mapper.Map<ExpandedItemResult>).ToList();
 
         return new PaginatedResult<ExpandedItemResult>(result, todos.PageCount);
     }
@@ -35,108 +44,104 @@ public class ItemController : TodoBaseController
     [HttpPost, Authorize]
     [ProducesResponseType(typeof(ResumedItemResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public IActionResult CreateItem(
-        CreateItemCommand command,
-        [FromServices] ItemHandler handler
+    public async Task<ResumedItemResult> CreateItem(
+        CreateItemCommand command
     )
     {
-        var user = GetUser();
-        var result = handler.Handle(command, user);
+        command.User = GetUser();
+        var result = await _mediator.Send(command);
 
-        return ParseResult<TodoItem, ResumedItemResult>(result);
+        return _mapper.Map<ResumedItemResult>(result);
     }
 
     [HttpPost("{itemId:guid}/column/{columnId:guid}"), Authorize]
     [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult ChangeColumn(
+    public async Task<ResumedItemResult> ChangeColumn(
         Guid itemId,
-        Guid columnId,
-        [FromServices] ItemHandler handler
+        Guid columnId
     )
     {
-        var user = GetUser();
         var command = new ChangeItemColumnCommand
         {
             ItemId = itemId,
-            ColumnId = columnId
+            ColumnId = columnId,
+            User = GetUser()
         };
-        var result = handler.Handle(command, user);
+        var result = await _mediator.Send(command);
 
-        return ParseResult<TodoItem, ResumedItemResult>(result);
+        return _mapper.Map<ResumedItemResult>(result);
     }
 
     [HttpPatch("{itemId:guid}"), Authorize]
     [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult UpdateItem(
+    public async Task<ResumedItemResult> UpdateItem(
         EditItemCommand command,
-        Guid itemId,
-        [FromServices] ItemHandler handler
+        Guid itemId
     )
     {
-        var user = GetUser();
         command.ItemId = itemId;
-        var result = handler.Handle(command, user);
+        command.User = GetUser();
+        var result = await _mediator.Send(command);
 
-        return ParseResult<TodoItem, ResumedItemResult>(result);
+        return _mapper.Map<ResumedItemResult>(result);
     }
 
     [HttpDelete("{itemId:guid}"), Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
-    public IActionResult DeleteItem(
-        Guid itemId,
-        [FromServices] ItemHandler handler
+    public async Task<MessageResult> DeleteItem(
+        Guid itemId
     )
     {
-        var user = GetUser();
         var command = new DeleteItemCommand
         {
-            ItemId = itemId
+            ItemId = itemId,
+            User = GetUser()
         };
-        var result = handler.Handle(command, user);
+        var result = await _mediator.Send(command);
 
-        return ParseResult(result);
+        return new MessageResult(result);
     }
 
     [HttpPost("{itemId:guid}/done"), Authorize]
     [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult MarkAsDone(
-        [FromRoute] Guid itemId,
-        [FromServices] ItemHandler handler
+    public async Task<ResumedItemResult> MarkAsDone(
+        [FromRoute] Guid itemId
     )
     {
-        var user = GetUser();
-        var result = handler.Handle(new MarkCommand
+        var command = new MarkCommand
         {
             ItemId = itemId,
-            Done = true
-        }, user);
+            Done = true,
+            User = GetUser()
+        };
+        var result = await _mediator.Send(command);
 
-        return ParseResult<TodoItem, ResumedItemResult>(result);
+        return _mapper.Map<ResumedItemResult>(result);
     }
 
     [HttpPost("{itemId:guid}/undone"), Authorize]
     [ProducesResponseType(typeof(ResumedItemResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public IActionResult MarkAsUndone(
-        [FromRoute] Guid itemId,
-        [FromServices] ItemHandler handler
+    public async Task<ResumedItemResult> MarkAsUndone(
+        [FromRoute] Guid itemId
     )
     {
-        var user = GetUser();
-        var result = handler.Handle(new MarkCommand
+        var command = new MarkCommand
         {
             ItemId = itemId,
-            Done = false
-        }, user);
+            Done = false,
+            User = GetUser()
+        };
+        var result = await _mediator.Send(command);
 
-        return ParseResult<TodoItem, ResumedItemResult>(result);
+        return _mapper.Map<ResumedItemResult>(result);
     }
 }

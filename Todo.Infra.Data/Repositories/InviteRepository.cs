@@ -1,4 +1,5 @@
-﻿using Todo.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Infra.Data.Contexts;
 
@@ -13,20 +14,20 @@ public class InviteRepository : IInviteRepository
         _dbContext = dbContext;
     }
 
-    public void CreateMany(ICollection<Invite> invite)
+    public async Task CreateMany(ICollection<Invite> invite)
     {
         _dbContext.Invites.AddRange(invite);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
-    public void Delete(Invite invite)
+    public async Task Delete(Invite invite)
     {
         _dbContext.Invites.Remove(invite);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Invite? GetInvite(string email, Guid boardId)
+    public async Task<Invite?> GetInvite(string email, Guid boardId)
     {
-        return _dbContext.Invites.FirstOrDefault(x => x.Email == email && x.BoardId == boardId);
+        return await _dbContext.Invites.FirstOrDefaultAsync(x => x.Email == email && x.BoardId == boardId);
     }
 }

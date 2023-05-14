@@ -1,4 +1,5 @@
-﻿using Todo.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Infra.Data.Contexts;
 
@@ -13,21 +14,21 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public void Create(User user)
+    public async Task Create(User user)
     {
-        _dbContext.Users.Add(user);
-        _dbContext.SaveChanges();
+        await _dbContext.Users.AddAsync(user);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public void Delete(User user)
+    public async Task Delete(User user)
     {
         _dbContext.Users.Remove(user);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
-    public User? GetByEmail(string email)
+    public async Task<User?> GetByEmail(string email)
     {
-        return _dbContext.Users.FirstOrDefault(x => x.Email == email);
+        return await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
     }
 
     public User? GetById(Guid id)
@@ -35,9 +36,9 @@ public class UserRepository : IUserRepository
         return _dbContext.Users.FirstOrDefault(x => x.Id == id);
     }
 
-    public void Update(User user)
+    public async Task Update(User user)
     {
         _dbContext.Users.Update(user);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 }
