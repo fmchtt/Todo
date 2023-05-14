@@ -50,7 +50,7 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(UserMapper));
         services.AddAutoMapper(typeof(ColumnMapper));
 
-        services.AddMediatR(conf => conf.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.Load("Todo.Domain")));
+        services.AddMediatR(conf => conf.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("Todo.Application")));
 
         return services;
     }
