@@ -41,7 +41,7 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException( "Comando inválido",
+            throw new ValidationException( "Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -61,14 +61,14 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException( "Comando inválido",
+            throw new ValidationException( "Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
         var existingUser = await _userRepository.GetByEmail(command.Email);
         if (existingUser != null)
         {
-            throw new InvalidException("Usuário com o email já existe", null);
+            throw new ValidationException("Usuário com o email já existe", null);
         }
 
         var password = _hasher.Hash(command.Password);
@@ -85,7 +85,7 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -117,7 +117,7 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -151,7 +151,7 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 

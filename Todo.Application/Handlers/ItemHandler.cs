@@ -30,7 +30,7 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -68,7 +68,7 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -103,7 +103,7 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -128,7 +128,7 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -156,7 +156,7 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 

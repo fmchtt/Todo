@@ -33,7 +33,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -56,7 +56,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -81,7 +81,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -116,7 +116,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -149,7 +149,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -176,7 +176,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new InvalidException("Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
