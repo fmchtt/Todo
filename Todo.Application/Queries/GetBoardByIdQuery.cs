@@ -4,7 +4,7 @@ using Todo.Domain.Entities;
 
 namespace Todo.Application.Queries;
 
-public class GetBoardByIdQuery : IRequest<Board?>
+public class GetBoardByIdQuery : IRequest<Board>
 {
     public Guid BoardId { get; set; }
     [JsonIgnore] public User User { get; set; }

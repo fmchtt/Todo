@@ -6,7 +6,6 @@ using Todo.Api.Contracts;
 using Todo.Api.DTO;
 using Todo.Application.Commands.UserCommands;
 using Todo.Application.DTO;
-using Todo.Application.Handlers;
 using Todo.Application.Results;
 
 namespace Todo.Api.Controllers;
@@ -44,7 +43,7 @@ public class UserController : TodoBaseController
 
     [HttpDelete, Authorize]
     [ProducesResponseType(typeof(MessageResult), 200)]
-    public async Task<MessageResult> DeleteUser([FromServices] UserHandler handler)
+    public async Task<MessageResult> DeleteUser()
     {
         var user = GetUser();
         var command = new DeleteUserCommand(user);

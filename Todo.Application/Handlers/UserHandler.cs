@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Todo.Application.Commands.UserCommands;
 using Todo.Application.Exceptions;
+using Todo.Application.Queries;
 using Todo.Application.Results;
 using Todo.Application.Utils;
 using Todo.Domain.Entities;
@@ -10,7 +11,7 @@ namespace Todo.Application.Handlers;
 
 public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestHandler<RegisterCommand, TokenResult>,
     IRequestHandler<EditUserCommand, User>, IRequestHandler<RecoverPasswordCommand, string>,
-    IRequestHandler<ConfirmRecoverPasswordCommand, string>
+    IRequestHandler<ConfirmRecoverPasswordCommand, string>, IRequestHandler<DeleteUserCommand, string>, IRequestHandler<GetConfirmationCodeQuery, string>
 {
     private readonly IUserRepository _userRepository;
     private readonly IHasher _hasher;
@@ -41,14 +42,14 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new ValidationException( "Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
         var user = await _userRepository.GetByEmail(command.Email);
         if (user == null || !_hasher.Verify(command.Password, user.Password))
         {
-            throw new NotFoundException( "Usuário ou senha inválidos");
+            throw new NotFoundException("Usuário ou senha inválidos");
         }
 
         var token = _tokenService.GenerateToken(user);
@@ -61,7 +62,7 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new ValidationException( "Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
@@ -167,5 +168,17 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
         await _recoverCodeRepository.Delete(code);
 
         return "Senha alterada com sucesso!";
+    }
+
+    public async Task<string> Handle(GetConfirmationCodeQuery query, CancellationToken cancellationToken)
+    {
+        var code = await _recoverCodeRepository.Get(query.Code, query.Email);
+
+        if (code == null)
+        {
+            throw new NotFoundException("Código inexistente!");
+        }
+
+        return "Código validado!";
     }
 }

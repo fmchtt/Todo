@@ -1,7 +1,5 @@
 ﻿using FluentValidation.Results;
 using MediatR;
-using Todo.Application.Handlers.Contracts;
-using Todo.Domain.Entities;
 
 namespace Todo.Application.Commands.Contracts;
 

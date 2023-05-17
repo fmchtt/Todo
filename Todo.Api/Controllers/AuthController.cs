@@ -3,10 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
-using Todo.Api.DTO;
 using Todo.Application.Commands.UserCommands;
+using Todo.Application.Queries;
 using Todo.Application.Results;
-using Todo.Domain.Repositories;
 
 namespace Todo.Api.Controllers;
 
@@ -68,15 +67,13 @@ public class AuthController : TodoBaseController
     [HttpPost("password/reset/verify")]
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 404)]
-    public async Task<IActionResult> VerifyCode(
-        [FromBody] CodeVerifyDTO data,
-        [FromServices] IRecoverCodeRepository codeRepository
+    public async Task<MessageResult> VerifyCode(
+        [FromBody] GetConfirmationCodeQuery data
     )
     {
-        var foundCode = await codeRepository.Get(data.Code, data.Email);
-        return foundCode == null
-            ? Ok(new MessageResult("Código encontrado!"))
-            : NotFound(new MessageResult("Código não encontrado!"));
+        var response = await _mediator.Send(data);
+        
+        return new MessageResult(response);
     }
 
 
