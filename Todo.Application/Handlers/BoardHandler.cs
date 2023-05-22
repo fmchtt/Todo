@@ -205,7 +205,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
 
     public async Task<PaginatedResult<Board>> Handle(GetAllBoardsQuery query, CancellationToken cancellationToken)
     {
-        var boards = await _boardRepository.GetAll(query.User.Id, query.Page);
+        var boards = await _boardRepository.GetAll(query.User.Id, query.Page > 1 ? query.Page : 1);
 
         return boards;
     }

@@ -27,11 +27,6 @@ public class ItemController : TodoBaseController
         [FromQuery] int page = 1
     )
     {
-        if (page < 1)
-        {
-            page = 1;
-        }
-
         var query = new GetAllTodoItemQuery(GetUser(), page);
 
         var todos = await _mediator.Send(query);

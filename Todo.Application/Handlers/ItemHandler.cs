@@ -187,7 +187,7 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
 
     public async Task<PaginatedResult<TodoItem>> Handle(GetAllTodoItemQuery query, CancellationToken cancellationToken)
     {
-        var todos = await _itemRepository.GetAll(query.User.Id, query.Page - 1);
+        var todos = await _itemRepository.GetAll(query.User.Id, query.Page > 1 ? query.Page : 1);
 
         return todos;
     }

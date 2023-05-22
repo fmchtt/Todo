@@ -27,11 +27,6 @@ public class BoardController : TodoBaseController
         [FromQuery] int page = 1
     )
     {
-        if (page < 1)
-        {
-            page = 1;
-        }
-
         var query = new GetAllBoardsQuery(page, GetUser());
 
         var boards = await _mediator.Send(query);

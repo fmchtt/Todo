@@ -3,6 +3,7 @@ using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Results;
 using Todo.Infra.Data.Contexts;
+using Todo.Infra.Data.Extensions;
 
 namespace Todo.Infra.Data.Repositories;
 
@@ -29,12 +30,11 @@ public class BoardRepository : IBoardRepository
 
     public async Task<PaginatedResult<Board>> GetAll(Guid ownerId, int page)
     {
-        var offset = (page - 1) * 10;
         var user = await _dbContext.Users.FirstAsync(x => x.Id == ownerId);
 
         var query = _dbContext.Boards.Where(x => x.Participants.Contains(user)).OrderBy(x => x.Name);
 
-        var result = await query.Skip(offset).Take(10).ToListAsync();
+        var result = await query.GetPage(page, 10).ToListAsync();
         var count = query.Count() / 10;
 
         return new PaginatedResult<Board>(result, count);
