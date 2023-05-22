@@ -29,12 +29,12 @@ public class BoardRepository : IBoardRepository
 
     public async Task<PaginatedResult<Board>> GetAll(Guid ownerId, int page)
     {
-        var offset = page * 10;
+        var offset = (page - 1) * 10;
         var user = await _dbContext.Users.FirstAsync(x => x.Id == ownerId);
 
-        var query = _dbContext.Boards.Where(x => x.Participants.Contains(user)).Skip(offset).Take(10).OrderBy(x => x.Name);
+        var query = _dbContext.Boards.Where(x => x.Participants.Contains(user)).OrderBy(x => x.Name);
 
-        var result = await query.ToListAsync();
+        var result = await query.Skip(offset).Take(10).ToListAsync();
         var count = query.Count() / 10;
 
         return new PaginatedResult<Board>(result, count);

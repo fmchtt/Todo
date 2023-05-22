@@ -17,12 +17,19 @@ public class AddBoardParticipantValidator : AbstractValidator<AddBoardParticipan
 
 public class AddBoardParticipantCommand : ICommand<string>
 {
-    [JsonIgnore] public Guid BoardId { get; set; } = Guid.Empty;
-    public ICollection<string> Emails { get; set; } = new List<string>();
-    [JsonIgnore]
-    public string? Domain { get; set; } = string.Empty;
+    [JsonIgnore] public Guid BoardId { get; set; }
+    public ICollection<string> Emails { get; set; }
+    [JsonIgnore] public string? Domain { get; set; }
     
     [JsonIgnore] public User User { get; set; }
+
+    public AddBoardParticipantCommand(Guid boardId, ICollection<string>? emails, string? domain, User? user)
+    {
+        BoardId = boardId;
+        Domain = domain;
+        Emails = emails ?? new List<string>();
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

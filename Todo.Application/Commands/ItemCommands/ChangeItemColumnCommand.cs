@@ -18,9 +18,16 @@ public class ChangeItemColumnValidator : AbstractValidator<ChangeItemColumnComma
 
 public class ChangeItemColumnCommand : ICommand<TodoItem>
 {
-    public Guid ColumnId { get; init; } = Guid.Empty;
-    public Guid ItemId { get; init; } = Guid.Empty;
+    public Guid ColumnId { get; init; }
+    public Guid ItemId { get; init; }
     [JsonIgnore] public User User { get; set; }
+
+    public ChangeItemColumnCommand(Guid columnId, Guid itemId, User? user)
+    {
+        ColumnId = columnId;
+        ItemId = itemId;
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

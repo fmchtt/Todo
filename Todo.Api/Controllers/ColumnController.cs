@@ -57,16 +57,11 @@ public class ColumnController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public async Task<MessageResult> DeleteColumn(
-        Guid columnId,
-        [FromServices] ColumnHandler handler
+        Guid columnId
     )
     {
-        var user = GetUser();
-        var command = new DeleteColumnCommand
-        {
-            ColumnId = columnId,
-            User = GetUser()
-        };
+        var command = new DeleteColumnCommand(columnId, GetUser());
+        
         var result = await _mediator.Send(command);
 
         return new MessageResult(result);

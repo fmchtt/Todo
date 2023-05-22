@@ -17,9 +17,16 @@ public class RegisterValidator : AbstractValidator<RegisterCommand>
 
 public class RegisterCommand : ICommand<TokenResult>
 {
-    public string Name { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public string Password { get; set; }
+
+    public RegisterCommand(string name, string email, string password)
+    {
+        Name = name;
+        Email = email;
+        Password = password;
+    }
 
     public ValidationResult Validate()
     {

@@ -19,10 +19,18 @@ public class EditBoardValidator : AbstractValidator<EditBoardCommand>
 
 public class EditBoardCommand : ICommand<Board>
 {
-    [JsonIgnore] public Guid BoardId { get; set; } = Guid.Empty;
+    [JsonIgnore] public Guid BoardId { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
     [JsonIgnore] public User User { get; set; }
+
+    public EditBoardCommand(Guid boardId, string? name, string? description, User? user)
+    {
+        BoardId = boardId;
+        Name = name;
+        Description = description;
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

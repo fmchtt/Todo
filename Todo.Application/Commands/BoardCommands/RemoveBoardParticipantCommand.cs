@@ -18,9 +18,16 @@ public class RemoveBoardParticipantValidator : AbstractValidator<RemoveBoardPart
 
 public class RemoveBoardParticipantCommand : ICommand<string>
 {
-    public Guid BoardId { get; init; } = Guid.Empty;
-    public Guid ParticipantId { get; init; } = Guid.Empty;
+    public Guid BoardId { get; init; }
+    public Guid ParticipantId { get; init; }
     [JsonIgnore] public User User { get; set; }
+
+    public RemoveBoardParticipantCommand(Guid boardId, Guid participantId, User? user)
+    {
+        BoardId = boardId;
+        ParticipantId = participantId;
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

@@ -18,9 +18,16 @@ public class CreateBoardValidator : AbstractValidator<CreateBoardCommand>
 
 public class CreateBoardCommand : ICommand<Board>
 {
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
+    public string Name { get; set; }
+    public string Description { get; set; }
     [JsonIgnore] public User User { get; set; }
+
+    public CreateBoardCommand(string name, string description, User? user)
+    {
+        Name = name;
+        Description = description;
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

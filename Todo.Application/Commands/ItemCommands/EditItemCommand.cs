@@ -21,11 +21,20 @@ public class EditItemValidator : AbstractValidator<EditItemCommand>
 
 public class EditItemCommand : ICommand<TodoItem>
 {
-    [JsonIgnore] public Guid ItemId { get; set; } = Guid.Empty;
+    [JsonIgnore] public Guid ItemId { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
     public int? Priority { get; set; }
     [JsonIgnore] public User User { get; set; }
+
+    public EditItemCommand(Guid itemId, string? title, string? description, int? priority, User? user)
+    {
+        ItemId = itemId;
+        Title = title;
+        Description = description;
+        Priority = priority;
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

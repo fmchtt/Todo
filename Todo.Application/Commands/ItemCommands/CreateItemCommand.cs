@@ -19,12 +19,22 @@ public class CreateItemValidator : AbstractValidator<CreateItemCommand>
 
 public class CreateItemCommand : ICommand<TodoItem>
 {
-    public string Title { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public EPriority Priority { get; set; } = 0;
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public EPriority Priority { get; set; }
     public Guid? BoardId { get; set; }
     public Guid? ColumnId { get; set; }
     [JsonIgnore] public User User { get; set; }
+
+    public CreateItemCommand(string title, string description, EPriority priority, Guid? boardId, Guid? columnId, User? user)
+    {
+        Title = title;
+        Description = description;
+        Priority = priority;
+        BoardId = boardId;
+        ColumnId = columnId;
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

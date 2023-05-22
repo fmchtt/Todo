@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Contracts;
 using Todo.Application.Commands.BoardCommands;
-using Todo.Application.Handlers;
 using Todo.Application.Queries;
 using Todo.Application.Results;
 using Todo.Domain.Results;
@@ -58,7 +57,7 @@ public class BoardController : TodoBaseController
     [HttpPost, Authorize]
     [ProducesResponseType(typeof(ResumedBoardResult), 201)]
     public async Task<ResumedBoardResult> Create(
-        CreateBoardCommand command
+        [FromBody] CreateBoardCommand command
     )
     {
         command.User = GetUser();
@@ -72,7 +71,7 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public async Task<ResumedBoardResult> EditBoard(
-        EditBoardCommand command,
+        [FromBody] EditBoardCommand command,
         Guid boardId
     )
     {
@@ -91,11 +90,8 @@ public class BoardController : TodoBaseController
         Guid boardId
     )
     {
-        var command = new DeleteBoardCommand
-        {
-            BoardId = boardId,
-            User = GetUser()
-        };
+        var command = new DeleteBoardCommand(boardId, GetUser());
+        
         var result = await _mediator.Send(command);
 
         return new MessageResult(result);
@@ -106,15 +102,11 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public async Task<MessageResult> ConfirmInvite(
-        Guid boardId,
-        [FromServices] BoardHandler handler
+        Guid boardId
     )
     {
-        var command = new ConfirmBoardParticipantCommand
-        {
-            BoardId = boardId,
-            User = GetUser()
-        };
+        var command = new ConfirmBoardParticipantCommand(boardId, GetUser());
+
         var result = await _mediator.Send(command);
 
         return new MessageResult(result);
@@ -125,7 +117,7 @@ public class BoardController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public async Task<MessageResult> InviteParticipant(
-        AddBoardParticipantCommand command,
+        [FromBody] AddBoardParticipantCommand command,
         Guid boardId
     )
     {
@@ -146,12 +138,8 @@ public class BoardController : TodoBaseController
         Guid participantId
     )
     {
-        var command = new RemoveBoardParticipantCommand
-        {
-            BoardId = boardId,
-            ParticipantId = participantId,
-            User = GetUser()
-        };
+        var command = new RemoveBoardParticipantCommand(boardId, participantId, GetUser());
+        
         var result = await _mediator.Send(command);
 
         return new MessageResult(result);

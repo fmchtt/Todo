@@ -14,7 +14,12 @@ public class RecoverPasswordValidator : AbstractValidator<RecoverPasswordCommand
 
 public class RecoverPasswordCommand : ICommand<string>
 {
-    public string Email { get; set; } = string.Empty;
+    public string Email { get; set; }
+
+    public RecoverPasswordCommand(string email)
+    {
+        Email = email;
+    }
 
     public ValidationResult Validate()
     {

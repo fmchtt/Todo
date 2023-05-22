@@ -45,8 +45,7 @@ public class UserController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 200)]
     public async Task<MessageResult> DeleteUser()
     {
-        var user = GetUser();
-        var command = new DeleteUserCommand(user);
+        var command = new DeleteUserCommand(GetUser());
         var result = await _mediator.Send(command);
 
         return new MessageResult(result);

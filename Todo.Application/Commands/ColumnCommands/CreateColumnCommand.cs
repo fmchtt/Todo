@@ -18,9 +18,16 @@ public class CreateColumnValidator : AbstractValidator<CreateColumnCommand>
 
 public class CreateColumnCommand : ICommand<Column>
 {
-    public Guid BoardId { get; set; } = Guid.Empty;
-    public string Name { get; set; } = string.Empty;
+    public Guid BoardId { get; set; }
+    public string Name { get; set; }
     [JsonIgnore] public User User { get; set; }
+
+    public CreateColumnCommand(Guid boardId, string name, User? user)
+    {
+        BoardId = boardId;
+        Name = name;
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

@@ -18,9 +18,16 @@ public class MarkValidator : AbstractValidator<MarkCommand>
 
 public class MarkCommand : ICommand<TodoItem>
 {
-    public Guid ItemId { get; init; } = Guid.Empty;
+    public Guid ItemId { get; init; }
     public bool Done { get; init; }
     [JsonIgnore] public User User { get; set; }
+
+    public MarkCommand(Guid itemId, bool done, User? user)
+    {
+        ItemId = itemId;
+        Done = done;
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

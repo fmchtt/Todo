@@ -17,8 +17,15 @@ public class ConfirmBoardParticipantValidator : AbstractValidator<ConfirmBoardPa
 
 public class ConfirmBoardParticipantCommand : ICommand<string>
 {
-    public Guid BoardId { get; set; } = Guid.Empty;
+
+    public Guid BoardId { get; set; }
     [JsonIgnore] public User User { get; set; }
+    
+    public ConfirmBoardParticipantCommand(Guid boardId, User? user)
+    {
+        BoardId = boardId;
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

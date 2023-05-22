@@ -16,9 +16,16 @@ public class ConfirmRecoverPasswordValidator : AbstractValidator<ConfirmRecoverP
 
 public class ConfirmRecoverPasswordCommand : ICommand<string>
 {
-    public int Code { get; set; } = 0;
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
+    public int Code { get; set; }
+    public string Email { get; set; }
+    public string Password { get; set; }
+
+    public ConfirmRecoverPasswordCommand(int code, string email, string password)
+    {
+        Code = code;
+        Email = email;
+        Password = password;
+    }
 
     public ValidationResult Validate()
     {

@@ -17,8 +17,14 @@ public class DeleteBoardValidator : AbstractValidator<DeleteBoardCommand>
 
 public class DeleteBoardCommand : ICommand<string>
 {
-    public Guid BoardId { get; set; } = Guid.Empty;
+    public Guid BoardId { get; set; }
     [JsonIgnore] public User User { get; set; }
+
+    public DeleteBoardCommand(Guid boardId, User user)
+    {
+        BoardId = boardId;
+        User = user;
+    }
 
     public ValidationResult Validate()
     {

@@ -63,12 +63,8 @@ public class ItemController : TodoBaseController
         Guid columnId
     )
     {
-        var command = new ChangeItemColumnCommand
-        {
-            ItemId = itemId,
-            ColumnId = columnId,
-            User = GetUser()
-        };
+        var command = new ChangeItemColumnCommand(columnId, itemId, GetUser());
+        
         var result = await _mediator.Send(command);
 
         return _mapper.Map<ResumedItemResult>(result);
@@ -97,11 +93,8 @@ public class ItemController : TodoBaseController
         Guid itemId
     )
     {
-        var command = new DeleteItemCommand
-        {
-            ItemId = itemId,
-            User = GetUser()
-        };
+        var command = new DeleteItemCommand(itemId, GetUser());
+        
         var result = await _mediator.Send(command);
 
         return new MessageResult(result);
@@ -115,12 +108,8 @@ public class ItemController : TodoBaseController
         [FromRoute] Guid itemId
     )
     {
-        var command = new MarkCommand
-        {
-            ItemId = itemId,
-            Done = true,
-            User = GetUser()
-        };
+        var command = new MarkCommand(itemId, true, GetUser());
+        
         var result = await _mediator.Send(command);
 
         return _mapper.Map<ResumedItemResult>(result);
@@ -134,12 +123,8 @@ public class ItemController : TodoBaseController
         [FromRoute] Guid itemId
     )
     {
-        var command = new MarkCommand
-        {
-            ItemId = itemId,
-            Done = false,
-            User = GetUser()
-        };
+        var command = new MarkCommand(itemId, false, GetUser());
+        
         var result = await _mediator.Send(command);
 
         return _mapper.Map<ResumedItemResult>(result);

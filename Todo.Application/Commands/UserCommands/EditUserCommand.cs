@@ -22,11 +22,11 @@ public class EditUserCommand : ICommand<User>
     public UploadedFile? Avatar { get; init; }
     [JsonIgnore] public User User { get; set; }
 
-    public EditUserCommand(string? name, UploadedFile? avatar, User user)
+    public EditUserCommand(string? name, UploadedFile? avatar, User? user)
     {
         Name = name;
         Avatar = avatar;
-        User = user;
+        User = user ?? new User();
     }
 
     public ValidationResult Validate()

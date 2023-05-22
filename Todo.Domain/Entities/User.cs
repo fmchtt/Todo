@@ -17,4 +17,12 @@ public class User : Entity
         Password = password;
         AvatarUrl = avatarUrl;
     }
+
+    public User()
+    {
+        Id = Guid.Empty;
+        Name = string.Empty;
+        Email = string.Empty;
+        Password = string.Empty;
+    }
 }

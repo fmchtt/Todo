@@ -135,7 +135,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         foreach (var email in command.Emails)
         {
             invites.Add(new Invite(email, command.BoardId));
-            _mailer.SendMail(email,
+            await _mailer.SendMail(email,
                 $"Você foi convidado para participar do quadro: {board.Name}, clique <a href='{command.Domain}/invite/{board.Id}'>aqui</a> para participar!");
         }
 

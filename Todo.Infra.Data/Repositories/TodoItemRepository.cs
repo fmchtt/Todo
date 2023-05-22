@@ -31,9 +31,9 @@ public class TodoItemRepository : ITodoItemRepository
   {
     var offset = page * 10;
 
-    var query = _dbContext.Itens.Where(x => x.CreatorId == ownerId).Skip(offset).Take(10).OrderByDescending(x => x.CreatedDate);
+    var query = _dbContext.Itens.Where(x => x.CreatorId == ownerId).OrderByDescending(x => x.CreatedDate);
 
-    var results = await query.ToListAsync();
+    var results = await query.Skip(offset).Take(10).ToListAsync();
     var pageCount = query.Count() / 10;
 
     return new PaginatedResult<TodoItem>(results, pageCount);

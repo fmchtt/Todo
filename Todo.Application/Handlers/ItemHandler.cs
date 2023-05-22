@@ -56,9 +56,17 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
             }
         }
 
-        var todoItem = new TodoItem(command.Title, command.Description, command.BoardId, command.User.Id, false,
-            command.Priority, command.ColumnId);
-        _itemRepository.Create(todoItem);
+        var todoItem = new TodoItem(
+            command.Title,
+            command.Description,
+            command.BoardId,
+            command.User.Id,
+            false,
+            command.Priority,
+            command.ColumnId
+        );
+
+        await _itemRepository.Create(todoItem);
 
         return todoItem;
     }

@@ -19,10 +19,18 @@ public class EditColumnValidator : AbstractValidator<EditColumnCommand>
 
 public class EditColumnCommand : ICommand<Column>
 {
-    [JsonIgnore] public Guid ColumnId { get; set; } = Guid.Empty;
+    [JsonIgnore] public Guid ColumnId { get; set; }
     public string? Name { get; set; }
     public int? Order { get; set; }
     [JsonIgnore] public User User { get; set; }
+
+    public EditColumnCommand(Guid columnId, string? name, int? order, User? user)
+    {
+        ColumnId = columnId;
+        Name = name;
+        Order = order;
+        User = user ?? new User();
+    }
 
     public ValidationResult Validate()
     {

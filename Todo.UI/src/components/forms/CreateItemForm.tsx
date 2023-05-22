@@ -50,7 +50,7 @@ export default function CreateItemForm({
     initialValues: {
       title: "",
       description: "",
-      priority: 0,
+      priority: "0",
       columnId: columns ? columns[0].value : "",
       boardId: "",
     },
@@ -69,7 +69,7 @@ export default function CreateItemForm({
       const reqData: CreateItemProps = {
         title: values.title,
         description: values.description,
-        priority: values.priority,
+        priority: parseInt(values.priority),
       };
 
       if (boardId) {
