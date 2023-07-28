@@ -11,6 +11,7 @@ import {
 } from "./styles";
 import { H1, LinkSpan, Text } from "@/assets/css/global.styles";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function ResetPasswordForm() {
   const [email, setEmail] = useState<string>();
@@ -25,10 +26,11 @@ export default function ResetPasswordForm() {
       })
       .then(() => {
         setLoading(false);
+        toast.success("Um email com o link de confirmação foi enviado!");
       })
-      .catch((e) => {
+      .catch(() => {
         setLoading(false);
-        console.log(e);
+        toast.error("Oops, ocorreu um erro, tente novamente mais tarde!");
       });
   }
 

@@ -7,6 +7,7 @@ import { TbTrash } from "react-icons/tb";
 import { removeParticipant, sendInvite } from "@/services/api/boards";
 import useAuth from "@/context/auth";
 import RoundedAvatar from "@/components/roundedAvatar";
+import { toast } from "react-toastify";
 
 interface InviteFormProps {
   participants?: User[];
@@ -28,8 +29,10 @@ export default function InviteForm(props: InviteFormProps) {
     try {
       await sendInvite(emailList, props.boardId);
       setEmails("");
+
+      toast.success("Convite enviado com sucesso!");
     } catch (e) {
-      console.log(e);
+      toast.error("Oops, ocorreu um erro, tente novamente mais tarde!");
     }
 
     setLoading(false);
@@ -40,8 +43,10 @@ export default function InviteForm(props: InviteFormProps) {
 
     try {
       await removeParticipant(participantId, props.boardId);
+
+      toast.success("Participante removido com sucesso!");
     } catch (e) {
-      console.log(e);
+      toast.error("Oops, ocorreu um erro, tente novamente mais tarde!");
     }
 
     setLoading(false);

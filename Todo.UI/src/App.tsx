@@ -9,10 +9,21 @@ import Board from "./pages/board";
 import Profile from "./pages/profile";
 import Invite from "./pages/invite";
 import RecoverPassword from "./pages/recoverPassword";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <ThemeProvider theme={Default}>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss
+        pauseOnHover
+        theme="dark"
+      />
       <BrowserRouter>
         <Routes>
           <Route path="/" index={true} element={<Navigate to="/login" />} />

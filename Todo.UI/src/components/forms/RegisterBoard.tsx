@@ -8,11 +8,14 @@ import * as Yup from "yup";
 import { useMutation, useQueryClient } from "react-query";
 import { ExpandedBoard, ResumedBoard } from "@/types/board";
 import ErrorMessage from "@/components/forms/ErrorMessage";
+import { toast } from "react-toastify";
 
 const BoardRegister = (props: FormBoardProps) => {
   const client = useQueryClient();
   const createMutation = useMutation(postBoard, {
     onSuccess: (res) => {
+      toast.success("Quadro criado com sucesso!");
+
       client.setQueryData<ResumedBoard[]>(["boards"], (prev) => {
         if (!prev) {
           throw new Error("Cache invalido!");
@@ -31,6 +34,8 @@ const BoardRegister = (props: FormBoardProps) => {
 
   const updateMutation = useMutation(patchBoard, {
     onSuccess: (res) => {
+      toast.success("Quadro atualizado com sucesso!");
+
       try {
         client.setQueryData<ResumedBoard[]>(["boards"], (prev) => {
           if (!prev) {

@@ -6,6 +6,8 @@ export const ButtonStyle = styled.button<StyledButtonProps>`
   border-radius: 20px;
 
   height: 60px;
+  padding: 10px;
+  min-width: 100px;
 
   background-color: ${(props) => props.theme.colors[700]};
   color: ${(props) => props.theme.font.medium};

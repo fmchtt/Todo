@@ -9,6 +9,6 @@ public class ConsoleMailer : IMailer
         Console.WriteLine($"Titulo: {subject}");
         Console.WriteLine($"Texto: {body}");
 
-        return new Task<bool>(() => true);
+        return Task.FromResult(true);
     }
 }

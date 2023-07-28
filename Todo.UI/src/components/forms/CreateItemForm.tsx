@@ -7,6 +7,8 @@ import { CreateItemProps, Item } from "@/types/item";
 import { ExpandedBoard } from "@/types/board";
 import * as Yup from "yup";
 import ErrorMessage from "@/components/forms/ErrorMessage";
+import { H1 } from "@/assets/css/global.styles";
+import { toast } from "react-toastify";
 
 const priorityChoices = [
   {
@@ -81,6 +83,7 @@ export default function CreateItemForm({
 
       try {
         const data = await createItem(reqData);
+        toast.success("Tarefa adicionada com sucesso!");
 
         client.setQueryData<Item[]>(["itens"], (previous) => {
           if (!previous) {
@@ -109,13 +112,14 @@ export default function CreateItemForm({
 
         onSuccess();
       } catch (e) {
-        console.log(e);
+        toast.error("Oops, ocorreu um erro, tente novamente mais tarde!");
       }
     },
   });
 
   return (
     <Form onSubmit={formik.handleSubmit} width="30vw">
+      <H1>Criar tarefa</H1>
       <InputGroup>
         <Label>Título</Label>
         <Input
