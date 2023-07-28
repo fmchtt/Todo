@@ -42,9 +42,9 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
             Participants = new List<User> { command.User }
         };
 
-        board.Columns.Add(new Column("Aberto", board.Id, 0));
-        board.Columns.Add(new Column("Em Andamento", board.Id, 1));
-        board.Columns.Add(new Column("Concluído", board.Id, 2));
+        board.Columns.Add(new Column("Aberto", board.Id, 0, EColumnType.OPEN));
+        board.Columns.Add(new Column("Em Andamento", board.Id, 1, EColumnType.PROGRESS));
+        board.Columns.Add(new Column("Concluído", board.Id, 2, EColumnType.DONE));
 
         await _boardRepository.Create(board);
 

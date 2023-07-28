@@ -15,5 +15,6 @@ export interface ExpandedColumn {
   name: string;
   order: number;
   itemCount: number;
+  type: number;
   itens: Item[];
 }

@@ -15,7 +15,7 @@ public class TodoItem : Entity
     public Guid CreatorId { get; set; }
     public virtual User Creator { get; set; }
 
-    #pragma warning disable CS8618
+#pragma warning disable CS8618
     public TodoItem(string title, string description, DateTime createdDate, DateTime updatedDate, Guid? boardId, Guid creatorId, bool done, EPriority priority, Guid? columnId)
     {
         Title = title;
@@ -29,7 +29,7 @@ public class TodoItem : Entity
         Priority = priority;
     }
 
-    #pragma warning disable CS8618
+#pragma warning disable CS8618
     public TodoItem(string title, string description, Guid? boardId, Guid creatorId, bool done, EPriority priority, Guid? columnId)
     {
         Title = title;
@@ -69,5 +69,6 @@ public class TodoItem : Entity
         Board = column.Board;
         ColumnId = column.Id;
         Column = column;
+        Done = column.Type == EColumnType.DONE;
     }
 }

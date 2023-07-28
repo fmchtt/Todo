@@ -24,24 +24,24 @@ public class ColumnHandler : IRequestHandler<CreateColumnCommand, Column>, IRequ
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new ValidationException( "Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
         var board = await _boardRepository.GetById(command.BoardId);
         if (board == null)
         {
-            throw new NotFoundException( "Quadro não encontrado!");
+            throw new NotFoundException("Quadro não encontrado!");
         }
 
         if (!board.UserCanEdit(command.User.Id))
         {
-            throw new PermissionException( "Sem permissão para alterar o quadro!");
+            throw new PermissionException("Sem permissão para alterar o quadro!");
         }
 
         var order = await _columnRepository.GetMaxOrder(command.BoardId);
 
-        var column = new Column(command.Name, command.BoardId, order);
+        var column = new Column(command.Name, command.BoardId, order, command.Type);
         await _columnRepository.Create(column);
 
         return column;
@@ -52,19 +52,19 @@ public class ColumnHandler : IRequestHandler<CreateColumnCommand, Column>, IRequ
         var validation = command.Validate();
         if (!validation.IsValid)
         {
-            throw new ValidationException( "Comando inválido",
+            throw new ValidationException("Comando inválido",
                 validation.Errors.Select(error => new ErrorResult(error)).ToList());
         }
 
         var column = await _columnRepository.GetById(command.ColumnId);
         if (column == null)
         {
-            throw new NotFoundException( "Coluna não encontrada!");
+            throw new NotFoundException("Coluna não encontrada!");
         }
 
         if (!column.Board.UserCanEdit(command.User.Id))
         {
-            throw new PermissionException( "Sem permissão para apagar a coluna!");
+            throw new PermissionException("Sem permissão para apagar a coluna!");
         }
 
         if (command.Name != null && column.Name != command.Name)
@@ -76,6 +76,11 @@ public class ColumnHandler : IRequestHandler<CreateColumnCommand, Column>, IRequ
         {
             column.Order = command.Order.Value;
             await _columnRepository.ColumnReorder(column.BoardId, column.Id, command.Order.Value);
+        }
+
+        if (command.Type != null && column.Type != command.Type)
+        {
+            column.Type = column.Type;
         }
 
         await _columnRepository.Update(column);

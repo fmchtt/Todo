@@ -22,14 +22,16 @@ public class EditColumnCommand : ICommand<Column>
     [JsonIgnore] public Guid ColumnId { get; set; }
     public string? Name { get; set; }
     public int? Order { get; set; }
+    public EColumnType? Type { get; set; }
     [JsonIgnore] public User User { get; set; }
 
-    public EditColumnCommand(Guid columnId, string? name, int? order, User? user)
+    public EditColumnCommand(Guid columnId, string? name, int? order, User? user, EColumnType? type)
     {
         ColumnId = columnId;
         Name = name;
         Order = order;
         User = user ?? new User();
+        Type = type;
     }
 
     public ValidationResult Validate()

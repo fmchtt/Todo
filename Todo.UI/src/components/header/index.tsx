@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { H2, Text } from "@/assets/css/global.styles";
 import useAuth from "@/context/auth";
 import {

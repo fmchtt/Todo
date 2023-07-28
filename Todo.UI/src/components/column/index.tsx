@@ -92,6 +92,11 @@ export default function Column({
         (x) => x.id === itemId
       );
       const item = prev.columns[oldColIdx].itens.splice(itemIdx, 1);
+      if (data.type === 2) {
+        item[0].done = true;
+      } else {
+        item[0].done = false;
+      }
 
       const newColIdx = prev.columns.findIndex((x) => x.id === data.id);
       prev.columns[newColIdx].itens.push(item[0]);
