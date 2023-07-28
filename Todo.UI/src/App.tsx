@@ -8,7 +8,7 @@ import { Default } from "./types/themes";
 import Board from "./pages/board";
 import Profile from "./pages/profile";
 import Invite from "./pages/invite";
-import RecoverPassword from "./pages/recoverPassord";
+import RecoverPassword from "./pages/recoverPassword";
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
             <Route path="board/:id" element={<Board />} />
             <Route path="profile" element={<Profile />} />
           </Route>
-          <Route path="password-reset" element={<RecoverPassword />} />
+          <Route path="password/reset" element={<RecoverPassword />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

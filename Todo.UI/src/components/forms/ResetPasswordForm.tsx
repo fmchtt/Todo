@@ -1,7 +1,16 @@
 import http from "@/services/http";
 import { FormEvent, useState } from "react";
 import FilledButton from "../filledButton";
-import { Form, Description, Input, FormStyled } from "./styles";
+import {
+  Form,
+  Input,
+  FormContainer,
+  FormHeading,
+  InputGroup,
+  Label,
+} from "./styles";
+import { H1, LinkSpan, Text } from "@/assets/css/global.styles";
+import { Link } from "react-router-dom";
 
 export default function ResetPasswordForm() {
   const [email, setEmail] = useState<string>();
@@ -24,18 +33,32 @@ export default function ResetPasswordForm() {
   }
 
   return (
-    <FormStyled>
-      <Form onSubmit={handleSubmit} width="300px">
-        <Description>Digite o email para recuperação de senha</Description>
-        <Input
-          type="email"
-          name="email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+    <FormContainer>
+      <FormHeading>
+        <H1>Recuperar Senha</H1>
+        <Text>
+          Entre com seus dados para recuperar a senha e acessar o sistema
+        </Text>
+      </FormHeading>
+      <Form onSubmit={handleSubmit}>
+        <InputGroup>
+          <Label>Email</Label>
+          <Input
+            type="email"
+            name="email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </InputGroup>
         <FilledButton type="submit" loading={loading ? 1 : 0}>
-          Enviar
+          Recuperar
         </FilledButton>
+        <Text>
+          Lembrou sua senha?{" "}
+          <Link to="/login" style={{ textDecoration: "none" }}>
+            <LinkSpan>Login</LinkSpan>
+          </Link>
+        </Text>
       </Form>
-    </FormStyled>
+    </FormContainer>
   );
 }

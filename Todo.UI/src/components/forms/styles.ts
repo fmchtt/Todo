@@ -61,7 +61,7 @@ export const InputGroup = styled.div<InputGroupProps>`
 
   .eye {
     position: absolute;
-    top: 44px;
+    top: 40px;
     right: 20px;
     font-size: 25px;
     color: #ffffff;

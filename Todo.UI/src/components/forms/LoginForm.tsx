@@ -11,122 +11,124 @@ import ErrorMessage from "./ErrorMessage";
 import { TbEye, TbEyeOff } from "react-icons/tb";
 
 export default function LoginForm() {
-    const { user, login } = useAuth();
-    const [showPassword, setShowPassword] = useState<string>("password");
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
+  const { user, login } = useAuth();
+  const [showPassword, setShowPassword] = useState<string>("password");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-    useEffect(() => {
-        if (user) {
-            const next = searchParams.get("next");
-            if (next && next !== "/login") {
-                return navigate(next);
-            }
+  useEffect(() => {
+    if (user) {
+      const next = searchParams.get("next");
+      if (next && next !== "/login") {
+        return navigate(next);
+      }
 
-            navigate("/home");
-        }
-    }, [user]);
-
-    function eyeInput() {
-        if (showPassword === "password") {
-            setShowPassword("text");
-        } else {
-            setShowPassword("password");
-        }
+      navigate("/home");
     }
+  }, [user]);
 
-    const formik = useFormik({
-        initialValues: {
-            email: "",
-            password: "",
-        },
-        onSubmit: (values) => {
-            setError(false);
-            setLoading(true);
-            login({
-                email: values.email,
-                password: values.password,
-            })
-                .then(() => {
-                    setLoading(false);
-                })
-                .catch(() => {
-                    setLoading(false);
-                    setError(true);
-                });
-        },
+  function eyeInput() {
+    if (showPassword === "password") {
+      setShowPassword("text");
+    } else {
+      setShowPassword("password");
+    }
+  }
 
-        validationSchema: Yup.object({
-            email: Yup.string().required("O email é obrigatório"),
-            password: Yup.string().required("A senha é obrigatório"),
-        }),
-        validateOnMount: false,
-        validateOnBlur: false,
-        validateOnChange: false,
-    });
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: (values) => {
+      setError(false);
+      setLoading(true);
+      login({
+        email: values.email,
+        password: values.password,
+      })
+        .then(() => {
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+          setError(true);
+        });
+    },
 
-    return (
-        <FormContainer>
-            <FormHeading>
-                <H1>Login</H1>
-                <Text>Faça login para acessar o app</Text>
-            </FormHeading>
-            <Form onSubmit={formik.handleSubmit}>
-                <InputGroup>
-                    <Label>Email</Label>
-                    <Input
-                        type="email"
-                        value={formik.values.email}
-                        onChange={formik.handleChange}
-                        name="email"
-                        placeholder="Ex: teste@email.com"
-                    />
-                    {formik.errors.email && (
-                        <ErrorMessage>{formik.errors.email}</ErrorMessage>
-                    )}
-                </InputGroup>
-                <InputGroup>
-                    <Label>Senha</Label>
-                    <Input
-                        type={showPassword}
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        name="password"
-                        placeholder="Ex: Senha1234@"
-                    />
-                    {showPassword === "password" ? (
-                        <TbEye className="eye" onClick={eyeInput} />
-                    ) : (
-                        <TbEyeOff onClick={eyeInput} className="eye" />
-                    )}
-                    {formik.errors.password && (
-                        <ErrorMessage>{formik.errors.password}</ErrorMessage>
-                    )}
-                </InputGroup>
-                {error && <ErrorMessage>Usuário ou senha inválidos</ErrorMessage>}
-                <FilledButton type="submit" size="25px" loading={loading ? 1 : 0}>
-                    Entrar
-                </FilledButton>
-                <Text>
-                    Ainda não tem conta?{" "}
-                    <Link
-                        to={`/register${searchParams.get("next")
-                            ? "?next=" + searchParams.get("next")
-                            : ""
-                            }`}
-                        style={{ textDecoration: "none" }}
-                    >
-                        <LinkSpan>Registre-se</LinkSpan>
-                    </Link>
-                </Text>
-                <Text>
-                    Esqueceu sua senha ?{" "}
-                    <Link to="/password-reset" style={{ textDecoration: "none" }}>
-                        <LinkSpan>Recuperar</LinkSpan>
-                    </Link></Text>
-            </Form>
-        </FormContainer>
-    );
+    validationSchema: Yup.object({
+      email: Yup.string().required("O email é obrigatório"),
+      password: Yup.string().required("A senha é obrigatório"),
+    }),
+    validateOnMount: false,
+    validateOnBlur: false,
+    validateOnChange: false,
+  });
+
+  return (
+    <FormContainer>
+      <FormHeading>
+        <H1>Login</H1>
+        <Text>Faça login para acessar o app</Text>
+      </FormHeading>
+      <Form onSubmit={formik.handleSubmit}>
+        <InputGroup>
+          <Label>Email</Label>
+          <Input
+            type="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            name="email"
+            placeholder="Ex: teste@email.com"
+          />
+          {formik.errors.email && (
+            <ErrorMessage>{formik.errors.email}</ErrorMessage>
+          )}
+        </InputGroup>
+        <InputGroup>
+          <Label>Senha</Label>
+          <Input
+            type={showPassword}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            name="password"
+            placeholder="Ex: Senha1234@"
+          />
+          {showPassword === "password" ? (
+            <TbEye className="eye" onClick={eyeInput} />
+          ) : (
+            <TbEyeOff onClick={eyeInput} className="eye" />
+          )}
+          {formik.errors.password && (
+            <ErrorMessage>{formik.errors.password}</ErrorMessage>
+          )}
+        </InputGroup>
+        {error && <ErrorMessage>Usuário ou senha inválidos</ErrorMessage>}
+        <FilledButton type="submit" size="25px" loading={loading ? 1 : 0}>
+          Entrar
+        </FilledButton>
+        <Text>
+          Ainda não tem conta?{" "}
+          <Link
+            to={`/register${
+              searchParams.get("next")
+                ? "?next=" + searchParams.get("next")
+                : ""
+            }`}
+            style={{ textDecoration: "none" }}
+          >
+            <LinkSpan>Registre-se</LinkSpan>
+          </Link>
+        </Text>
+        <Text>
+          Esqueceu sua senha ?{" "}
+          <Link to="/password/reset" style={{ textDecoration: "none" }}>
+            <LinkSpan>Recuperar</LinkSpan>
+          </Link>
+        </Text>
+      </Form>
+    </FormContainer>
+  );
 }

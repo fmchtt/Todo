@@ -60,7 +60,7 @@ export default function Dashboard() {
       {boardModal}
       {itemModal}
       <Helmet>
-        <title>Dashboard</title>
+        <title>Dashboard - Taskerizer</title>
       </Helmet>
       <HeadingContainer>
         <Text size="large">Quadros</Text>

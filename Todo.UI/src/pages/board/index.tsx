@@ -193,7 +193,7 @@ export default function Board() {
       {columnModal}
       {!isLoading && data && (
         <Helmet>
-          <title>Quadro - {data?.name}</title>
+          <title>Quadro - {data?.name} - Taskerizer</title>
         </Helmet>
       )}
       <HeadingContainer>
