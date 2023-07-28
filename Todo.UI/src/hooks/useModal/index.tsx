@@ -1,6 +1,7 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { TbX } from "react-icons/tb";
+import useDebounce from "../useDebounce";
 import { ContainerModal, ModalStyled } from "./styles";
 
 type ModalProps = {
@@ -8,12 +9,19 @@ type ModalProps = {
   withControls: boolean;
   closeModal: () => void;
   component: ReactNode;
+  isClosing: boolean;
 };
 
-function Modal({ isOpen, withControls, closeModal, component }: ModalProps) {
+function Modal({
+  isOpen,
+  withControls,
+  closeModal,
+  component,
+  isClosing,
+}: ModalProps) {
   if (isOpen) {
     return createPortal(
-      <ContainerModal>
+      <ContainerModal closing={isClosing}>
         {withControls ? (
           <ModalStyled>
             <TbX
@@ -28,7 +36,6 @@ function Modal({ isOpen, withControls, closeModal, component }: ModalProps) {
         ) : (
           component
         )}
-        )
       </ContainerModal>,
       document.body
     );
@@ -41,14 +48,14 @@ export default function useModal(
   component: ReactNode,
   withControls = true
 ): [ReactNode, () => void, () => void] {
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen, isDebouncing] = useDebounce(false, 200);
 
   function closeModal() {
     setOpen(false);
   }
 
   function openModal() {
-    setOpen(true);
+    setOpen(true, true);
   }
 
   return [
@@ -58,6 +65,7 @@ export default function useModal(
       withControls={withControls}
       closeModal={closeModal}
       component={component}
+      isClosing={isDebouncing}
     />,
     openModal,
     closeModal,

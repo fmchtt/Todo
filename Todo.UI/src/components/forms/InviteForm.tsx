@@ -58,7 +58,7 @@ export default function InviteForm(props: InviteFormProps) {
             onChange={(e) => setEmails(e.target.value)}
           />
           <Description>
-            Emails separados por virgula. ex: email@email,email2@email.com
+            Emails separados por virgula. ex: email1@email.com, email2@email.com
           </Description>
         </InputGroup>
         <FilledButton loading={loading ? 1 : 0}>Convidar</FilledButton>

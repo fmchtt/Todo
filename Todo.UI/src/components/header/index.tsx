@@ -10,16 +10,17 @@ import {
 } from "./styles";
 import { Link } from "react-router-dom";
 import RoundedAvatar from "@/components/roundedAvatar";
+import useDebounce from "@/hooks/useDebounce";
 
 export default function Header() {
   const { user } = useAuth();
-  const [dropDownOpen, setDropdownOpen] = useState(false);
+  const [dropDownOpen, setDropdownOpen, isClosing] = useDebounce(false, 200);
 
   return (
     <StyledHeader>
       <H2>Taskerizer</H2>
       <UserMenu
-        onClick={() => setDropdownOpen(true)}
+        onClick={() => setDropdownOpen(true, true)}
         onMouseLeave={() => setDropdownOpen(false)}
       >
         {user && (
@@ -33,7 +34,7 @@ export default function Header() {
           </UserContainer>
         )}
         {dropDownOpen && (
-          <DropDownMenu>
+          <DropDownMenu closing={isClosing}>
             <DropDownButton as={Link} to="/profile">
               Editar Perfil
             </DropDownButton>

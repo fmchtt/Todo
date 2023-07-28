@@ -31,7 +31,10 @@ export const UserContainer = styled.div`
   z-index: 2;
 `;
 
-export const DropDownMenu = styled.div`
+type MenuProps = {
+  closing: boolean;
+};
+export const DropDownMenu = styled.div<MenuProps>`
   background: ${(props) => props.theme.colors[300]};
   box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.25);
 
@@ -44,6 +47,12 @@ export const DropDownMenu = styled.div`
   width: 100%;
   border-radius: 0 0 20px 20px;
   z-index: 1;
+
+  ${(props) => {
+    return props.closing
+      ? "animation: fade-up 200ms linear;"
+      : "animation: fade-down 200ms linear;";
+  }}
 `;
 
 export const DropDownButton = styled.a`
