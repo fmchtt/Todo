@@ -5,7 +5,7 @@ import { H1 } from "@/assets/css/global.styles";
 import { useFormik } from "formik";
 import { patchBoard, postBoard } from "@/services/api/boards";
 import * as Yup from "yup";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ExpandedBoard, ResumedBoard } from "@/types/board";
 import ErrorMessage from "@/components/forms/ErrorMessage";
 import { toast } from "react-toastify";

@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getBoards } from "@/services/api/boards";
 import {
   Container,
@@ -21,8 +21,14 @@ import ItemPresentation from "@/components/itemPresentation";
 import CreateItemForm from "@/components/forms/CreateItemForm";
 
 export default function Dashboard() {
-  const boardQuery = useQuery({ queryKey: ["boards"], queryFn: getBoards });
-  const itemQuery = useQuery({ queryKey: ["itens"], queryFn: getItens });
+  const boardQuery = useQuery({
+    queryKey: ["boards"],
+    queryFn: getBoards,
+  });
+  const itemQuery = useQuery({
+    queryKey: ["itens"],
+    queryFn: getItens,
+  });
   const [itemClicked, setItemClicked] = useState<number | undefined>(undefined);
   const [boardModal, openBoardModal] = useModal(<BoardRegister />);
   const [itemModal, openItemModal, closeItemModal] = useModal(

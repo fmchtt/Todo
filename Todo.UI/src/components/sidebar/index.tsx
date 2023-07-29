@@ -35,12 +35,12 @@ export default function SideBar() {
     {
       icon: <TbLayoutKanban size={22} />,
       text: "Quadros",
-      route: "/home",
+      route: "/boards",
     },
     {
       icon: <TbList size={22} />,
       text: "Tarefas",
-      route: "/home",
+      route: "/tasks",
     },
   ];
 
@@ -54,11 +54,12 @@ export default function SideBar() {
           }}
         />
         {options.map((option, index) => {
-          return option.action ? (
+          return option.route ? (
             <SideBarButton
               show={showOptions ? 1 : 0}
               key={index}
-              onClick={option.action}
+              as={Link}
+              to={option.route}
             >
               {option.icon}
               <TitleOption show={showOptions ? 1 : 0}>
@@ -69,8 +70,7 @@ export default function SideBar() {
             <SideBarButton
               show={showOptions ? 1 : 0}
               key={index}
-              as={Link}
-              to="/home"
+              onClick={option.action}
             >
               {option.icon}
               <TitleOption show={showOptions ? 1 : 0}>

@@ -2,5 +2,5 @@
 
 public interface IMailer
 {
-    public Task<bool> SendMail(string subject, string body);
+    public Task<bool> SendMail(string subject, string body, string recipient);
 }

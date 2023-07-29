@@ -107,7 +107,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         }
 
         await _boardRepository.Update(board);
-        
+
         return board;
     }
 
@@ -135,8 +135,11 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         foreach (var email in command.Emails)
         {
             invites.Add(new Invite(email, command.BoardId));
-            await _mailer.SendMail(email,
-                $"Você foi convidado para participar do quadro: {board.Name}, clique <a href='{command.Domain}/invite/{board.Id}'>aqui</a> para participar!");
+            await _mailer.SendMail(
+                $"Convite para participar do quadro: {board.Name}", 
+                $"Você foi convidado para participar do quadro: {board.Name}, clique <a href='{command.Domain}/invite/{board.Id}'>aqui</a> para participar!",
+                email
+                );
         }
 
         await _inviteRepository.CreateMany(invites);
@@ -194,7 +197,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         var participant = board.Participants.Find(x => x.Id == command.ParticipantId);
         if (participant == null)
         {
-            throw new NotFoundException( "Participante não encontrado!");
+            throw new NotFoundException("Participante não encontrado!");
         }
 
         board.Participants.Remove(participant);
@@ -213,7 +216,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
     public async Task<Board?> Handle(GetBoardByIdQuery query, CancellationToken cancellationToken)
     {
         var board = await _boardRepository.GetById(query.BoardId);
-        
+
         if (board == null || !board.Participants.Contains(query.User))
         {
             throw new NotFoundException("Quadro não encontrado!");

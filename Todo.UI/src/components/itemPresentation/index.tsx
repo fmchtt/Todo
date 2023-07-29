@@ -9,7 +9,7 @@ import {
 } from "./styles";
 import moment from "moment";
 import { changeDone, deleteItem } from "@/services/api/itens";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import PriorityIndicator from "../priorityIndicator";
 import {
   TbCalendarEvent,

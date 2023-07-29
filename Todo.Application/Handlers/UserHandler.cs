@@ -142,7 +142,7 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
             code = existingRecoverCode.Code;
         }
 
-        await _mailer.SendMail(user.Email, $"Seu código de recuperação de senha: {code}.");
+        await _mailer.SendMail("Código de recuperação de senha", $"Seu código de recuperação de senha: {code}.", user.Email);
 
         return "Enviado com sucesso!";
     }

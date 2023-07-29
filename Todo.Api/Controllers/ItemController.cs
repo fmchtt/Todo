@@ -24,10 +24,12 @@ public class ItemController : TodoBaseController
 
     [HttpGet(""), Authorize]
     public async Task<PaginatedResult<ExpandedItemResult>> GetAll(
+        [FromQuery] Guid? boardId,
+        [FromQuery] bool? done,
         [FromQuery] int page = 1
     )
     {
-        var query = new GetAllTodoItemQuery(GetUser(), page);
+        var query = new GetAllTodoItemQuery(GetUser(), page, boardId, done);
 
         var todos = await _mediator.Send(query);
 

@@ -1,11 +1,17 @@
 import styled from "styled-components";
 
-export const Container = styled.main`
+type ContainerProps = {
+  centralize?: boolean;
+};
+export const Container = styled.main<ContainerProps>`
   background: ${(props) => props.theme.gradients.full};
   height: calc(100vh - 60px);
 
   display: flex;
   width: 100%;
+
+  align-items: ${(props) => (props.centralize ? "center" : "unset")};
+  justify-content: ${(props) => (props.centralize ? "center" : "unset")};
 `;
 
 export const MainContent = styled.div`

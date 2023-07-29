@@ -9,7 +9,7 @@ import {
   HoverImage,
 } from "./styles";
 import { getActualUser, patchUser } from "@/services/api/user";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { TbEdit } from "react-icons/tb";
 
 export default function ProfileForm() {
@@ -24,7 +24,7 @@ export default function ProfileForm() {
     const formData = new FormData(e.target as HTMLFormElement);
 
     patchUser(formData).then((res) => {
-      client.setQueryData("me", res);
+      client.setQueryData(["me"], res);
       setImageBase64(undefined);
     });
   }

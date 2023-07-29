@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import FilledButton from "../filledButton";
 import { Form, Input, InputGroup, Label, Select } from "./styles";
 import { createColumn, editColumn } from "@/services/api/column";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ExpandedBoard } from "@/types/board";
 import * as Yup from "yup";
 import ErrorMessage from "@/components/forms/ErrorMessage";

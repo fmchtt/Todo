@@ -2,7 +2,7 @@ import { useContext, createContext, useState, useEffect } from "react";
 import http from "../services/http";
 import User from "../types/user";
 import { TokenResponse } from "@/types/responses/auth";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getActualUser } from "@/services/api/user";
 import { LoginProps, RegisterProps, ContextProps, Context } from "./types";
 
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: ContextProps) {
   function logout() {
     localStorage.removeItem("token");
     setToken(null);
-    client.setQueryData("me", null);
+    client.setQueryData(["me"], null);
   }
 
   return (

@@ -1,7 +1,7 @@
 import { StyledSpinner } from "./styles";
 import { SpinnerProps } from "./types";
 
-const Spinner = (props: SpinnerProps) => {
+export default function Spinner(props: SpinnerProps) {
   return (
     <StyledSpinner size={props.size} viewBox="0 0 50 50">
       <circle
@@ -15,6 +15,4 @@ const Spinner = (props: SpinnerProps) => {
       />
     </StyledSpinner>
   );
-};
-
-export default Spinner;
+}

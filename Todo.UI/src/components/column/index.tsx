@@ -11,7 +11,7 @@ import {
 import { TbEdit, TbTrash } from "react-icons/tb";
 import { useModal } from "@/hooks";
 import ColumnForm from "../forms/ColumnForm";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { changeColumn } from "@/services/api/itens";
 import { ExpandedBoard } from "@/types/board";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
@@ -40,7 +40,7 @@ export default function Column({
 
   const [columnModal, openColumnModal, closeColumnModal] = useModal(
     <ColumnForm
-      data={{ id: data.id, name: data.name }}
+      data={{ id: data.id, name: data.name, type: data.type.toString() }}
       boardId={boardId}
       onSuccess={handleColumnModalSuccess}
     />
