@@ -18,7 +18,7 @@ export const PresentationBody = styled.div`
 `;
 
 export const DetailsContainer = styled.div`
-  min-height: 500px;
+  min-height: calc(100% - 195px);
 `;
 
 export const PresentationSide = styled.div`
