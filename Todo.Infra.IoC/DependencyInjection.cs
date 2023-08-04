@@ -37,18 +37,21 @@ public static class DependencyInjection
     services.AddTransient<IUserRepository, UserRepository>();
     services.AddTransient<IRecoverCodeRepository, RecoverCodeRepository>();
     services.AddTransient<IInviteRepository, InviteRepository>();
+    services.AddTransient<ICommentRepository, CommentRepository>();
 
     // Handlers
     services.AddTransient<BoardHandler>();
     services.AddTransient<ColumnHandler>();
     services.AddTransient<UserHandler>();
     services.AddTransient<ItemHandler>();
+    services.AddTransient<CommentHandler>();
 
     // Mappers
     services.AddAutoMapper(typeof(BoardMapper));
     services.AddAutoMapper(typeof(ItemMapper));
     services.AddAutoMapper(typeof(UserMapper));
     services.AddAutoMapper(typeof(ColumnMapper));
+    services.AddAutoMapper(typeof(CommentMapper));
 
     services.AddMediatR(conf => conf.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("Todo.Application")));
 

@@ -11,6 +11,7 @@ public class TodoDBContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<RecoverCode> RecoverCodes { get; set; }
     public DbSet<Invite> Invites { get; set; }
+    public DbSet<Comment> Comments { get; set; }
 
     public TodoDBContext(DbContextOptions<TodoDBContext> options) : base(options) { }
 
@@ -25,11 +26,14 @@ public class TodoDBContext : DbContext
         modelBuilder.Entity<Column>().HasIndex(c => new { c.Order, c.BoardId }).IsUnique();
 
         modelBuilder.Entity<TodoItem>().HasOne(t => t.Creator).WithMany(u => u.Itens).HasForeignKey(t => t.CreatorId);
+        modelBuilder.Entity<TodoItem>().HasMany(t => t.Comments).WithOne(c => c.Item).HasForeignKey(c => c.ItemId);
 
         modelBuilder.Entity<RecoverCode>().HasOne(r => r.User).WithOne();
         modelBuilder.Entity<RecoverCode>().HasIndex(r => new { r.UserId, r.Code }).IsUnique();
 
         modelBuilder.Entity<Invite>().HasOne(i => i.Board).WithMany();
         modelBuilder.Entity<Invite>().HasIndex(i => new { i.BoardId, i.Email }).IsUnique();
+
+        modelBuilder.Entity<Comment>().HasOne(c => c.Author).WithMany();
     }
 }

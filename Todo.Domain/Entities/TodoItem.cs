@@ -14,6 +14,7 @@ public class TodoItem : Entity
     public virtual Column? Column { get; set; }
     public Guid CreatorId { get; set; }
     public virtual User Creator { get; set; }
+    public virtual List<Comment> Comments { get; set; }
 
 #pragma warning disable CS8618
     public TodoItem(string title, string description, DateTime createdDate, DateTime updatedDate, Guid? boardId, Guid creatorId, bool done, EPriority priority, Guid? columnId)
