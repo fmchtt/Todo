@@ -11,6 +11,7 @@ import {
 import { getActualUser, patchUser } from "@/services/api/user";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { TbEdit } from "react-icons/tb";
+import { toast } from "react-toastify";
 
 export default function ProfileForm() {
   const client = useQueryClient();
@@ -23,10 +24,15 @@ export default function ProfileForm() {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
 
-    patchUser(formData).then((res) => {
-      client.setQueryData(["me"], res);
-      setImageBase64(undefined);
-    });
+    patchUser(formData)
+      .then((res) => {
+        client.setQueryData(["me"], res);
+        setImageBase64(undefined);
+        toast.success("Perfil atualizado com sucesso!");
+      })
+      .catch(() => {
+        toast.error("Oops! Ocorreu um erro, tente novamente mais tarde!");
+      });
   }
 
   function handleImageChange(e: ChangeEvent<HTMLInputElement>) {

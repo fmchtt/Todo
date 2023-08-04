@@ -26,6 +26,7 @@ import { editColumn } from "@/services/api/column";
 import useAuth from "@/context/auth";
 import ParticipantWrapper from "@/components/participantWrapper";
 import InviteForm from "@/components/forms/InviteForm";
+import { toast } from "react-toastify";
 
 type ParamProps = {
   id: string;
@@ -101,9 +102,14 @@ export default function Board() {
     if (!data) {
       return;
     }
-    deleteBoardById(data.id).then(() => {
-      navigate("/home");
-    });
+    deleteBoardById(data.id)
+      .then(() => {
+        toast.success("Quadro deletado com sucesso!");
+        navigate("/home");
+      })
+      .catch(() => {
+        toast.error("Oops! Ocorreu um erro, tente novamente mais tarde!");
+      });
   }
 
   function handleItemCloseClick() {

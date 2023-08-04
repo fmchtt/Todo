@@ -19,6 +19,7 @@ import ItemCard from "@/components/itemCard";
 import { useState, useEffect } from "react";
 import ItemPresentation from "@/components/itemPresentation";
 import CreateItemForm from "@/components/forms/CreateItemForm";
+import { EmptyContent } from "@/pages/tasks/styles";
 
 export default function Dashboard() {
   const boardQuery = useQuery({
@@ -84,6 +85,11 @@ export default function Dashboard() {
               return <BoardCard key={board.id} data={board} />;
             })
             .slice(0, 4)}
+          {boardQuery.data?.length === 0 && (
+            <EmptyContent>
+              <Text>Você ainda não tem quadros!</Text>
+            </EmptyContent>
+          )}
         </Carousel>
       </Section>
       <Section>
@@ -112,6 +118,11 @@ export default function Dashboard() {
               );
             })
             .slice(0, 4)}
+          {itemQuery.data?.length === 0 && (
+            <EmptyContent>
+              <Text>Você ainda não tem tarefas!</Text>
+            </EmptyContent>
+          )}
         </Carousel>
       </Section>
     </Container>

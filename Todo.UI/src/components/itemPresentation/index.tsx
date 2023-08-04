@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
 import { ExpandedBoard, ResumedBoard } from "@/types/board";
 import RoundedAvatar from "@/components/roundedAvatar";
+import { toast } from "react-toastify";
 
 type ItemPresentationProps = {
   data: ExpandedItem;
@@ -45,11 +46,16 @@ export default function ItemPresentation({
   });
 
   function handleDeleteItem() {
-    deleteItem(data.id).then(() => {
-      client.invalidateQueries(["itens"]);
-      client.invalidateQueries(["board"]);
-      onCloseClick();
-    });
+    deleteItem(data.id)
+      .then(() => {
+        client.invalidateQueries(["itens"]);
+        client.invalidateQueries(["board"]);
+        toast.success("Tarefa deletada com sucesso!");
+        onCloseClick();
+      })
+      .catch(() => {
+        toast.error("Oops! Ocorreu um erro, tente novamente mais tarde!");
+      });
   }
 
   async function handleDone(done: boolean) {
