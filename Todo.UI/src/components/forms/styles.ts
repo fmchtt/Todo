@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { ComponentPropsWithoutRef } from "react";
 import { FormBoardProps } from "./types";
 
 export const FormContainer = styled.div<FormBoardProps>`
@@ -69,7 +70,10 @@ export const InputGroup = styled.div<InputGroupProps>`
   }
 `;
 
-export const Input = styled.input`
+type InputProps = ComponentPropsWithoutRef<"input"> & {
+  flexible?: boolean;
+};
+export const Input = styled.input<InputProps>`
   background-color: ${(props) => props.theme.colors[200]};
   color: ${(props) => props.theme.font.medium};
 
@@ -83,6 +87,8 @@ export const Input = styled.input`
   border-radius: 20px;
 
   padding: 15px 25px;
+
+  ${(props) => (props.flexible ? "flex: 1;" : "")}
 `;
 
 export const Select = styled.select`
@@ -131,6 +137,7 @@ interface GroupProps {
   align?: "center" | "unset";
   gap?: number;
 }
+
 export const Group = styled.div<GroupProps>`
   display: flex;
   align-items: ${(props) => (props.align ? props.align : "unset")};
@@ -142,6 +149,7 @@ export const Group = styled.div<GroupProps>`
 interface HoverProps {
   hover: boolean;
 }
+
 export const HoverImage = styled.div<HoverProps>`
   border-radius: 50%;
   width: clamp(200px, 35%, 90%);

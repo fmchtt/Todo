@@ -1,6 +1,7 @@
 import { H1, Text } from "@/assets/css/global.styles";
 import { ExpandedItem, getPriorityDisplay } from "@/types/item";
 import {
+  DetailsContainer,
   PresentationBody,
   PresentationContainer,
   PresentationDataGroup,
@@ -24,6 +25,7 @@ import useConfirmationModal from "@/hooks/useConfirmationModal";
 import { ExpandedBoard, ResumedBoard } from "@/types/board";
 import RoundedAvatar from "@/components/roundedAvatar";
 import { toast } from "react-toastify";
+import CommentSection from "@/components/commentSection";
 
 type ItemPresentationProps = {
   data: ExpandedItem;
@@ -132,7 +134,10 @@ export default function ItemPresentation({
           <H1>{data.title}</H1>
           <PriorityIndicator size={26} priority={data.priority} />
         </PresentationGroup>
-        <Text>{data.description}</Text>
+        <DetailsContainer>
+          <Text>{data.description}</Text>
+        </DetailsContainer>
+        <CommentSection itemId={data.id} />
       </PresentationBody>
       <PresentationSide>
         <PresentationGroup flex={true}>

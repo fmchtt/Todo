@@ -23,7 +23,7 @@ public class CommentRepository : ICommentRepository
 
     public async Task<PaginatedResult<Comment>> GetAllByItemId(Guid itemId, int page)
     {
-        var query = _dbContext.Comments.Where(comment => comment.ItemId == itemId).GetPage(page, 10);
+        var query = _dbContext.Comments.Where(comment => comment.ItemId == itemId).OrderByDescending(x => x.CreationTimeStamp).GetPage(page, 10);
         var pageCount = query.Count() / 10;
         var results = await query.ToListAsync();
         return new PaginatedResult<Comment>(results, pageCount);

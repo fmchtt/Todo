@@ -2,10 +2,11 @@
 
 type RoundedAvatarProps = {
   over?: number;
+  size?: number;
 };
 export const StyledRoundedAvatar = styled.img<RoundedAvatarProps>`
-  width: 40px;
-  height: 40px;
+  width: ${(props) => (props.size ? `${props.size}px` : "40px")};
+  height: ${(props) => (props.size ? `${props.size}px` : "40px")};
   border-radius: 50%;
 
   margin-left: ${(props) => (props.over ? "-16px" : "unset")};
@@ -13,10 +14,11 @@ export const StyledRoundedAvatar = styled.img<RoundedAvatarProps>`
 
 type RoundedInitialsProps = {
   over?: number;
+  size?: number;
 };
 export const RoundedInitials = styled.div<RoundedInitialsProps>`
-  width: 40px;
-  height: 40px;
+  width: ${(props) => (props.size ? `${props.size}px` : "40px")};
+  height: ${(props) => (props.size ? `${props.size}px` : "40px")};
 
   display: flex;
   justify-content: center;

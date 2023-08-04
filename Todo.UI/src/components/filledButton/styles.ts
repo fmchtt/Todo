@@ -11,7 +11,7 @@ export const ButtonStyle = styled.button<StyledButtonProps>`
 
   background-color: ${(props) => props.theme.colors[700]};
   color: ${(props) => props.theme.font.medium};
-  margin: 23px 0;
+  margin: ${(props) => props.margin || "23px 0"};
   cursor: pointer;
   display: flex;
   justify-content: center;

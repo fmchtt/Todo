@@ -4,7 +4,6 @@ export const PresentationContainer = styled.div`
   background: ${(props) => props.theme.gradients.full};
   border-radius: 20px;
   display: flex;
-  gap: 20px;
 
   width: clamp(800px, 70vw, 90vw);
   height: 80vh;
@@ -16,6 +15,10 @@ export const PresentationBody = styled.div`
   padding: 20px 20px 0 20px;
   flex: 1;
   overflow-y: auto;
+`;
+
+export const DetailsContainer = styled.div`
+  min-height: 500px;
 `;
 
 export const PresentationSide = styled.div`

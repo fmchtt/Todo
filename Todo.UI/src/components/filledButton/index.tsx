@@ -1,11 +1,11 @@
 import Spinner from "../spinner";
 import { ButtonStyle } from "./styles";
-import { FilledButtonProps } from "./types";
+import { StyledButtonProps } from "./types";
 
-export default function FilledButton(props: FilledButtonProps) {
+export default function FilledButton(props: StyledButtonProps) {
   return (
     <ButtonStyle {...props} type={props.type}>
-      {props.loading ? <Spinner size={props.size} /> : props.children}
+      {props.loading == 1 ? <Spinner size={props.size} /> : props.children}
     </ButtonStyle>
   );
 }
