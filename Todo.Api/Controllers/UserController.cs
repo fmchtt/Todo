@@ -32,7 +32,7 @@ public class UserController : TodoBaseController
         var command = new EditUserCommand(
             data.Name,
             data.File != null
-                ? new UploadedFile(data.File.OpenReadStream(), data.File.Name, data.File.ContentType)
+                ? new UploadedFile(data.File.OpenReadStream(), data.File.FileName, data.File.ContentType)
                 : null,
             user
         );
