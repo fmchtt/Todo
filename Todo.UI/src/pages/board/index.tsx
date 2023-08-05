@@ -113,6 +113,7 @@ export default function Board() {
   }
 
   function handleItemCloseClick() {
+    setItemClicked(undefined);
     closeItemModal();
   }
 
