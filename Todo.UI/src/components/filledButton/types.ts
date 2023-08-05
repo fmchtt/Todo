@@ -9,4 +9,5 @@ export interface FilledButtonProps {
   disabled?: boolean;
   type?: "button" | "reset" | "submit" | undefined;
   margin?: string;
+  height?: string;
 }

@@ -13,6 +13,11 @@ export async function createComment(id: string, text: string) {
   return data;
 }
 
+export async function editComment(id: string, text: string) {
+  const { data } = await http.patch<Comment>(`comments/${id}`, { text: text });
+  return data;
+}
+
 export async function deleteComment(id: string) {
   const { data } = await http.delete<MessageResponse>(`comments/${id}`);
   return data;

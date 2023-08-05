@@ -31,4 +31,6 @@ export const CommentHead = styled.div`
 
 export const CommentControls = styled.div`
   color: ${(props) => props.theme.font.medium};
+  display: flex;
+  gap: 10px;
 `;

@@ -6,6 +6,7 @@
   CommentHead,
   CommentControls,
 } from "@/components/commentSection/styles";
+import { FormEvent } from "react";
 import moment from "moment";
 import { Comment } from "@/types/comment";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +15,7 @@ import { toast } from "react-toastify";
 import {
   createComment,
   deleteComment,
+  editComment,
   getCommentsByItemId,
 } from "@/services/api/comment";
 import { Input, InputGroup, Label } from "@/components/forms/styles";
@@ -21,20 +23,65 @@ import FilledButton from "@/components/filledButton";
 import { PageResult } from "@/types/responses/page";
 import { Text } from "@/assets/css/global.styles";
 import RoundedAvatar from "@/components/roundedAvatar";
-import { TbTrash } from "react-icons/tb";
+import { TbTrash, TbEdit, TbCheck } from "react-icons/tb";
+import useAuth from "@/context/auth";
 
 type CommentSectionProps = {
   itemId: string;
 };
 export default function CommentSection(props: CommentSectionProps) {
   const [text, setText] = useState("");
+  const [commentEditId, setCommentEditId] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const { user } = useAuth();
 
   const client = useQueryClient();
   const { data } = useQuery({
     queryKey: ["comments", props.itemId],
     queryFn: () => getCommentsByItemId(props.itemId),
   });
+
+  async function handleEditComment(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const text = formData.get("text");
+    if (!text || text == "") {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const comment = await editComment(commentEditId, text.toString());
+      client.setQueryData<PageResult<Comment>>(
+        ["comments", props.itemId],
+        (prev) => {
+          if (!prev) {
+            return prev;
+          }
+
+          const commentIdx = prev.results.findIndex(
+            (x) => x.id === commentEditId
+          );
+          if (commentIdx === -1) {
+            return prev;
+          }
+
+          prev.results[commentIdx] = comment;
+
+          return prev;
+        }
+      );
+
+      setText("");
+      toast.success("Comentário editado!");
+    } catch (e) {
+      toast.error("Oops! Ocorreu um erro, tente novamente mais tarde!");
+    } finally {
+      setCommentEditId("");
+      setLoading(false);
+    }
+  }
 
   async function handleCreateComment() {
     if (text == "") {
@@ -115,6 +162,7 @@ export default function CommentSection(props: CommentSectionProps) {
             onClick={() => handleCreateComment()}
             loading={loading ? 1 : 0}
             margin="0"
+            height="unset"
           >
             Comentar
           </FilledButton>
@@ -145,6 +193,14 @@ export default function CommentSection(props: CommentSectionProps) {
                   </div>
                 </UserContainer>
                 <CommentControls>
+                  {comment.author.id === user?.id && (
+                    <TbEdit
+                      role="button"
+                      size={20}
+                      cursor="pointer"
+                      onClick={() => setCommentEditId(comment.id)}
+                    />
+                  )}
                   <TbTrash
                     role="button"
                     size={20}
@@ -153,7 +209,23 @@ export default function CommentSection(props: CommentSectionProps) {
                   />
                 </CommentControls>
               </CommentHead>
-              <Text>{comment.text}</Text>
+              {commentEditId === comment.id ? (
+                <form onSubmit={handleEditComment}>
+                  <InputGroup row>
+                    <Input name="text" flexible defaultValue={comment.text} />
+                    <FilledButton
+                      loading={loading ? 1 : 0}
+                      margin="0"
+                      height="unset"
+                      type="submit"
+                    >
+                      <TbCheck role="button" cursor="pointer" size={30} />
+                    </FilledButton>
+                  </InputGroup>
+                </form>
+              ) : (
+                <Text>{comment.text}</Text>
+              )}
             </CommentLine>
           );
         })}
