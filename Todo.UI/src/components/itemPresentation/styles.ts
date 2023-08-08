@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { ComponentPropsWithoutRef } from "react";
 
 export const PresentationContainer = styled.div`
   background: ${(props) => props.theme.gradients.full};
@@ -8,7 +9,7 @@ export const PresentationContainer = styled.div`
   width: clamp(800px, 70vw, 90vw);
   height: 80vh;
 
-  box-shadow: 0px 0px 16px 4px rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 16px 4px rgba(255, 255, 255, 0.08);
 `;
 
 export const PresentationBody = styled.div`
@@ -17,8 +18,14 @@ export const PresentationBody = styled.div`
   overflow-y: auto;
 `;
 
-export const DetailsContainer = styled.div`
+type DetailsContainerProps = ComponentPropsWithoutRef<"div">;
+export const DetailsContainer = styled.div<DetailsContainerProps>`
+  color: ${(props) => props.theme.font.medium};
   min-height: calc(100% - 195px);
+
+  * {
+    color: ${(props) => props.theme.font.medium};
+  }
 `;
 
 export const PresentationSide = styled.div`

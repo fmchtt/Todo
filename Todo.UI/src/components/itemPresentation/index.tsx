@@ -134,9 +134,11 @@ export default function ItemPresentation({
           <H1>{data.title}</H1>
           <PriorityIndicator size={26} priority={data.priority} />
         </PresentationGroup>
-        <DetailsContainer>
-          <Text>{data.description}</Text>
-        </DetailsContainer>
+        <DetailsContainer
+          dangerouslySetInnerHTML={{
+            __html: data.description,
+          }}
+        />
         <CommentSection itemId={data.id} />
       </PresentationBody>
       <PresentationSide>

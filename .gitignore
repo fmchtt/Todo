@@ -361,11 +361,14 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
 /Todo.Api/appsettings.Development.json
+/Todo.Api/wwwroot/
+
+/Todo.UI/pnpm-lock.yaml
 /Todo.UI/.env
 /Todo.UI/dist
-pnpm-lock.yaml
-wwwroot/
+
 .idea
 
 Uploads/

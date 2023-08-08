@@ -9,6 +9,8 @@ export const ContainerModal = styled.div<ContainerProps>`
   width: 100vw;
   height: 100vh;
 
+  padding: 30px;
+
   position: absolute;
   top: 0;
   left: 0;
@@ -17,6 +19,8 @@ export const ContainerModal = styled.div<ContainerProps>`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  overflow-y: auto;
 
   ${(props) => {
     return props.closing
@@ -28,5 +32,7 @@ export const ContainerModal = styled.div<ContainerProps>`
 export const ModalStyled = styled.div`
   background-image: ${(props) => props.theme.gradients.semi};
   border-radius: 20px;
+
   padding: 30px;
+  margin-top: 150px;
 `;

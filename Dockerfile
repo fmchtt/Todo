@@ -11,9 +11,9 @@ COPY ["Todo.UI/package*.json", "."]
 COPY ["Todo.UI/tsconfig*.json", "."]
 COPY ["Todo.UI/vite.config.ts", "."]
 COPY ["Todo.UI/yarn.lock", "."]
-RUN yarn install
+RUN npm install
 COPY ["Todo.UI/", "."]
-RUN yarn build
+RUN npm run build
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src

@@ -1,13 +1,29 @@
 <Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.62-alpha">
   <PropertyGroup>
-    <StartupCommand>yarn dev</StartupCommand>
+    <StartupCommand>npm run dev</StartupCommand>
     <JavaScriptTestRoot>src\</JavaScriptTestRoot>
     <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
     <!-- Command to run on project build -->
-    <BuildCommand>yarn build</BuildCommand>
+    <BuildCommand>npm run build</BuildCommand>
     <!-- Command to create an optimized build of the project that's ready for publishing -->
-    <ProductionBuildCommand>yarn build</ProductionBuildCommand>
+    <ProductionBuildCommand>npm run build</ProductionBuildCommand>
     <!-- Folder where production build objects will be placed -->
-    <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
+    <BuildOutputFolder>C:\Users\lipem\source\repos\fmchtt\Todo\Todo.UI\dist</BuildOutputFolder>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <FilesToMove Include="dist\assets\*.*"/>
+    <IndexToMove Include="dist\index.html" />
+  </ItemGroup>
+
+  <Target Name="MoveFiles" AfterTargets="Build">
+    <Message Text="Moving build files"/>
+    <Move SourceFiles="@(FilesToMove)" DestinationFolder="..\Todo.Api\wwwroot\assets\">
+      <Output TaskParameter="DestinationFiles" ItemName="FilesWritten"/>
+    </Move>
+    <Move SourceFiles="@(IndexToMove)" DestinationFolder="..\Todo.Api\wwwroot\">
+      <Output TaskParameter="DestinationFiles" ItemName="FilesWritten"/>
+    </Move>
+    <Message Text="@(FilesWritten)"/>
+  </Target>
 </Project>

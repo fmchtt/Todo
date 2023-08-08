@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import FilledButton from "../filledButton";
-import { Form, Input, InputGroup, Label, Select, TextArea } from "./styles";
+import { Form, Input, InputGroup, Label, Select } from "./styles";
 import { useQueryClient } from "@tanstack/react-query";
 import { createItem } from "@/services/api/itens";
 import { CreateItemProps, Item } from "@/types/item";
@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import ErrorMessage from "@/components/forms/ErrorMessage";
 import { H1 } from "@/assets/css/global.styles";
 import { toast } from "react-toastify";
+import { Editor } from "@tinymce/tinymce-react";
 
 const priorityChoices = [
   {
@@ -133,11 +134,38 @@ export default function CreateItemForm({
       </InputGroup>
       <InputGroup>
         <Label>Descrição</Label>
-        <TextArea
-          rows={10}
-          name="description"
-          onChange={formik.handleChange}
+        <Editor
+          tinymceScriptSrc={`${
+            import.meta.env.VITE_API_URL
+          }js/tinymce/tinymce.min.js`}
+          init={{
+            height: 500,
+            plugins: [
+              "advlist",
+              "autolink",
+              "lists",
+              "link",
+              "image",
+              "charmap",
+              "anchor",
+              "searchreplace",
+              "visualblocks",
+              "code",
+              "fullscreen",
+              "insertdatetime",
+              "media",
+              "table",
+              "preview",
+              "help",
+              "wordcount",
+            ],
+            language: "pt_BR",
+            skin: "oxide-dark",
+            content_css: "dark",
+            promotion: false,
+          }}
           value={formik.values.description}
+          onEditorChange={(e) => formik.setFieldValue("description", e)}
         />
         {formik.errors.description && (
           <ErrorMessage>{formik.errors.description}</ErrorMessage>
