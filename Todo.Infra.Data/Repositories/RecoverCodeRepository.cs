@@ -28,11 +28,11 @@ public class RecoverCodeRepository : IRecoverCodeRepository
 
     public async Task<RecoverCode?> Get(int code, string email)
     {
-        return await _dbContext.RecoverCodes.FirstAsync(x => x.Code == code && x.User.Email == email);
+        return await _dbContext.RecoverCodes.FirstOrDefaultAsync(x => x.Code == code && x.User.Email == email);
     }
 
     public  async Task<RecoverCode?> Get(string email)
     {
-        return await _dbContext.RecoverCodes.FirstAsync(x => x.User.Email == email);
+        return await _dbContext.RecoverCodes.FirstOrDefaultAsync(x => x.User.Email == email);
     }
 }

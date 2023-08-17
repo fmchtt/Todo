@@ -25,7 +25,7 @@ public static class DependencyInjection
 
     // Utils
     services.AddTransient<IHasher, Hasher>();
-    services.AddTransient<IMailer, ConsoleMailer>();
+    services.AddTransient<IMailer, SESMailer>();
     services.AddTransient<ITokenService, TokenService>(x =>
         new TokenService(configuration.GetSection("SECRET_KEY").Value ?? Guid.NewGuid().ToString()));
     services.AddTransient<IFileStorage, LocalFileStorage>();

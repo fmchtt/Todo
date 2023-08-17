@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.FileProviders;
 using Todo.Api.Filters;
+using Todo.Infra.Data.Configurations;
 using Todo.Infra.Data.Contexts;
 using Todo.Infra.IoC;
 
@@ -27,7 +28,7 @@ if (builder.Environment.IsProduction() && !Path.Exists(databasePath))
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.Configure<EmailConfigurations>(builder.Configuration.GetSection("Email"));
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers(x => x.Filters.Add(new ExceptionHandlerFilter()));
 
