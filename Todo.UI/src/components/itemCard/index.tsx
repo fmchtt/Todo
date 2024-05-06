@@ -28,13 +28,13 @@ export default function ItemCard({
     >
       <LeftDecoration />
       <CardGroup>
-        <Text lineLimiter dashed={data.done ? 1 : 0}>
+        <Text $lineLimiter $dashed={data.done}>
           {data.title}
         </Text>
-        <PriorityIndicator size={24} priority={data.priority} />
+        <PriorityIndicator $size={24} $priority={data.priority} />
       </CardGroup>
       <CardFooter>
-        <Text size="thin" weight={200}>
+        <Text $size="thin" $weight={200}>
           Criado em: {moment(data.createdDate).format("DD/MM/YYYY")}
         </Text>
       </CardFooter>

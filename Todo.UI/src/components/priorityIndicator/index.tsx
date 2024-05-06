@@ -8,27 +8,27 @@ import {
 } from "react-icons/tb";
 
 type PriorityIndicatorProps = {
-  priority: number;
-  size: number;
+  $priority: number;
+  $size: number;
 };
 export default function PriorityIndicator({
-  priority,
-  size,
+  $priority,
+  $size,
 }: PriorityIndicatorProps) {
-  switch (priority) {
+  switch ($priority) {
     case 0:
-      return <TbEqualNot size={size} />;
+      return <TbEqualNot size={$size} />;
     case 1:
-      return <TbChevronsDown size={size} />;
+      return <TbChevronsDown size={$size} />;
     case 2:
-      return <TbChevronDown size={size} />;
+      return <TbChevronDown size={$size} />;
     case 3:
-      return <TbEqual size={size} />;
+      return <TbEqual size={$size} />;
     case 4:
-      return <TbChevronUp size={size} />;
+      return <TbChevronUp size={$size} />;
     case 5:
-      return <TbChevronsUp size={size} />;
+      return <TbChevronsUp size={$size} />;
     default:
-      return <TbEqualNot size={size} />;
+      return <TbEqualNot size={$size} />;
   }
 }

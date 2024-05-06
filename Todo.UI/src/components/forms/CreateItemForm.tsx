@@ -10,6 +10,7 @@ import ErrorMessage from "@/components/forms/ErrorMessage";
 import { H1 } from "@/assets/css/global.styles";
 import { toast } from "react-toastify";
 import { Editor } from "@tinymce/tinymce-react";
+import { produce } from "immer";
 
 const priorityChoices = [
   {
@@ -54,7 +55,7 @@ export default function CreateItemForm({
       title: "",
       description: "",
       priority: "0",
-      columnId: columns ? columns[0].value : "",
+      columnId: columns?.at(0)?.value || "",
       boardId: "",
     },
     validationSchema: Yup.object().shape({
@@ -86,29 +87,35 @@ export default function CreateItemForm({
         const data = await createItem(reqData);
         toast.success("Tarefa adicionada com sucesso!");
 
-        client.setQueryData<Item[]>(["itens"], (previous) => {
-          if (!previous) {
-            return [data];
-          }
-          return [data, ...previous];
-        });
+        client.setQueryData<Item[]>(
+          ["itens"],
+          produce((previous) => {
+            if (!previous) {
+              return [data];
+            }
+            return previous.unshift(data);
+          }),
+        );
 
         if (boardId) {
-          client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
-            if (!prev) {
-              throw new Error("Cache invalido!");
-            }
+          client.setQueryData<ExpandedBoard>(
+            ["board", boardId],
+            produce((prev) => {
+              if (!prev) {
+                throw new Error("Cache invalido!");
+              }
 
-            const colIdx = prev.columns.findIndex(
-              (x) => x.id === values.columnId
-            );
-            if (colIdx >= 0) {
-              prev.columns[colIdx].itens.push(data);
-              prev.columns[colIdx].itemCount += 1;
-            }
+              const colIdx = prev.columns.findIndex(
+                (x) => x.id === values.columnId,
+              );
+              if (colIdx >= 0) {
+                prev.columns[colIdx].itens.push(data);
+                prev.columns[colIdx].itemCount += 1;
+              }
 
-            return prev;
-          });
+              return prev;
+            }),
+          );
         }
 
         onSuccess();
@@ -137,7 +144,7 @@ export default function CreateItemForm({
         <Editor
           tinymceScriptSrc={`${
             import.meta.env.VITE_API_URL
-          }js/tinymce/tinymce.min.js`}
+          }/js/tinymce/tinymce.min.js`}
           init={{
             height: 500,
             plugins: [

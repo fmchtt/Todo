@@ -4,10 +4,10 @@ export type StyledButtonProps = ComponentPropsWithoutRef<"button"> &
   FilledButtonProps;
 
 export interface FilledButtonProps {
-  loading?: number;
-  size?: string;
+  $loading?: boolean;
+  $size?: string;
   disabled?: boolean;
   type?: "button" | "reset" | "submit" | undefined;
-  margin?: string;
-  height?: string;
+  $margin?: string;
+  $height?: string;
 }

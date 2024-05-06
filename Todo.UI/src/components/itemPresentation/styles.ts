@@ -41,23 +41,23 @@ export const PresentationSide = styled.div`
 `;
 
 type PresentationGroupProps = {
-  flex?: boolean;
+  $flex?: boolean;
 };
 export const PresentationGroup = styled.div<PresentationGroupProps>`
   color: ${(props) => props.theme.font.medium};
-  display: ${(props) => (props.flex ? "flex" : "block")};
+  display: ${(props) => (props.$flex ? "flex" : "block")};
   justify-content: space-between;
   align-items: center;
 `;
 
 type PresentationDataGroupProps = {
-  padding?: string;
+  $padding?: string;
 };
 export const PresentationDataGroup = styled.div<PresentationDataGroupProps>`
   background: ${(props) => props.theme.colors[400]};
   cursor: pointer;
 
-  :hover {
+  &:hover {
     background: ${(props) => props.theme.colors[400] + "c1"};
   }
 
@@ -66,5 +66,5 @@ export const PresentationDataGroup = styled.div<PresentationDataGroupProps>`
   gap: 10px;
 
   border-radius: 20px;
-  padding: ${(props) => props.padding || "2px"};
+  padding: ${(props) => props.$padding || "2px"};
 `;

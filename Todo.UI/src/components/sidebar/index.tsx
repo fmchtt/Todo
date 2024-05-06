@@ -23,7 +23,7 @@ interface Options {
 }
 
 export default function SideBar() {
-  const [showOptions, setShowOptions] = useState<number>(0);
+  const [showOptions, setShowOptions] = useState(false);
   const { logout } = useAuth();
 
   const options: Options[] = [
@@ -50,39 +50,35 @@ export default function SideBar() {
         <TbMenu2
           className="icon-menu"
           onClick={() => {
-            setShowOptions(showOptions === 1 ? 0 : 1);
+            setShowOptions((prev) => !prev);
           }}
         />
         {options.map((option, index) => {
           return option.route ? (
             <SideBarButton
-              show={showOptions ? 1 : 0}
+              $show={showOptions}
               key={index}
               as={Link}
               to={option.route}
             >
               {option.icon}
-              <TitleOption show={showOptions ? 1 : 0}>
-                {option.text}
-              </TitleOption>
+              <TitleOption $show={showOptions}>{option.text}</TitleOption>
             </SideBarButton>
           ) : (
             <SideBarButton
-              show={showOptions ? 1 : 0}
+              $show={showOptions}
               key={index}
               onClick={option.action}
             >
               {option.icon}
-              <TitleOption show={showOptions ? 1 : 0}>
-                {option.text}
-              </TitleOption>
+              <TitleOption $show={showOptions}>{option.text}</TitleOption>
             </SideBarButton>
           );
         })}
       </ButtonGroup>
       <SideBarButton onClick={logout}>
         <TbLogout size={22} />
-        <TitleOption show={showOptions ? 1 : 0}>Sair</TitleOption>
+        <TitleOption $show={showOptions}>Sair</TitleOption>
       </SideBarButton>
     </StyledSideBar>
   );

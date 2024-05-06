@@ -25,6 +25,7 @@ import { Text } from "@/assets/css/global.styles";
 import RoundedAvatar from "@/components/roundedAvatar";
 import { TbTrash, TbEdit, TbCheck } from "react-icons/tb";
 import useAuth from "@/context/auth";
+import { produce } from "immer";
 
 type CommentSectionProps = {
   itemId: string;
@@ -55,13 +56,13 @@ export default function CommentSection(props: CommentSectionProps) {
       const comment = await editComment(commentEditId, text.toString());
       client.setQueryData<PageResult<Comment>>(
         ["comments", props.itemId],
-        (prev) => {
+        produce((prev) => {
           if (!prev) {
             return prev;
           }
 
           const commentIdx = prev.results.findIndex(
-            (x) => x.id === commentEditId
+            (x) => x.id === commentEditId,
           );
           if (commentIdx === -1) {
             return prev;
@@ -70,7 +71,7 @@ export default function CommentSection(props: CommentSectionProps) {
           prev.results[commentIdx] = comment;
 
           return prev;
-        }
+        }),
       );
 
       setText("");
@@ -93,7 +94,7 @@ export default function CommentSection(props: CommentSectionProps) {
       const comment = await createComment(props.itemId, text);
       client.setQueryData<PageResult<Comment>>(
         ["comments", props.itemId],
-        (prev) => {
+        produce((prev) => {
           if (!prev) {
             return prev;
           }
@@ -102,7 +103,7 @@ export default function CommentSection(props: CommentSectionProps) {
           prev.pageCount += 1;
 
           return prev;
-        }
+        }),
       );
 
       setText("");
@@ -120,7 +121,7 @@ export default function CommentSection(props: CommentSectionProps) {
       await deleteComment(id);
       client.setQueryData<PageResult<Comment>>(
         ["comments", props.itemId],
-        (prev) => {
+        produce((prev) => {
           if (!prev) {
             return prev;
           }
@@ -134,7 +135,7 @@ export default function CommentSection(props: CommentSectionProps) {
           prev.pageCount -= 1;
 
           return prev;
-        }
+        }),
       );
 
       setText("");
@@ -150,9 +151,9 @@ export default function CommentSection(props: CommentSectionProps) {
     <CommentSectionContainer>
       <InputGroup>
         <Label>Escrever comentário:</Label>
-        <InputGroup row>
+        <InputGroup $row>
           <Input
-            flexible
+            $flexible
             value={text}
             onChange={(e) => {
               setText(e.target.value);
@@ -160,9 +161,9 @@ export default function CommentSection(props: CommentSectionProps) {
           />
           <FilledButton
             onClick={() => handleCreateComment()}
-            loading={loading ? 1 : 0}
-            margin="0"
-            height="unset"
+            $loading={loading}
+            $margin="0"
+            $height="unset"
           >
             Comentar
           </FilledButton>
@@ -175,7 +176,7 @@ export default function CommentSection(props: CommentSectionProps) {
               <CommentHead>
                 <UserContainer>
                   <RoundedAvatar
-                    size={40}
+                    $size={40}
                     avatarUrl={
                       comment.author.avatarUrl &&
                       import.meta.env.VITE_API_URL + comment.author.avatarUrl
@@ -184,10 +185,10 @@ export default function CommentSection(props: CommentSectionProps) {
                   />
                   <div>
                     <Text>{comment.author.name}</Text>
-                    <Text size="thin">
+                    <Text $size="thin">
                       Atualizado em:{" "}
                       {moment(comment.updateTimeStamp).format(
-                        "DD/MM/YYYY HH:mm"
+                        "DD/MM/YYYY HH:mm",
                       )}
                     </Text>
                   </div>
@@ -211,12 +212,12 @@ export default function CommentSection(props: CommentSectionProps) {
               </CommentHead>
               {commentEditId === comment.id ? (
                 <form onSubmit={handleEditComment}>
-                  <InputGroup row>
-                    <Input name="text" flexible defaultValue={comment.text} />
+                  <InputGroup $row>
+                    <Input name="text" $flexible defaultValue={comment.text} />
                     <FilledButton
-                      loading={loading ? 1 : 0}
-                      margin="0"
-                      height="unset"
+                      $loading={loading}
+                      $margin="0"
+                      $height="unset"
                       type="submit"
                     >
                       <TbCheck role="button" cursor="pointer" size={30} />

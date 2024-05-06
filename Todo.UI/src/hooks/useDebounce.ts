@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 
 export default function useDebounce<T>(
   defaultValue: T,
-  timeout = 1000
+  timeout = 1000,
 ): [T, (newState: T, bypass?: boolean) => void, boolean] {
   const [state, setState] = useState<T>(defaultValue);
   const [isDebouncing, setIsBouncing] = useState(false);

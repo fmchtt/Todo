@@ -5,7 +5,7 @@ import { StyledButtonProps } from "./types";
 export default function FilledButton(props: StyledButtonProps) {
   return (
     <ButtonStyle {...props} type={props.type}>
-      {props.loading == 1 ? <Spinner size={props.size} /> : props.children}
+      {props.$loading ? <Spinner size={props.$size} /> : props.children}
     </ButtonStyle>
   );
 }

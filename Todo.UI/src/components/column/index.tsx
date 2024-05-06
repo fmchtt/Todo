@@ -16,6 +16,7 @@ import { changeColumn } from "@/services/api/itens";
 import { ExpandedBoard } from "@/types/board";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
 import { deleteColumn } from "@/services/api/column";
+import { produce } from "immer";
 
 type ColumnProps = {
   data: ExpandedColumn;
@@ -43,28 +44,32 @@ export default function Column({
       data={{ id: data.id, name: data.name, type: data.type.toString() }}
       boardId={boardId}
       onSuccess={handleColumnModalSuccess}
-    />
+    />,
   );
-  const [confirmationModal, openConfirmationModal] = useConfirmationModal({
-    message: `Tem certeza que deseja apagar a coluna: ${data.name} ?`,
-    onConfirm: handleConfirmationModalSuccess,
-  });
+  const [confirmationModal, openConfirmationModal, closeConfirmModal] =
+    useConfirmationModal({
+      message: `Tem certeza que deseja apagar a coluna: ${data.name} ?`,
+      onConfirm: handleConfirmationModalSuccess,
+    });
 
   async function handleConfirmationModalSuccess() {
     await deleteColumn(data.id);
 
-    client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
-      if (prev == undefined) {
-        throw new Error("Cache invalido");
-      }
+    client.setQueryData<ExpandedBoard>(
+      ["board", boardId],
+      produce((prev) => {
+        if (prev == undefined) {
+          throw new Error("Cache invalido");
+        }
 
-      const columnIdx = prev.columns.findIndex((x) => x.id === data.id);
-      prev.columns.splice(columnIdx, 1);
+        const columnIdx = prev.columns.findIndex((x) => x.id === data.id);
+        prev.columns.splice(columnIdx, 1);
 
-      return prev;
-    });
+        return prev;
+      }),
+    );
 
-    closeColumnModal();
+    closeConfirmModal();
   }
 
   function handleColumnModalSuccess() {
@@ -78,34 +83,37 @@ export default function Column({
     console.log(`${itemId} para ${data.id}`);
     await changeColumn(itemId, data.id);
 
-    client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
-      if (prev == undefined) {
-        throw new Error("Cache invalido");
-      }
+    client.setQueryData<ExpandedBoard>(
+      ["board", boardId],
+      produce((prev) => {
+        if (prev == undefined) {
+          throw new Error("Cache invalido");
+        }
 
-      const oldColIdx = prev.columns.findIndex(
-        (x) => x.itens.findIndex((x) => x.id === itemId) !== -1
-      );
-      prev.columns[oldColIdx].itemCount -= 1;
+        const oldColIdx = prev.columns.findIndex(
+          (x) => x.itens.findIndex((x) => x.id === itemId) !== -1,
+        );
+        prev.columns[oldColIdx].itemCount -= 1;
 
-      const itemIdx = prev.columns[oldColIdx].itens.findIndex(
-        (x) => x.id === itemId
-      );
-      const item = prev.columns[oldColIdx].itens.splice(itemIdx, 1);
-      if (data.type === 2) {
-        item[0].done = true;
-      } else {
-        item[0].done = false;
-      }
+        const itemIdx = prev.columns[oldColIdx].itens.findIndex(
+          (x) => x.id === itemId,
+        );
+        const item = prev.columns[oldColIdx].itens.splice(itemIdx, 1);
+        if (data.type === 2) {
+          item[0].done = true;
+        } else {
+          item[0].done = false;
+        }
 
-      const newColIdx = prev.columns.findIndex((x) => x.id === data.id);
-      prev.columns[newColIdx].itens.push(item[0]);
-      prev.columns[newColIdx].itemCount += 1;
+        const newColIdx = prev.columns.findIndex((x) => x.id === data.id);
+        prev.columns[newColIdx].itens.push(item[0]);
+        prev.columns[newColIdx].itemCount += 1;
 
-      itemId = "";
+        itemId = "";
 
-      return prev;
-    });
+        return prev;
+      }),
+    );
   }
 
   return (
@@ -129,7 +137,7 @@ export default function Column({
       {columnModal}
       {confirmationModal}
       <ColumnHeading>
-        <Text lineLimiter>{data.name}</Text>
+        <Text $lineLimiter>{data.name}</Text>
         <ColumnActions>
           <TbTrash
             role="button"

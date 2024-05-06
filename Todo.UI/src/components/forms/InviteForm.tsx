@@ -54,7 +54,7 @@ export default function InviteForm(props: InviteFormProps) {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <InputGroup row gap={10}>
+      <InputGroup $row $gap={10}>
         <InputGroup>
           <Label>Email</Label>
           <Input
@@ -66,7 +66,7 @@ export default function InviteForm(props: InviteFormProps) {
             Emails separados por virgula. ex: email1@email.com, email2@email.com
           </Description>
         </InputGroup>
-        <FilledButton loading={loading ? 1 : 0}>Convidar</FilledButton>
+        <FilledButton $loading={loading}>Convidar</FilledButton>
       </InputGroup>
       <Text>Participantes: </Text>
       {props.participants?.map((participant) => {
@@ -80,7 +80,7 @@ export default function InviteForm(props: InviteFormProps) {
                 }
                 name={participant.name}
               />
-              <Text weight={200}>{participant.name}</Text>
+              <Text $weight={200}>{participant.name}</Text>
             </Group>
             <Group>
               {participant.id !== user?.id &&

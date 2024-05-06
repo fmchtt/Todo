@@ -46,7 +46,7 @@ export default function ProfileForm() {
 
   return (
     <Form width="clamp(600px, 20%, 90%)" onSubmit={handleSubmit}>
-      <InputGroup centralized>
+      <InputGroup $centralized>
         <input
           ref={fileRef}
           name="file"
@@ -55,7 +55,7 @@ export default function ProfileForm() {
           onChange={handleImageChange}
         />
         <HoverImage
-          hover={hover}
+          $hover={hover}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           onClick={() => {

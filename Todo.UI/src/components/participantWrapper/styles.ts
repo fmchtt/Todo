@@ -11,7 +11,7 @@ export const StyledParticipantWrapper = styled.div`
 
   cursor: pointer;
 
-  :hover {
+  &:hover {
     background: rgba(255, 255, 255, 0.09);
   }
 `;

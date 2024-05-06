@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import ErrorMessage from "@/components/forms/ErrorMessage";
 import { H1 } from "@/assets/css/global.styles";
 import { toast } from "react-toastify";
+import { produce } from "immer";
 
 type ColumnFormProps = {
   data?: {
@@ -49,16 +50,21 @@ export default function ColumnForm({
           });
           toast.success("Coluna atualizado com sucesso!");
 
-          client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
-            if (!prev) {
-              throw new Error("Cache inválido");
-            }
+          client.setQueryData<ExpandedBoard>(
+            ["board", boardId],
+            produce((prev) => {
+              if (!prev) {
+                throw new Error("Cache inválido");
+              }
 
-            const columnId = prev.columns.findIndex((x) => x.id === column.id);
-            prev.columns[columnId].name = column.name;
+              const columnId = prev.columns.findIndex(
+                (x) => x.id === column.id,
+              );
+              prev.columns[columnId].name = column.name;
 
-            return prev;
-          });
+              return prev;
+            }),
+          );
         } else if (boardId) {
           const column = await createColumn({
             name: values.name,
@@ -67,16 +73,19 @@ export default function ColumnForm({
           });
           toast.success("Coluna atualizada com sucesso!");
 
-          client.setQueryData<ExpandedBoard>(["board", boardId], (prev) => {
-            if (!prev) {
-              throw new Error("Cache inválido");
-            }
-            column.itemCount = 0;
+          client.setQueryData<ExpandedBoard>(
+            ["board", boardId],
+            produce((prev) => {
+              if (!prev) {
+                throw new Error("Cache inválido");
+              }
+              column.itemCount = 0;
 
-            prev.columns.push(column);
+              prev.columns.push(column);
 
-            return prev;
-          });
+              return prev;
+            }),
+          );
         }
         onSuccess();
       } catch (e) {
@@ -116,7 +125,7 @@ export default function ColumnForm({
           <ErrorMessage>{formik.errors.type}</ErrorMessage>
         )}
       </InputGroup>
-      <FilledButton loading={loading ? 1 : 0} type="submit">
+      <FilledButton $loading={loading} type="submit">
         Salvar
       </FilledButton>
     </Form>

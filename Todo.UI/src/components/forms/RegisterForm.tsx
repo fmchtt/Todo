@@ -125,7 +125,7 @@ export default function RegisterForm() {
           )}
         </InputGroup>
         {error && <ErrorMessage>{message}</ErrorMessage>}
-        <FilledButton size="25px" type="submit" loading={loading ? 1 : 0}>
+        <FilledButton $size="25px" type="submit" $loading={loading}>
           Registrar
         </FilledButton>
         <Text>

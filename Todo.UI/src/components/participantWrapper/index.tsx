@@ -14,7 +14,7 @@ export default function ParticipantWrapper(props: ParticipantWrapperProps) {
       {props.participants.slice(0, 5).map((participant, idx) => {
         return (
           <RoundedAvatar
-            over={idx > 0 ? 1 : 0}
+            $over={idx > 0}
             key={participant.id}
             avatarUrl={
               participant.avatarUrl &&

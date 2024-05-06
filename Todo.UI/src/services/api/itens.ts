@@ -31,7 +31,7 @@ export async function changeColumn(todoId: string, columnId: string) {
 
 export async function changeDone(id: string, done: boolean) {
   const { data } = await http.post<Item>(
-    `/itens/${id}/${done ? "done" : "undone"}`
+    `/itens/${id}/${done ? "done" : "undone"}`,
   );
   return data;
 }

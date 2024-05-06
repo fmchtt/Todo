@@ -18,13 +18,13 @@ export default function Tasks() {
   return (
     <Container>
       <TaskTypeContainer>
-        <Text size="large">Tarefas sem quadro</Text>
+        <Text $size="large">Tarefas sem quadro</Text>
         <EmptyContent>
           <Text>Você ainda não tem tarefas sem quadro!</Text>
         </EmptyContent>
       </TaskTypeContainer>
       <TaskTypeContainer>
-        <Text size="large">Tarefas por quadro</Text>
+        <Text $size="large">Tarefas por quadro</Text>
         {boardQuery.data?.length !== 0 ? (
           <BoardListContainer>
             {boardQuery.data?.map((board) => {

@@ -10,20 +10,21 @@ const authContext = createContext({} as Context);
 
 export function AuthProvider({ children }: ContextProps) {
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
+    localStorage.getItem("token"),
   );
 
   useEffect(() => {
     if (token) {
       http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      client.invalidateQueries(["me"]);
+      client.invalidateQueries({
+        queryKey: ["me"],
+      });
     }
   }, [token]);
 
-  const { data, isLoading } = useQuery<User>(["me"], getActualUser, {
-    onError: () => {
-      setToken(null);
-    },
+  const { data, isLoading } = useQuery<User>({
+    queryKey: ["me"],
+    queryFn: getActualUser,
   });
   const client = useQueryClient();
 
@@ -39,7 +40,7 @@ export function AuthProvider({ children }: ContextProps) {
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 
   async function login(formData: LoginProps) {

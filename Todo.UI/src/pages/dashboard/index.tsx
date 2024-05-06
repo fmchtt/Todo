@@ -31,7 +31,9 @@ export default function Dashboard() {
     queryFn: getItens,
   });
   const [itemClicked, setItemClicked] = useState<number | undefined>(undefined);
-  const [boardModal, openBoardModal] = useModal(<BoardRegister />);
+  const [boardModal, openBoardModal, closeBoardModal] = useModal(
+    <BoardRegister closeModal={handleCreateBoardSuccess} />,
+  );
   const [itemModal, openItemModal, closeItemModal] = useModal(
     itemQuery.data && itemClicked !== undefined && (
       <ItemPresentation
@@ -40,11 +42,15 @@ export default function Dashboard() {
         onCloseClick={handleItemCloseClick}
       />
     ),
-    false
+    false,
   );
   const [createItemModal, openCreateItemModal, closeCreateItemModal] = useModal(
-    <CreateItemForm onSuccess={handleCreateItemSuccess} />
+    <CreateItemForm onSuccess={handleCreateItemSuccess} />,
   );
+
+  function handleCreateBoardSuccess() {
+    closeBoardModal();
+  }
 
   function handleCreateItemSuccess() {
     closeCreateItemModal();
@@ -70,7 +76,7 @@ export default function Dashboard() {
         <title>Dashboard - Taskerizer</title>
       </Helmet>
       <HeadingContainer>
-        <Text size="large">Quadros</Text>
+        <Text $size="large">Quadros</Text>
         <ActionContainer>
           <ActionButton onClick={openBoardModal}>
             <TbPlus size={28} />
@@ -94,7 +100,7 @@ export default function Dashboard() {
       </Section>
       <Section>
         <HeadingContainer>
-          <Text size="large" margin="20px 0 0 0">
+          <Text $size="large" $margin="20px 0 0 0">
             Tarefas
           </Text>
           <ActionContainer>

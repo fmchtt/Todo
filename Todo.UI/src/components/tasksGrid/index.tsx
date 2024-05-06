@@ -34,7 +34,7 @@ export default function TasksGrid(props: TasksGridProps) {
         onCloseClick={handleItemCloseClick}
       />
     ),
-    false
+    false,
   );
 
   const openItens = items.data?.filter((x) => x.done === false);
@@ -56,7 +56,7 @@ export default function TasksGrid(props: TasksGridProps) {
                   draggable={false}
                   onClick={() => {
                     setItemClicked(
-                      items.data?.findIndex((x) => x.id === item.id)
+                      items.data?.findIndex((x) => x.id === item.id),
                     );
                     openItemModal();
                   }}
@@ -82,7 +82,7 @@ export default function TasksGrid(props: TasksGridProps) {
                   draggable={false}
                   onClick={() => {
                     setItemClicked(
-                      items.data?.findIndex((x) => x.id === item.id)
+                      items.data?.findIndex((x) => x.id === item.id),
                     );
                     openItemModal();
                   }}

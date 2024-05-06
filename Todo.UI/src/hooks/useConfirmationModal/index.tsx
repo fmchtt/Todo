@@ -7,6 +7,6 @@ type useConfirmationModalProps = {
 };
 export default function useConfirmationModal(props: useConfirmationModalProps) {
   return useModal(
-    <ConfirmationModal label={props.message} onConfirm={props.onConfirm} />
+    <ConfirmationModal label={props.message} onConfirm={props.onConfirm} />,
   );
 }

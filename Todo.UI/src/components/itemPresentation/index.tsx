@@ -26,6 +26,7 @@ import { ExpandedBoard, ResumedBoard } from "@/types/board";
 import RoundedAvatar from "@/components/roundedAvatar";
 import { toast } from "react-toastify";
 import CommentSection from "@/components/commentSection";
+import { produce } from "immer";
 
 type ItemPresentationProps = {
   data: ExpandedItem;
@@ -50,8 +51,8 @@ export default function ItemPresentation({
   function handleDeleteItem() {
     deleteItem(data.id)
       .then(() => {
-        client.invalidateQueries(["itens"]);
-        client.invalidateQueries(["board"]);
+        client.invalidateQueries({ queryKey: ["itens"] });
+        client.invalidateQueries({ queryKey: ["board"] });
         toast.success("Tarefa deletada com sucesso!");
         onCloseClick();
       })
@@ -67,16 +68,16 @@ export default function ItemPresentation({
       try {
         client.setQueryData<ExpandedBoard>(
           ["board", data.board?.id || boardId],
-          (prev) => {
+          produce((prev) => {
             if (!prev) {
               throw new Error("Quadro inexistente");
             }
 
             const colIdx = prev.columns.findIndex(
-              (x) => x.itens.findIndex((x) => x.id === data.id) !== -1
+              (x) => x.itens.findIndex((x) => x.id === data.id) !== -1,
             );
             const itemIdx = prev.columns[colIdx].itens.findIndex(
-              (x) => x.id === data.id
+              (x) => x.id === data.id,
             );
 
             prev.columns[colIdx].itens[itemIdx].done = done;
@@ -87,52 +88,58 @@ export default function ItemPresentation({
             }
 
             return prev;
-          }
+          }),
         );
       } catch (e) {
         console.log(e);
       }
 
-      client.setQueryData<ResumedBoard[]>(["boards"], (prev) => {
+      client.setQueryData<ResumedBoard[]>(
+        ["boards"],
+        produce((prev) => {
+          if (!prev) {
+            throw new Error("Cache invalido!");
+          }
+
+          const boardIdx = prev.findIndex(
+            (x) => x.id === (data.board?.id || boardId),
+          );
+          if (boardIdx >= 0) {
+            if (done) {
+              prev[boardIdx].doneItemCount += 1;
+            } else {
+              prev[boardIdx].doneItemCount -= 1;
+            }
+          }
+
+          return prev;
+        }),
+      );
+    }
+
+    client.setQueryData<ExpandedItem[]>(
+      ["itens"],
+      produce((prev) => {
         if (!prev) {
           throw new Error("Cache invalido!");
         }
-
-        const boardIdx = prev.findIndex(
-          (x) => x.id === (data.board?.id || boardId)
-        );
-        if (boardIdx >= 0) {
-          if (done) {
-            prev[boardIdx].doneItemCount += 1;
-          } else {
-            prev[boardIdx].doneItemCount -= 1;
-          }
+        const itemIdx = prev.findIndex((x) => x.id === data.id);
+        if (itemIdx >= 0) {
+          prev[itemIdx].done = done;
         }
 
         return prev;
-      });
-    }
-
-    client.setQueryData<ExpandedItem[]>(["itens"], (prev) => {
-      if (!prev) {
-        throw new Error("Cache invalido!");
-      }
-      const itemIdx = prev.findIndex((x) => x.id === data.id);
-      if (itemIdx >= 0) {
-        prev[itemIdx].done = done;
-      }
-
-      return prev;
-    });
+      }),
+    );
   }
 
   return (
     <PresentationContainer>
       {confirmationModal}
       <PresentationBody>
-        <PresentationGroup flex={true}>
+        <PresentationGroup $flex>
           <H1>{data.title}</H1>
-          <PriorityIndicator size={26} priority={data.priority} />
+          <PriorityIndicator $size={26} $priority={data.priority} />
         </PresentationGroup>
         <DetailsContainer
           dangerouslySetInnerHTML={{
@@ -142,7 +149,7 @@ export default function ItemPresentation({
         <CommentSection itemId={data.id} />
       </PresentationBody>
       <PresentationSide>
-        <PresentationGroup flex={true}>
+        <PresentationGroup $flex>
           <TbTrash
             role="button"
             size={26}
@@ -186,15 +193,15 @@ export default function ItemPresentation({
         </PresentationGroup>
         <PresentationGroup>
           <Text>Criado em:</Text>
-          <PresentationDataGroup padding="10px">
+          <PresentationDataGroup $padding="10px">
             <TbCalendarEvent size={24} />
             <Text>{moment(data.createdDate).format("DD/MM/YYYY")}</Text>
           </PresentationDataGroup>
         </PresentationGroup>
         <PresentationGroup>
           <Text>Prioridade:</Text>
-          <PresentationDataGroup padding="10px">
-            <PriorityIndicator size={24} priority={data.priority} />
+          <PresentationDataGroup $padding="10px">
+            <PriorityIndicator $size={24} $priority={data.priority} />
             <Text>{getPriorityDisplay(data.priority)}</Text>
           </PresentationDataGroup>
         </PresentationGroup>
@@ -202,7 +209,7 @@ export default function ItemPresentation({
           <PresentationGroup>
             <Text>Quadro:</Text>
             <PresentationDataGroup
-              padding="10px"
+              $padding="10px"
               onClick={() =>
                 data.board ? navigate(`/board/${data.board?.id}`) : null
               }

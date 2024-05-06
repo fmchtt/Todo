@@ -13,12 +13,12 @@ export const HeadingContainer = styled.div`
 `;
 
 type ActionsContainerProps = {
-  clickable?: boolean;
+  $clickable?: boolean;
 };
 export const ActionsContainer = styled.div<ActionsContainerProps>`
   color: ${(props) => props.theme.font.medium};
-  cursor: ${(props) => (props.clickable ? "pointer" : "unset")};
-  gap: ${(props) => (props.clickable ? "2px" : "15px")};
+  cursor: ${(props) => (props.$clickable ? "pointer" : "unset")};
+  gap: ${(props) => (props.$clickable ? "2px" : "15px")};
 
   display: flex;
   align-items: center;

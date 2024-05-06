@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 type ContainerProps = {
-  closing: boolean;
+  $closing: boolean;
 };
 export const ContainerModal = styled.div<ContainerProps>`
   background-color: #0008;
@@ -23,7 +23,7 @@ export const ContainerModal = styled.div<ContainerProps>`
   overflow-y: auto;
 
   ${(props) => {
-    return props.closing
+    return props.$closing
       ? "animation: fade-out 200ms linear;"
       : "animation: fade-in 200ms linear;";
   }}

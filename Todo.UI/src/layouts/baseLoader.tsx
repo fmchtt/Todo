@@ -3,7 +3,7 @@ import { Container } from "./styles";
 
 export default function BaseLoader() {
   return (
-    <Container centralize>
+    <Container $centralized>
       <Spinner />
     </Container>
   );

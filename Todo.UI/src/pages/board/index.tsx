@@ -27,6 +27,7 @@ import useAuth from "@/context/auth";
 import ParticipantWrapper from "@/components/participantWrapper";
 import InviteForm from "@/components/forms/InviteForm";
 import { toast } from "react-toastify";
+import { produce } from "immer";
 
 type ParamProps = {
   id: string;
@@ -134,57 +135,62 @@ export default function Board() {
     }
 
     try {
-      client.setQueryData<ExpandedBoard>(["board", data?.id], (prev) => {
-        if (prev == undefined) {
-          throw new Error("Cache invalido!");
-        }
-
-        if (dragColumnId === overColumnId) {
-          throw new Error("Colunas iguais!");
-        }
-
-        const columnIdx = prev.columns.findIndex((x) => x.id === dragColumnId);
-        if (columnIdx < 0) {
-          throw new Error("Coluna movida nao encontrada!");
-        }
-
-        const items = prev.columns.splice(columnIdx, 1);
-
-        if (items.length === 0) {
-          throw new Error("Coluna nao encontrada no quadro!");
-        }
-
-        const overColumnIdx = prev.columns.findIndex(
-          (x) => x.id === overColumnId
-        );
-
-        if (columnIdx < 0) {
-          throw new Error("Coluna alvo nao encontrada!");
-        }
-
-        const newColumnOrder: ExpandedColumn[] = [];
-        for (let i = 0; i < prev.columns.length; i++) {
-          if (i === overColumnIdx) {
-            newColumnOrder.push(items[0]);
+      client.setQueryData<ExpandedBoard>(
+        ["board", data?.id],
+        produce((prev) => {
+          if (prev == undefined) {
+            throw new Error("Cache invalido!");
           }
-          newColumnOrder.push(prev.columns[i]);
-        }
 
-        prev.columns = newColumnOrder;
-        for (let i = 0; i < prev.columns.length; i++) {
-          prev.columns[i].order = i;
-        }
+          if (dragColumnId === overColumnId) {
+            throw new Error("Colunas iguais!");
+          }
 
-        editColumn({
-          id: dragColumnId,
-          order: prev.columns[overColumnIdx].order,
-        });
+          const columnIdx = prev.columns.findIndex(
+            (x) => x.id === dragColumnId
+          );
+          if (columnIdx < 0) {
+            throw new Error("Coluna movida nao encontrada!");
+          }
 
-        dragColumnId = "";
-        overColumnId = "";
+          const items = prev.columns.splice(columnIdx, 1);
 
-        return prev;
-      });
+          if (items.length === 0) {
+            throw new Error("Coluna nao encontrada no quadro!");
+          }
+
+          const overColumnIdx = prev.columns.findIndex(
+            (x) => x.id === overColumnId
+          );
+
+          if (columnIdx < 0) {
+            throw new Error("Coluna alvo nao encontrada!");
+          }
+
+          const newColumnOrder: ExpandedColumn[] = [];
+          for (let i = 0; i < prev.columns.length; i++) {
+            if (i === overColumnIdx) {
+              newColumnOrder.push(items[0]);
+            }
+            newColumnOrder.push(prev.columns[i]);
+          }
+
+          prev.columns = newColumnOrder;
+          for (let i = 0; i < prev.columns.length; i++) {
+            prev.columns[i].order = i;
+          }
+
+          editColumn({
+            id: dragColumnId,
+            order: prev.columns[overColumnIdx].order,
+          });
+
+          dragColumnId = "";
+          overColumnId = "";
+
+          return prev;
+        })
+      );
     } catch (e) {
       console.log();
     }
@@ -213,11 +219,11 @@ export default function Board() {
         )}
         {data && (
           <ActionsContainer>
-            <ActionsContainer clickable onClick={openCreateItemModal}>
+            <ActionsContainer $clickable onClick={openCreateItemModal}>
               <TbPlus role="button" size={28} />
               <Text>Adicionar Tarefa</Text>
             </ActionsContainer>
-            <ActionsContainer clickable onClick={openColumnModal}>
+            <ActionsContainer $clickable onClick={openColumnModal}>
               <TbPlus role="button" size={28} />
               <Text>Adicionar Coluna</Text>
             </ActionsContainer>
@@ -240,8 +246,9 @@ export default function Board() {
       </HeadingContainer>
       <ColumnContainer>
         {data?.columns
-          .sort((x, y) => (x.order > y.order ? 1 : -1))
-          .map((column) => {
+          ?.slice()
+          ?.sort((x, y) => (x.order > y.order ? 1 : -1))
+          ?.map((column) => {
             return (
               <Column
                 onItemClick={(item: Item) => {

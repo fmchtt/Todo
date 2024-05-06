@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 type ContainerProps = {
-  centralize?: boolean;
+  $centralized?: boolean;
 };
 export const Container = styled.main<ContainerProps>`
   background: ${(props) => props.theme.gradients.full};
@@ -10,8 +10,8 @@ export const Container = styled.main<ContainerProps>`
   display: flex;
   width: 100%;
 
-  align-items: ${(props) => (props.centralize ? "center" : "unset")};
-  justify-content: ${(props) => (props.centralize ? "center" : "unset")};
+  align-items: ${(props) => (props.$centralized ? "center" : "unset")};
+  justify-content: ${(props) => (props.$centralized ? "center" : "unset")};
 `;
 
 export const MainContent = styled.div`

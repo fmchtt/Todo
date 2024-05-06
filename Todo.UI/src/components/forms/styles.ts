@@ -49,16 +49,16 @@ export const Description = styled.span`
 `;
 
 type InputGroupProps = {
-  centralized?: boolean;
-  row?: boolean;
-  gap?: number;
+  $centralized?: boolean;
+  $row?: boolean;
+  $gap?: number;
 };
 export const InputGroup = styled.div<InputGroupProps>`
   position: relative;
   display: flex;
-  align-items: ${(props) => (props.centralized ? "center" : "unset")};
-  flex-direction: ${(props) => (props.row ? "row" : "column")};
-  gap: ${(props) => (props.gap ? props.gap + "px" : "2px")};
+  align-items: ${(props) => (props.$centralized ? "center" : "unset")};
+  flex-direction: ${(props) => (props.$row ? "row" : "column")};
+  gap: ${(props) => (props.$gap ? props.$gap + "px" : "2px")};
 
   .eye {
     position: absolute;
@@ -71,7 +71,7 @@ export const InputGroup = styled.div<InputGroupProps>`
 `;
 
 type InputProps = ComponentPropsWithoutRef<"input"> & {
-  flexible?: boolean;
+  $flexible?: boolean;
 };
 export const Input = styled.input<InputProps>`
   background-color: ${(props) => props.theme.colors[200]};
@@ -88,7 +88,7 @@ export const Input = styled.input<InputProps>`
 
   padding: 15px 25px;
 
-  ${(props) => (props.flexible ? "flex: 1;" : "")}
+  ${(props) => (props.$flexible ? "flex: 1;" : "")}
 `;
 
 export const Select = styled.select`
@@ -147,7 +147,7 @@ export const Group = styled.div<GroupProps>`
 `;
 
 interface HoverProps {
-  hover: boolean;
+  $hover: boolean;
 }
 
 export const HoverImage = styled.div<HoverProps>`
@@ -159,7 +159,7 @@ export const HoverImage = styled.div<HoverProps>`
   position: absolute;
   cursor: pointer;
   display: flex;
-  opacity: ${(props) => (props.hover ? "1" : "0")};
+  opacity: ${(props) => (props.$hover ? "1" : "0")};
   align-items: center;
   justify-content: center;
 `;

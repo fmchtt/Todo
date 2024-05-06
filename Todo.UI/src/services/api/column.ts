@@ -10,7 +10,7 @@ export async function createColumn(reqData: CreateColumn) {
 export async function editColumn(reqData: EditColumn) {
   const { data } = await http.patch<ExpandedColumn>(
     `/columns/${reqData.id}`,
-    reqData
+    reqData,
   );
   return data;
 }

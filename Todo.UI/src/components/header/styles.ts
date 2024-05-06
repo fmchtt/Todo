@@ -21,7 +21,7 @@ export const UserContainer = styled.div`
   border-radius: 20px;
   padding: 2px;
 
-  :hover {
+  &:hover {
     background: ${(props) => props.theme.colors[100]};
   }
   position: relative;
@@ -32,7 +32,7 @@ export const UserContainer = styled.div`
 `;
 
 type MenuProps = {
-  closing: boolean;
+  $closing: boolean;
 };
 export const DropDownMenu = styled.div<MenuProps>`
   background: ${(props) => props.theme.colors[300]};
@@ -49,7 +49,7 @@ export const DropDownMenu = styled.div<MenuProps>`
   z-index: 1;
 
   ${(props) => {
-    return props.closing
+    return props.$closing
       ? "animation: fade-up 200ms linear;"
       : "animation: fade-down 200ms linear;";
   }}
@@ -66,7 +66,7 @@ export const DropDownButton = styled.a`
   width: 100%;
   padding: 10px 0;
 
-  :hover {
+  &:hover {
     background: ${(props) => props.theme.colors[800]};
   }
 `;

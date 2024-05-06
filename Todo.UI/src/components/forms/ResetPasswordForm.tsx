@@ -51,7 +51,7 @@ export default function ResetPasswordForm() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </InputGroup>
-        <FilledButton type="submit" loading={loading ? 1 : 0}>
+        <FilledButton type="submit" $loading={loading}>
           Recuperar
         </FilledButton>
         <Text>

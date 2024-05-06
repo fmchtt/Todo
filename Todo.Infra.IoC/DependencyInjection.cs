@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Todo.Application.Handlers;
-using Todo.Domain.Repositories;
 using Todo.Application.Utils;
+using Todo.Domain.Repositories;
 using Todo.Infra.Data.Contexts;
 using Todo.Infra.Data.Mappers;
 using Todo.Infra.Data.Repositories;
@@ -13,48 +13,47 @@ namespace Todo.Infra.IoC;
 
 public static class DependencyInjection
 {
-  // ReSharper disable once UnusedMethodReturnValue.Global
-  public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-  {
-    services.AddDbContext<TodoDBContext>(x =>
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-      x.UseLazyLoadingProxies();
-      x.UseNpgsql(configuration.GetSection("CONNECTION_STRING").Value,
-              b => b.MigrationsAssembly(typeof(TodoDBContext).Assembly.FullName));
-    });
+        services.AddDbContext<TodoDBContext>(x =>
+        {
+            x.UseLazyLoadingProxies();
+            x.UseNpgsql(configuration.GetSection("CONNECTION_STRING").Value,
+                b => b.MigrationsAssembly(typeof(TodoDBContext).Assembly.FullName));
+        });
 
-    // Utils
-    services.AddTransient<IHasher, Hasher>();
-    services.AddTransient<IMailer, SESMailer>();
-    services.AddTransient<ITokenService, TokenService>(x =>
-        new TokenService(configuration.GetSection("SECRET_KEY").Value ?? Guid.NewGuid().ToString()));
-    services.AddTransient<IFileStorage, LocalFileStorage>();
+        // Utils
+        services.AddTransient<IHasher, Hasher>();
+        services.AddTransient<IMailer, ConsoleMailer>();
+        services.AddTransient<ITokenService, TokenService>(x =>
+            new TokenService(configuration.GetSection("SECRET_KEY").Value ?? Guid.NewGuid().ToString()));
+        services.AddTransient<IFileStorage, LocalFileStorage>();
 
-    // Repositories
-    services.AddTransient<IBoardRepository, BoardRepository>();
-    services.AddTransient<IColumnRepository, ColumnRepository>();
-    services.AddTransient<ITodoItemRepository, TodoItemRepository>();
-    services.AddTransient<IUserRepository, UserRepository>();
-    services.AddTransient<IRecoverCodeRepository, RecoverCodeRepository>();
-    services.AddTransient<IInviteRepository, InviteRepository>();
-    services.AddTransient<ICommentRepository, CommentRepository>();
+        // Repositories
+        services.AddTransient<IBoardRepository, BoardRepository>();
+        services.AddTransient<IColumnRepository, ColumnRepository>();
+        services.AddTransient<ITodoItemRepository, TodoItemRepository>();
+        services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IRecoverCodeRepository, RecoverCodeRepository>();
+        services.AddTransient<IInviteRepository, InviteRepository>();
+        services.AddTransient<ICommentRepository, CommentRepository>();
 
-    // Handlers
-    services.AddTransient<BoardHandler>();
-    services.AddTransient<ColumnHandler>();
-    services.AddTransient<UserHandler>();
-    services.AddTransient<ItemHandler>();
-    services.AddTransient<CommentHandler>();
+        // Handlers
+        services.AddTransient<BoardHandler>();
+        services.AddTransient<ColumnHandler>();
+        services.AddTransient<UserHandler>();
+        services.AddTransient<ItemHandler>();
+        services.AddTransient<CommentHandler>();
 
-    // Mappers
-    services.AddAutoMapper(typeof(BoardMapper));
-    services.AddAutoMapper(typeof(ItemMapper));
-    services.AddAutoMapper(typeof(UserMapper));
-    services.AddAutoMapper(typeof(ColumnMapper));
-    services.AddAutoMapper(typeof(CommentMapper));
+        // Mappers
+        services.AddAutoMapper(typeof(BoardMapper));
+        services.AddAutoMapper(typeof(ItemMapper));
+        services.AddAutoMapper(typeof(UserMapper));
+        services.AddAutoMapper(typeof(ColumnMapper));
+        services.AddAutoMapper(typeof(CommentMapper));
 
-    services.AddMediatR(conf => conf.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("Todo.Application")));
+        services.AddMediatR(conf => conf.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("Todo.Application")));
 
-    return services;
-  }
+        return services;
+    }
 }

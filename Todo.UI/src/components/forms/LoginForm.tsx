@@ -106,7 +106,7 @@ export default function LoginForm() {
           )}
         </InputGroup>
         {error && <ErrorMessage>Usuário ou senha inválidos</ErrorMessage>}
-        <FilledButton type="submit" size="25px" loading={loading ? 1 : 0}>
+        <FilledButton type="submit" $size="25px" $loading={loading}>
           Entrar
         </FilledButton>
         <Text>

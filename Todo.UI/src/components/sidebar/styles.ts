@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 interface Options {
-  show?: number;
+  $show?: boolean;
 }
 
 export const StyledSideBar = styled.aside`
@@ -44,12 +44,12 @@ export const SideBarButton = styled.a<Options>`
   align-items: center;
   gap: 10px;
 
-  :hover {
-    background: #ffffff11;
+  &:hover {
+    background-color: #ffffff11;
   }
 
   @media (max-width: 600px) {
-    padding: ${(props) => (props.show ? "15px 25px 15px 10px" : "15px 10px")};
+    padding: ${(props) => (props.$show ? "15px 25px 15px 10px" : "15px 10px")};
   }
 `;
 
@@ -60,6 +60,6 @@ export const TitleOption = styled.p<Options>`
   cursor: pointer;
 
   @media (max-width: 600px) {
-    display: ${(props) => (props.show ? "flex" : "none")};
+    display: ${(props) => (props.$show ? "flex" : "none")};
   }
 `;

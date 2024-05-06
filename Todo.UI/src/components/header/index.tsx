@@ -24,7 +24,7 @@ export default function Header() {
       >
         {user && (
           <UserContainer>
-            <Text margin="0 10px">{user?.name}</Text>
+            <Text $margin="0 10px">{user?.name}</Text>
             <RoundedAvatar
               avatarUrl={
                 user?.avatarUrl && import.meta.env.VITE_API_URL + user.avatarUrl
@@ -33,7 +33,7 @@ export default function Header() {
           </UserContainer>
         )}
         {dropDownOpen && (
-          <DropDownMenu closing={isClosing}>
+          <DropDownMenu $closing={isClosing}>
             <DropDownButton as={Link} to="/profile">
               Editar Perfil
             </DropDownButton>

@@ -11,7 +11,7 @@ export const CardContainer = styled.div`
 
   cursor: pointer;
 
-  :hover {
+  &:hover {
     background: ${(props) => props.theme.colors[600] + "c1"};
   }
 `;

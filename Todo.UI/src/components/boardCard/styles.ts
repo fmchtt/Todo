@@ -13,7 +13,8 @@ export const CardContainer = styled.div`
   justify-content: space-between;
 
   cursor: pointer;
-  :hover {
+
+  &:hover {
     background-color: ${(props) => props.theme.colors[200] + "c1"};
   }
 `;
