@@ -24,7 +24,7 @@ public class BoardRepository : IBoardRepository
 
     public async Task Delete(Board board)
     {
-        _dbContext.Boards.Remove(board); 
+        _dbContext.Boards.Remove(board);
         await _dbContext.SaveChangesAsync();
     }
 
@@ -32,9 +32,9 @@ public class BoardRepository : IBoardRepository
     {
         var user = await _dbContext.Users.FirstAsync(x => x.Id == ownerId);
 
-        var query = _dbContext.Boards.Where(x => x.Participants.Contains(user)).OrderBy(x => x.Name);
+        var query = _dbContext.Boards.Where(x => x.Participants.Contains(user));
 
-        var result = await query.GetPage(page, 10).ToListAsync();
+        var result = await query.OrderBy(b => b.Name).GetPage(page, 10).ToListAsync();
         var count = query.Count() / 10;
 
         return new PaginatedResult<Board>(result, count);

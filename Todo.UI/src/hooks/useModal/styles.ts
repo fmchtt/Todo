@@ -34,5 +34,4 @@ export const ModalStyled = styled.div`
   border-radius: 20px;
 
   padding: 30px;
-  margin-top: 150px;
 `;

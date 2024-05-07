@@ -1,22 +1,15 @@
-import { InputGroup, Label, Form, Input, FormHeading } from "./styles";
+import { FormHeading, FormFooter } from "./styles";
 import { LinkSpan, H1, Text } from "@/assets/css/global.styles";
 import { FormContainer } from "./styles";
-import FilledButton from "../filledButton";
 import { useEffect, useState } from "react";
 import useAuth from "@/context/auth";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useFormik } from "formik";
 import * as Yup from "yup";
-import ErrorMessage from "./ErrorMessage";
-import { TbEye, TbEyeOff } from "react-icons/tb";
-import { AxiosError } from "axios";
+import Form from "../form";
 
 export default function RegisterForm() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<string>("password");
   const { user, register } = useAuth();
-  const [error, setError] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -30,48 +23,30 @@ export default function RegisterForm() {
     }
   }, [user]);
 
-  function eyeInput() {
-    if (showPassword === "password") {
-      setShowPassword("text");
-    } else {
-      setShowPassword("password");
-    }
-  }
-
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
-    onSubmit: (values) => {
-      setLoading(true);
-      register({
-        name: values.name,
-        email: values.email,
-        password: values.password,
-      })
-        .then(() => {
-          setLoading(false);
-        })
-        .catch((e) => {
-          setLoading(false);
-          setError(true);
-          if (e instanceof AxiosError) {
-            setMessage(e.response?.data.message);
-          }
-        });
-    },
-
-    validationSchema: Yup.object({
-      name: Yup.string().required("O nome é obrigatório!"),
-      email: Yup.string().required("O email é obrigatório!"),
-      password: Yup.string().required("A senha é obrigatória!"),
-    }),
-    validateOnMount: false,
-    validateOnBlur: false,
-    validateOnChange: false,
+  const validationSchema = Yup.object({
+    name: Yup.string().required("O nome é obrigatório!"),
+    email: Yup.string().required("O email é obrigatório!"),
+    password: Yup.string().required("A senha é obrigatória!"),
   });
+
+  function handleSubmit(values: {
+    name: string;
+    email: string;
+    password: string;
+  }) {
+    setLoading(true);
+    register({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    })
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  }
 
   return (
     <FormContainer>
@@ -79,55 +54,29 @@ export default function RegisterForm() {
         <H1>Registre-se</H1>
         <Text>Para ter acesso ao app é necessário ter uma conta. Crie uma</Text>
       </FormHeading>
-      <Form onSubmit={formik.handleSubmit}>
-        <InputGroup>
-          <Label>Nome</Label>
-          <Input
-            type="text"
-            name="name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            placeholder="Laura Silva"
-          />
-          {formik.errors.name && (
-            <ErrorMessage>{formik.errors.name}</ErrorMessage>
-          )}
-        </InputGroup>
-        <InputGroup>
-          <Label>Email</Label>
-          <Input
-            type="email"
-            name="email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            placeholder="Ex: teste@email.com"
-          />
-          {formik.errors.email && (
-            <ErrorMessage>{formik.errors.email}</ErrorMessage>
-          )}
-        </InputGroup>
-        <InputGroup>
-          <Label>Senha</Label>
-          <Input
-            type={showPassword}
-            value={formik.values.password}
-            name="password"
-            onChange={formik.handleChange}
-            placeholder="Ex: Senha1234@"
-          />
-          {showPassword === "password" ? (
-            <TbEye className="eye" onClick={eyeInput} />
-          ) : (
-            <TbEyeOff onClick={eyeInput} className="eye" />
-          )}
-          {formik.errors.password && (
-            <ErrorMessage>{formik.errors.password}</ErrorMessage>
-          )}
-        </InputGroup>
-        {error && <ErrorMessage>{message}</ErrorMessage>}
-        <FilledButton $size="25px" type="submit" $loading={loading}>
-          Registrar
-        </FilledButton>
+      <Form
+        initialValues={{
+          name: "",
+          email: "",
+          password: "",
+        }}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+      >
+        <Form.Input name="name" placeholder="Laura Silva" label="Nome" />
+        <Form.Input
+          name="email"
+          placeholder="Ex: teste@email.com"
+          label="Email"
+        />
+        <Form.Password
+          label="Senha"
+          name="password"
+          placeholder="Ex: Senha1234@"
+        />
+        <Form.Submit label="Registrar" $loading={loading} />
+      </Form>
+      <FormFooter>
         <Text>
           Já tem conta? Faça{" "}
           <Link
@@ -141,7 +90,7 @@ export default function RegisterForm() {
             <LinkSpan>Login</LinkSpan>
           </Link>
         </Text>
-      </Form>
+      </FormFooter>
     </FormContainer>
   );
 }

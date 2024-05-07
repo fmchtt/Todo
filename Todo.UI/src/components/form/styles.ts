@@ -61,7 +61,7 @@ export const StyledInput = styled.input<InputProps>`
   background-color: ${(props) => props.theme.colors[200]};
   color: ${(props) => props.theme.font.medium};
 
-  ::placeholder {
+  &::placeholder {
     color: ${(props) => props.theme.font.medium};
   }
 
@@ -79,7 +79,7 @@ export const StyledSelect = styled.select`
   background-color: ${(props) => props.theme.colors[200]};
   color: ${(props) => props.theme.font.medium};
 
-  ::placeholder {
+  &::placeholder {
     color: ${(props) => props.theme.font.medium};
   }
 
@@ -95,7 +95,7 @@ export const StyledTextArea = styled.textarea`
   background-color: ${(props) => props.theme.colors[200]};
   color: ${(props) => props.theme.font.medium};
 
-  ::placeholder {
+  &::placeholder {
     color: ${(props) => props.theme.font.medium};
   }
 

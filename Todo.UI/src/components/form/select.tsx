@@ -4,26 +4,37 @@ import {
   ErrorMessage,
   InputGroup,
   Label,
-  StyledInput,
+  StyledSelect,
 } from "./styles";
 import { FormInputProps } from "./types";
 
-export default function Input({
+type Option = {
+  label: string;
+  value: string | number;
+};
+
+type SelectProps = {
+  options: Option[];
+};
+
+export default function Select({
   label,
   description,
   name,
-  placeholder,
-}: FormInputProps) {
+  options,
+}: FormInputProps & SelectProps) {
   return (
     <Field name={name}>
       {({ field, form, meta }: FieldProps) => (
         <InputGroup>
           <Label>{label}</Label>
-          <StyledInput
-            {...field}
-            placeholder={placeholder}
-            onChange={form.handleChange}
-          />
+          <StyledSelect {...field} onChange={form.handleChange}>
+            {options.map((o) => (
+              <option key={`opt_${o.value}_${o.label}`} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </StyledSelect>
           {description && <Description>{description}</Description>}
           {meta.touched && meta.error && (
             <ErrorMessage>{meta.error}</ErrorMessage>

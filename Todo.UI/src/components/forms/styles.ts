@@ -11,18 +11,12 @@ export const FormContainer = styled.div<FormBoardProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 50px;
+  gap: 30px;
   overflow-y: auto;
 `;
 
-export const FormStyled = styled.div`
-  background-image: ${(props) => props.theme.gradients.semi};
-  border-radius: 20px;
-  padding: 30px;
-  height: fit-content;
-`;
-
 export const FormHeading = styled.div``;
+export const FormFooter = styled.div``;
 
 type FormProps = {
   width?: string;
@@ -40,12 +34,6 @@ export const Label = styled.label`
   color: ${(props) => props.theme.font.medium};
   font-size: 16px;
   font-weight: 200;
-`;
-
-export const Description = styled.span`
-  color: ${(props) => props.theme.font.medium};
-  font-size: 14px;
-  font-weight: 100;
 `;
 
 type InputGroupProps = {
@@ -89,38 +77,6 @@ export const Input = styled.input<InputProps>`
   padding: 15px 25px;
 
   ${(props) => (props.$flexible ? "flex: 1;" : "")}
-`;
-
-export const Select = styled.select`
-  background-color: ${(props) => props.theme.colors[200]};
-  color: ${(props) => props.theme.font.medium};
-
-  ::placeholder {
-    color: ${(props) => props.theme.font.medium};
-  }
-
-  outline: none;
-
-  border: none;
-  border-radius: 20px;
-
-  padding: 15px 25px;
-`;
-
-export const TextArea = styled.textarea`
-  background-color: ${(props) => props.theme.colors[200]};
-  color: ${(props) => props.theme.font.medium};
-
-  ::placeholder {
-    color: ${(props) => props.theme.font.medium};
-  }
-
-  outline: none;
-
-  border: none;
-  border-radius: 20px;
-
-  padding: 15px 25px;
 `;
 
 export const ImagePreview = styled.img`

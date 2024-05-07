@@ -19,7 +19,7 @@ public static class DependencyInjection
         {
             x.UseLazyLoadingProxies();
             x.UseNpgsql(configuration.GetSection("CONNECTION_STRING").Value,
-                b => b.MigrationsAssembly(typeof(TodoDBContext).Assembly.FullName));
+                b => b.MigrationsAssembly(typeof(TodoDBContext).Assembly.FullName).UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery));
         });
 
         // Utils

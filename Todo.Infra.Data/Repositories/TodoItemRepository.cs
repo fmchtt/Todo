@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Todo.Domain.Results;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
+using Todo.Domain.Results;
 using Todo.Infra.Data.Contexts;
 using Todo.Infra.Data.Extensions;
 
@@ -45,7 +45,7 @@ public class TodoItemRepository : ITodoItemRepository
             }
         }
 
-        var results = await query.GetPage(page, 10).OrderByDescending(x => x.CreatedDate).ToListAsync();
+        var results = await query.OrderByDescending(x => x.CreatedDate).GetPage(page, 10).ToListAsync();
         var pageCount = query.Count() / 10;
 
         return new PaginatedResult<TodoItem>(results, pageCount);

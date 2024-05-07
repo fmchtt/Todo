@@ -1,13 +1,13 @@
 import User from "@/types/user";
-import { useState, FormEvent } from "react";
-import { Description, Form, Group, Input, InputGroup, Label } from "./styles";
-import FilledButton from "../filledButton";
+import { useState } from "react";
+import { Group } from "./styles";
 import { Text } from "@/assets/css/global.styles";
 import { TbTrash } from "react-icons/tb";
 import { removeParticipant, sendInvite } from "@/services/api/boards";
 import useAuth from "@/context/auth";
 import RoundedAvatar from "@/components/roundedAvatar";
 import { toast } from "react-toastify";
+import Form from "../form";
 
 interface InviteFormProps {
   participants?: User[];
@@ -16,19 +16,15 @@ interface InviteFormProps {
 }
 
 export default function InviteForm(props: InviteFormProps) {
-  const [emails, setEmails] = useState("");
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
+  async function handleSubmit(values: { emails: string }) {
     setLoading(true);
-    const emailList = emails.split(",");
+    const emailList = values.emails.split(",");
 
     try {
       await sendInvite(emailList, props.boardId);
-      setEmails("");
 
       toast.success("Convite enviado com sucesso!");
     } catch (e) {
@@ -53,21 +49,15 @@ export default function InviteForm(props: InviteFormProps) {
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <InputGroup $row $gap={10}>
-        <InputGroup>
-          <Label>Email</Label>
-          <Input
-            type="text"
-            value={emails}
-            onChange={(e) => setEmails(e.target.value)}
-          />
-          <Description>
-            Emails separados por virgula. ex: email1@email.com, email2@email.com
-          </Description>
-        </InputGroup>
-        <FilledButton $loading={loading}>Convidar</FilledButton>
-      </InputGroup>
+    <>
+      <Form initialValues={{ emails: "" }} onSubmit={handleSubmit}>
+        <Form.Input
+          label="Email's"
+          name="emails"
+          description="Emails separados por virgula. ex: email1@email.com, email2@email.com"
+        />
+        <Form.Submit label="Convidar" $loading={loading} />
+      </Form>
       <Text>Participantes: </Text>
       {props.participants?.map((participant) => {
         return (
@@ -98,6 +88,6 @@ export default function InviteForm(props: InviteFormProps) {
           </Group>
         );
       })}
-    </Form>
+    </>
   );
 }

@@ -5,6 +5,9 @@ import { FormContainer, FormProps } from "./styles";
 import TextArea from "./textarea";
 import SubmitButton from "./submit";
 import { H1 } from "@/assets/css/global.styles";
+import Select from "./select";
+import Password from "./password";
+import TinyMCE from "./editor";
 
 export default function Form<T>({
   children,
@@ -30,5 +33,8 @@ export default function Form<T>({
 }
 
 Form.Input = Input;
+Form.Select = Select;
 Form.TextArea = TextArea;
+Form.Password = Password;
+Form.Editor = TinyMCE;
 Form.Submit = SubmitButton;

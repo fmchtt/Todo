@@ -1,28 +1,19 @@
 import http from "@/services/http";
-import { FormEvent, useState } from "react";
-import FilledButton from "../filledButton";
-import {
-  Form,
-  Input,
-  FormContainer,
-  FormHeading,
-  InputGroup,
-  Label,
-} from "./styles";
+import { useState } from "react";
+import { FormContainer, FormHeading, FormFooter } from "./styles";
 import { H1, LinkSpan, Text } from "@/assets/css/global.styles";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import Form from "../form";
 
 export default function ResetPasswordForm() {
-  const [email, setEmail] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleSubmit(values: { email: string }) {
     setLoading(true);
     http
       .post("/auth/password/reset", {
-        email: email,
+        email: values.email,
       })
       .then(() => {
         setLoading(false);
@@ -42,25 +33,22 @@ export default function ResetPasswordForm() {
           Entre com seus dados para recuperar a senha e acessar o sistema
         </Text>
       </FormHeading>
-      <Form onSubmit={handleSubmit}>
-        <InputGroup>
-          <Label>Email</Label>
-          <Input
-            type="email"
-            name="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </InputGroup>
-        <FilledButton type="submit" $loading={loading}>
-          Recuperar
-        </FilledButton>
+      <Form initialValues={{ email: "" }} onSubmit={handleSubmit}>
+        <Form.Input
+          name="email"
+          label="Email"
+          placeholder="Ex: teste@email.com"
+        />
+        <Form.Submit label="Recuperar" $loading={loading} />
+      </Form>
+      <FormFooter>
         <Text>
           Lembrou sua senha?{" "}
           <Link to="/login" style={{ textDecoration: "none" }}>
             <LinkSpan>Login</LinkSpan>
           </Link>
         </Text>
-      </Form>
+      </FormFooter>
     </FormContainer>
   );
 }
