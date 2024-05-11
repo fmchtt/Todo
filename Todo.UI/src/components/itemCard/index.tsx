@@ -3,29 +3,20 @@ import { Text } from "@/assets/css/global.styles";
 import { Item } from "@/types/item";
 import { CardContainer, CardFooter, CardGroup, LeftDecoration } from "./styles";
 import PriorityIndicator from "../priorityIndicator";
+import { DetailedHTMLProps } from "react";
 
-type ItemCardProps = {
+type DivProps = DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+type ItemCardProps = DivProps & {
   data: Item;
   draggable?: boolean;
   onClick?: () => void;
-  onDragStart?: (id: string) => void;
 };
-export default function ItemCard({
-  data,
-  onClick,
-  draggable,
-  onDragStart,
-}: ItemCardProps) {
+export default function ItemCard({ data, onClick, ...props }: ItemCardProps) {
   return (
-    <CardContainer
-      id={data.id}
-      onDragStart={(e) => {
-        e.stopPropagation();
-        onDragStart ? onDragStart(data.id) : null;
-      }}
-      draggable={draggable}
-      onClick={onClick}
-    >
+    <CardContainer {...props} id={data.id} onClick={onClick}>
       <LeftDecoration />
       <CardGroup>
         <Text $lineLimiter $dashed={data.done}>

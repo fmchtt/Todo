@@ -1,7 +1,7 @@
 import User from "./user";
 import { ResumedBoard } from "./board";
 
-export interface Item {
+export type Item = {
   id: string;
   title: string;
   description: string;
@@ -11,18 +11,43 @@ export interface Item {
   creator: User;
   files: string;
   done: boolean;
-}
+};
 
-export interface ExpandedItem extends Item {
+export type ExpandedItem = Item & {
   board?: ResumedBoard;
-}
+};
 
-export type CreateItemProps = {
+export type QueryItens = {
+  boardId?: string;
+  id?: string;
+};
+
+export type CreateItem = {
   columnId?: string;
   boardId?: string;
   title: string;
   description: string;
   priority: number;
+};
+
+export type EditItem = {
+  id: string;
+  title?: string;
+  description?: string;
+  priority?: number;
+};
+
+export type ToggleDone = {
+  id: string;
+  done: boolean;
+};
+
+export type ChangeColumn = {
+  itemId: string;
+  boardId: string;
+  originColumnId: string;
+  targetColumnId: string;
+  targetColumnType: number;
 };
 
 export function getPriorityDisplay(priority: number) {

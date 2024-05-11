@@ -1,6 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
 import { BoardContainer, ItemContainer, TaskTypeContainer } from "./styles";
-import { getItens } from "@/services/api/itens";
 import { H2, Text } from "@/assets/css/global.styles";
 import { ResumedBoard } from "@/types/board";
 import ItemCard from "../itemCard";
@@ -8,6 +6,7 @@ import { EmptyContent } from "@/pages/tasks/styles";
 import { useModal } from "@/hooks";
 import ItemPresentation from "../itemPresentation";
 import { useState } from "react";
+import { useItems } from "@/adapters/itemAdapters";
 
 type TasksGridProps = {
   board: ResumedBoard;
@@ -16,10 +15,7 @@ type TasksGridProps = {
 export default function TasksGrid(props: TasksGridProps) {
   const [itemClicked, setItemClicked] = useState<number | undefined>();
 
-  const items = useQuery({
-    queryKey: ["itens", props.board.id],
-    queryFn: getItens,
-  });
+  const items = useItems(props.board.id);
 
   function handleItemCloseClick() {
     setItemClicked(undefined);
@@ -34,7 +30,7 @@ export default function TasksGrid(props: TasksGridProps) {
         onCloseClick={handleItemCloseClick}
       />
     ),
-    false,
+    false
   );
 
   const openItens = items.data?.filter((x) => x.done === false);
@@ -56,7 +52,7 @@ export default function TasksGrid(props: TasksGridProps) {
                   draggable={false}
                   onClick={() => {
                     setItemClicked(
-                      items.data?.findIndex((x) => x.id === item.id),
+                      items.data?.findIndex((x) => x.id === item.id)
                     );
                     openItemModal();
                   }}
@@ -82,7 +78,7 @@ export default function TasksGrid(props: TasksGridProps) {
                   draggable={false}
                   onClick={() => {
                     setItemClicked(
-                      items.data?.findIndex((x) => x.id === item.id),
+                      items.data?.findIndex((x) => x.id === item.id)
                     );
                     openItemModal();
                   }}

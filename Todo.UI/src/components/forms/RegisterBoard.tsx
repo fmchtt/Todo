@@ -1,75 +1,31 @@
 import { FormBoardProps } from "./types";
-import { patchBoard, postBoard } from "@/services/api/boards";
 import * as Yup from "yup";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ExpandedBoard, ResumedBoard } from "@/types/board";
 import { toast } from "react-toastify";
-import { produce } from "immer";
 import Form from "../form";
+import { useBoardCreate, useBoardUpdate } from "@/adapters/boardAdapters";
 
 export default function BoardRegister(props: FormBoardProps) {
-  const client = useQueryClient();
-  const createMutation = useMutation({
-    mutationFn: postBoard,
-    onSuccess: (res) => {
+  const createMutation = useBoardCreate({
+    onSuccess: () => {
       toast.success("Quadro criado com sucesso!");
-
-      client.setQueryData<ResumedBoard[]>(
-        ["boards"],
-        produce((prev) => {
-          if (!prev) {
-            throw new Error("Cache invalido!");
-          }
-
-          prev.push(res);
-
-          return prev;
-        })
-      );
-
       if (props.closeModal) {
         props.closeModal();
       }
     },
+    onError: () => {
+      toast.error("Erro ao criar quadro, tente novamente mais tarde!");
+    },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: patchBoard,
-    onSuccess: (res) => {
+  const updateMutation = useBoardUpdate({
+    onSuccess: () => {
       toast.success("Quadro atualizado com sucesso!");
-
-      if (client.getQueryCache().find({ queryKey: ["boards"] })) {
-        client.setQueryData<ResumedBoard[]>(
-          ["boards"],
-          produce((prev) => {
-            if (!prev) {
-              return;
-            }
-
-            const boardIdx = prev.findIndex((x) => x.id === props.data?.id);
-            if (boardIdx >= 0) {
-              prev[boardIdx].name = res.name;
-              prev[boardIdx].description = res.description;
-            }
-          })
-        );
-      }
-
-      client.setQueryData<ExpandedBoard>(
-        ["board", props.data?.id],
-        produce((prev) => {
-          if (!prev) {
-            return;
-          }
-
-          prev.name = res.name;
-          prev.description = res.description;
-        })
-      );
-
       if (props.closeModal) {
         props.closeModal();
       }
+    },
+    onError: () => {
+      toast.error("Erro ao atualizar quadro, tente novamente mais tarde!");
     },
   });
 
@@ -92,7 +48,7 @@ export default function BoardRegister(props: FormBoardProps) {
       validationSchema={validationSchema}
       onSubmit={(values) => {
         if (props.data?.id) {
-          updateMutation.mutate({ id: props.data.id, values });
+          updateMutation.mutate({ id: props.data.id, ...values });
         } else {
           createMutation.mutate(values);
         }

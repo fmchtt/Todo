@@ -1,21 +1,26 @@
 import { ExpandedColumn } from "./column";
 import User from "./user";
 
-export interface EditBoard {
+export type CreateBoard = {
+  name: string;
+  description: string;
+};
+
+export type EditBoard = {
   id: string;
   name?: string;
   description?: string;
-}
+};
 
-export interface ResumedBoard {
+export type ResumedBoard = {
   id: string;
   name: string;
   description: string;
   itemCount: number;
   doneItemCount: number;
-}
+};
 
-export interface ExpandedBoard {
+export type ExpandedBoard = {
   id: string;
   name: string;
   description: string;
@@ -24,4 +29,4 @@ export interface ExpandedBoard {
   participants: User[];
   itemCount: number;
   doneItemCount: number;
-}
+};

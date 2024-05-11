@@ -5,15 +5,11 @@ import {
   EmptyContent,
   TaskTypeContainer,
 } from "./styles";
-import { useQuery } from "@tanstack/react-query";
-import { getBoards } from "@/services/api/boards";
 import TasksGrid from "@/components/tasksGrid";
+import { useBoards } from "@/adapters/boardAdapters";
 
 export default function Tasks() {
-  const boardQuery = useQuery({
-    queryKey: ["boards"],
-    queryFn: getBoards,
-  });
+  const boardQuery = useBoards();
 
   return (
     <Container>

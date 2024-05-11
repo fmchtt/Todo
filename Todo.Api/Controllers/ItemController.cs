@@ -38,11 +38,19 @@ public class ItemController : TodoBaseController
         return new PaginatedResult<ExpandedItemResult>(result, todos.PageCount);
     }
 
+    [HttpGet("{itemId:guid}")]
+    public async Task<ExpandedItemResult> GetById([FromRoute] Guid itemId)
+    {
+        var query = new GetItemByIdQuery(itemId, GetUser());
+        var result = await _mediator.Send(query);
+        return _mapper.Map<ExpandedItemResult>(result);
+    }
+
     [HttpPost, Authorize]
     [ProducesResponseType(typeof(ResumedItemResult), 201)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public async Task<ResumedItemResult> CreateItem(
-        CreateItemCommand command
+        [FromBody] CreateItemCommand command
     )
     {
         command.User = GetUser();
@@ -56,12 +64,12 @@ public class ItemController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public async Task<ResumedItemResult> ChangeColumn(
-        Guid itemId,
-        Guid columnId
+        [FromRoute] Guid itemId,
+        [FromRoute] Guid columnId
     )
     {
         var command = new ChangeItemColumnCommand(columnId, itemId, GetUser());
-        
+
         var result = await _mediator.Send(command);
 
         return _mapper.Map<ResumedItemResult>(result);
@@ -72,8 +80,8 @@ public class ItemController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 401)]
     [ProducesResponseType(typeof(MessageResult), 404)]
     public async Task<ResumedItemResult> UpdateItem(
-        EditItemCommand command,
-        Guid itemId
+        [FromBody] EditItemCommand command,
+        [FromRoute] Guid itemId
     )
     {
         command.ItemId = itemId;
@@ -87,11 +95,11 @@ public class ItemController : TodoBaseController
     [ProducesResponseType(typeof(MessageResult), 200)]
     [ProducesResponseType(typeof(MessageResult), 401)]
     public async Task<MessageResult> DeleteItem(
-        Guid itemId
+        [FromRoute] Guid itemId
     )
     {
         var command = new DeleteItemCommand(itemId, GetUser());
-        
+
         var result = await _mediator.Send(command);
 
         return new MessageResult(result);
@@ -106,7 +114,7 @@ public class ItemController : TodoBaseController
     )
     {
         var command = new MarkCommand(itemId, true, GetUser());
-        
+
         var result = await _mediator.Send(command);
 
         return _mapper.Map<ResumedItemResult>(result);
@@ -121,7 +129,7 @@ public class ItemController : TodoBaseController
     )
     {
         var command = new MarkCommand(itemId, false, GetUser());
-        
+
         var result = await _mediator.Send(command);
 
         return _mapper.Map<ResumedItemResult>(result);

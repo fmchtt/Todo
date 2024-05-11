@@ -11,41 +11,54 @@ import {
 import { TbEdit, TbTrash } from "react-icons/tb";
 import { useModal } from "@/hooks";
 import ColumnForm from "../forms/ColumnForm";
-import { useQueryClient } from "@tanstack/react-query";
-import { changeColumn } from "@/services/api/itens";
-import { ExpandedBoard } from "@/types/board";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
-import { deleteColumn } from "@/services/api/column";
-import { produce } from "immer";
+import { useColumnDelete } from "@/adapters/columnAdapters";
+import { DetailedHTMLProps } from "react";
+import { useItemColumnChange } from "@/adapters/itemAdapters";
+import { MessageResponse } from "@/types/responses/message";
+import { toast } from "react-toastify";
 
-type ColumnProps = {
+type DivProps = DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+export type ColumnProps = DivProps & {
   data: ExpandedColumn;
   totalItems: number;
   boardId: string;
-  onDragStart: (columnId: string) => void;
-  onDragOver: (columnId: string) => void;
-  onDragEnd: () => void;
   onItemClick: (item: Item) => void;
 };
-let itemId = "";
 export default function Column({
   data,
   totalItems,
   onItemClick,
   boardId,
-  onDragStart,
-  onDragOver,
-  onDragEnd,
+  ...props
 }: ColumnProps) {
-  const client = useQueryClient();
+  const columnDeleteMutation = useColumnDelete({
+    onSuccess: () => {
+      closeConfirmModal();
+    },
+  });
+
+  const itemUpdateMutation = useItemColumnChange({
+    onError: (e) => {
+      const response = e.response?.data as MessageResponse | undefined;
+      toast.error(
+        response?.message ||
+          "Erro ao atualizar coluna, tente novamente mais tarde!"
+      );
+    },
+  });
 
   const [columnModal, openColumnModal, closeColumnModal] = useModal(
     <ColumnForm
       data={{ id: data.id, name: data.name, type: data.type.toString() }}
       boardId={boardId}
       onSuccess={handleColumnModalSuccess}
-    />,
+    />
   );
+
   const [confirmationModal, openConfirmationModal, closeConfirmModal] =
     useConfirmationModal({
       message: `Tem certeza que deseja apagar a coluna: ${data.name} ?`,
@@ -53,86 +66,29 @@ export default function Column({
     });
 
   async function handleConfirmationModalSuccess() {
-    await deleteColumn(data.id);
-
-    client.setQueryData<ExpandedBoard>(
-      ["board", boardId],
-      produce((prev) => {
-        if (prev == undefined) {
-          throw new Error("Cache invalido");
-        }
-
-        const columnIdx = prev.columns.findIndex((x) => x.id === data.id);
-        prev.columns.splice(columnIdx, 1);
-
-        return prev;
-      }),
-    );
-
-    closeConfirmModal();
+    columnDeleteMutation.mutate({ id: data.id, boardId: boardId });
   }
 
   function handleColumnModalSuccess() {
     closeColumnModal();
   }
 
-  async function handleColumnChange() {
-    if (itemId === "" || data.itens.filter((x) => x.id == itemId).length > 0) {
-      return;
-    }
-    console.log(`${itemId} para ${data.id}`);
-    await changeColumn(itemId, data.id);
-
-    client.setQueryData<ExpandedBoard>(
-      ["board", boardId],
-      produce((prev) => {
-        if (prev == undefined) {
-          throw new Error("Cache invalido");
-        }
-
-        const oldColIdx = prev.columns.findIndex(
-          (x) => x.itens.findIndex((x) => x.id === itemId) !== -1,
-        );
-        prev.columns[oldColIdx].itemCount -= 1;
-
-        const itemIdx = prev.columns[oldColIdx].itens.findIndex(
-          (x) => x.id === itemId,
-        );
-        const item = prev.columns[oldColIdx].itens.splice(itemIdx, 1);
-        if (data.type === 2) {
-          item[0].done = true;
-        } else {
-          item[0].done = false;
-        }
-
-        const newColIdx = prev.columns.findIndex((x) => x.id === data.id);
-        prev.columns[newColIdx].itens.push(item[0]);
-        prev.columns[newColIdx].itemCount += 1;
-
-        itemId = "";
-
-        return prev;
-      }),
-    );
-  }
-
   return (
     <ColumnStyled
+      {...props}
       onDragOver={(e) => {
+        if (!e.dataTransfer.types.includes("item")) return;
         e.preventDefault();
-        onDragOver(data.id);
       }}
-      onDrop={() => {
-        if (itemId) {
-          handleColumnChange();
-        }
+      onDrop={(e) => {
+        itemUpdateMutation.mutate({
+          boardId: boardId,
+          targetColumnId: data.id,
+          targetColumnType: data.type,
+          originColumnId: e.dataTransfer.getData("originColumn"),
+          itemId: e.dataTransfer.getData("id"),
+        });
       }}
-      onDragStart={(e) => {
-        e.stopPropagation();
-        onDragStart(data.id);
-      }}
-      onDragEnd={onDragEnd}
-      draggable
     >
       {columnModal}
       {confirmationModal}
@@ -164,8 +120,14 @@ export default function Column({
               onClick={() => onItemClick(item)}
               data={item}
               draggable
-              onDragStart={(id) => {
-                itemId = id;
+              onDrag={(e) => {
+                e.stopPropagation();
+              }}
+              onDragStart={(e) => {
+                e.stopPropagation();
+                e.dataTransfer.setData("item", "item");
+                e.dataTransfer.setData("id", item.id);
+                e.dataTransfer.setData("originColumn", data.id);
               }}
             />
           );

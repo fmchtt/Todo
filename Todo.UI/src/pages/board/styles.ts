@@ -31,3 +31,19 @@ export const ColumnContainer = styled.div`
   display: flex;
   gap: 30px;
 `;
+
+type ColumnDroppableAreaProps = {
+  $hover: boolean;
+  $show: boolean;
+};
+export const ColumnDroppableArea = styled.div<ColumnDroppableAreaProps>`
+  display: ${(props) => (props.$show ? "block" : "none")};
+  width: 30px;
+  background-color: rgba(
+    255,
+    255,
+    255,
+    ${(props) => (props.$hover ? 0.3 : 0.1)}
+  );
+  border-radius: 20px;
+`;

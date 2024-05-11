@@ -9,8 +9,9 @@ import { LoginProps, RegisterProps, ContextProps, Context } from "./types";
 const authContext = createContext({} as Context);
 
 export function AuthProvider({ children }: ContextProps) {
+  const client = useQueryClient();
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token"),
+    localStorage.getItem("token")
   );
 
   useEffect(() => {
@@ -26,7 +27,6 @@ export function AuthProvider({ children }: ContextProps) {
     queryKey: ["me"],
     queryFn: getActualUser,
   });
-  const client = useQueryClient();
 
   http.interceptors.response.use(
     (success) => {
@@ -40,7 +40,7 @@ export function AuthProvider({ children }: ContextProps) {
       }
 
       return Promise.reject(error);
-    },
+    }
   );
 
   async function login(formData: LoginProps) {

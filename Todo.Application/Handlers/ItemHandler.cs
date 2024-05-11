@@ -11,7 +11,7 @@ namespace Todo.Application.Handlers;
 
 public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IRequestHandler<EditItemCommand, TodoItem>,
     IRequestHandler<DeleteItemCommand, string>, IRequestHandler<ChangeItemColumnCommand, TodoItem>,
-    IRequestHandler<MarkCommand, TodoItem>, IRequestHandler<GetAllTodoItemQuery, PaginatedResult<TodoItem>>
+    IRequestHandler<MarkCommand, TodoItem>, IRequestHandler<GetAllTodoItemQuery, PaginatedResult<TodoItem>>, IRequestHandler<GetItemByIdQuery, TodoItem>
 {
     private readonly IBoardRepository _boardRepository;
     private readonly IColumnRepository _columnRepository;
@@ -91,13 +91,19 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
             throw new PermissionException("Sem permissão para alterar a Tarefa!");
         }
 
-        foreach (var prop in command.GetType().GetProperties())
+        if (command.Title != null)
         {
-            var value = prop.GetValue(command, null);
-            if (value != null)
-            {
-                prop.SetValue(item, value);
-            }
+            item.Title = command.Title;
+        }
+
+        if (command.Description != null)
+        {
+            item.Description = command.Description;
+        }
+
+        if (command.Priority != null)
+        {
+            item.Priority = (EPriority)command.Priority;
         }
 
         item.UpdatedDate = DateTime.UtcNow;
@@ -201,5 +207,16 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
         var todos = await _itemRepository.GetAll(query.User.Id, query.Page > 1 ? query.Page : 1, filters);
 
         return todos;
+    }
+
+    public async Task<TodoItem> Handle(GetItemByIdQuery query, CancellationToken cancellationToken)
+    {
+        var item = await _itemRepository.GetById(query.ItemId);
+        if (item == null || item.Creator.Id != query.Actor.Id)
+        {
+            throw new NotFoundException("Tarefa não encontrada");
+        }
+
+        return item;
     }
 }

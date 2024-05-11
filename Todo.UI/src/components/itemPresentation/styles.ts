@@ -22,6 +22,13 @@ type DetailsContainerProps = ComponentPropsWithoutRef<"div">;
 export const DetailsContainer = styled.div<DetailsContainerProps>`
   color: ${(props) => props.theme.font.medium};
   min-height: calc(100% - 195px);
+  border-radius: 20px;
+  cursor: pointer;
+  margin-bottom: 20px;
+
+  &:hover {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
 
   * {
     color: ${(props) => props.theme.font.medium};

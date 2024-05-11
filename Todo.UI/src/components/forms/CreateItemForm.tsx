@@ -1,12 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { createItem } from "@/services/api/itens";
-import { CreateItemProps, Item } from "@/types/item";
-import { ExpandedBoard } from "@/types/board";
+import { CreateItem } from "@/types/item";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { produce } from "immer";
 import Form from "../form";
-import { useState } from "react";
+import { useItemCreate } from "@/adapters/itemAdapters";
 
 const priorityChoices = [
   {
@@ -45,9 +41,6 @@ export default function CreateItemForm({
   boardId,
   columns,
 }: CreateItemFormProps) {
-  const client = useQueryClient();
-  const [loading, setLoading] = useState(false);
-
   const validationSchema = Yup.object().shape({
     title: Yup.string()
       .required("O nome da tarefa é obrigatório!")
@@ -60,6 +53,16 @@ export default function CreateItemForm({
       .min(0, "Prioridade inválida!"),
   });
 
+  const itemCreate = useItemCreate({
+    onSuccess: () => {
+      toast.success("Tarefa adicionada com sucesso!");
+      onSuccess();
+    },
+    onError: () => {
+      toast.error("Tarefa não criada, tente novamente mais tarde!");
+    },
+  });
+
   async function handleSubmit(values: {
     title: string;
     description: string;
@@ -68,9 +71,7 @@ export default function CreateItemForm({
     boardId: string;
   }) {
     {
-      setLoading(true);
-
-      const reqData: CreateItemProps = {
+      const reqData: CreateItem = {
         title: values.title,
         description: values.description,
         priority: parseInt(values.priority),
@@ -83,47 +84,7 @@ export default function CreateItemForm({
         reqData["columnId"] = values.columnId;
       }
 
-      try {
-        const data = await createItem(reqData);
-        toast.success("Tarefa adicionada com sucesso!");
-
-        client.setQueryData<Item[]>(
-          ["itens"],
-          produce((previous) => {
-            if (!previous) {
-              return [data];
-            }
-            return previous.unshift(data);
-          })
-        );
-
-        if (boardId) {
-          client.setQueryData<ExpandedBoard>(
-            ["board", boardId],
-            produce((prev) => {
-              if (!prev) {
-                return;
-              }
-
-              const colIdx = prev.columns.findIndex(
-                (x) => x.id === values.columnId
-              );
-              if (colIdx >= 0) {
-                prev.columns[colIdx].itens.push(data);
-                prev.columns[colIdx].itemCount += 1;
-              }
-
-              return prev;
-            })
-          );
-        }
-
-        onSuccess();
-      } catch (e) {
-        toast.error("Oops, ocorreu um erro, tente novamente mais tarde!");
-      } finally {
-        setLoading(false);
-      }
+      itemCreate.mutate(reqData);
     }
   }
 
@@ -149,7 +110,7 @@ export default function CreateItemForm({
       {columns && (
         <Form.Select label="Coluna" name="column" options={columns} />
       )}
-      <Form.Submit label="Criar" $loading={loading} />
+      <Form.Submit label="Criar" $loading={itemCreate.isPending} />
     </Form>
   );
 }

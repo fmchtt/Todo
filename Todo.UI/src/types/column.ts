@@ -6,18 +6,25 @@ export enum ColumnType {
   DONE,
 }
 
-export interface CreateColumn {
+export type CreateColumn = {
   name: string;
   boardId: string;
   type: number;
-}
+};
 
-export interface EditColumn {
+export type EditColumn = {
   id: string;
+  boardId: string;
   name?: string;
   order?: number;
   type?: number;
-}
+};
+
+export type DeleteColumn = {
+  id: string;
+  boardId: string;
+};
+
 export interface ExpandedColumn {
   id: string;
   name: string;

@@ -1,11 +1,7 @@
-import { useState } from "react";
-import { createColumn, editColumn } from "@/services/api/column";
-import { useQueryClient } from "@tanstack/react-query";
-import { ExpandedBoard } from "@/types/board";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { produce } from "immer";
 import Form from "../form";
+import { useColumnCreate, useColumnUpdate } from "@/adapters/columnAdapters";
 
 type ColumnFormProps = {
   data?: {
@@ -21,8 +17,25 @@ export default function ColumnForm({
   onSuccess,
   boardId,
 }: ColumnFormProps) {
-  const [loading, setLoading] = useState(false);
-  const client = useQueryClient();
+  const updateColumnMutation = useColumnUpdate({
+    onSuccess: () => {
+      toast.success("Coluna atualizado com sucesso!");
+      onSuccess();
+    },
+    onError: () => {
+      toast.error("Erro ao atualizar coluna, tente novamente mais tarde!");
+    },
+  });
+
+  const createColumnMutation = useColumnCreate({
+    onSuccess: () => {
+      toast.success("Coluna criada com sucesso!");
+      onSuccess();
+    },
+    onError: () => {
+      toast.error("Erro ao crair coluna, tente novamente mais tarde!");
+    },
+  });
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
@@ -32,55 +45,19 @@ export default function ColumnForm({
   });
 
   async function handleSubmit(values: { type: string; name: string }) {
-    setLoading(true);
-    try {
-      if (data) {
-        const column = await editColumn({
-          id: data.id,
-          name: values.name,
-          type: parseInt(values.type),
-        });
-        toast.success("Coluna atualizado com sucesso!");
-
-        client.setQueryData<ExpandedBoard>(
-          ["board", boardId],
-          produce((prev) => {
-            if (!prev) {
-              throw new Error("Cache inválido");
-            }
-
-            const columnId = prev.columns.findIndex((x) => x.id === column.id);
-            prev.columns[columnId].name = column.name;
-
-            return prev;
-          })
-        );
-      } else if (boardId) {
-        const column = await createColumn({
-          name: values.name,
-          boardId: boardId,
-          type: parseInt(values.type),
-        });
-        toast.success("Coluna atualizada com sucesso!");
-
-        client.setQueryData<ExpandedBoard>(
-          ["board", boardId],
-          produce((prev) => {
-            if (!prev) {
-              throw new Error("Cache inválido");
-            }
-            column.itemCount = 0;
-
-            prev.columns.push(column);
-
-            return prev;
-          })
-        );
-      }
-      onSuccess();
-    } catch (e) {
-      setLoading(false);
-      toast.error("Oops, ocorreu um erro, tente novamente mais tarde!");
+    if (data) {
+      updateColumnMutation.mutate({
+        id: data.id,
+        name: values.name,
+        type: parseInt(values.type),
+        boardId: boardId,
+      });
+    } else {
+      createColumnMutation.mutate({
+        name: values.name,
+        boardId: boardId,
+        type: parseInt(values.type),
+      });
     }
   }
 
@@ -105,7 +82,12 @@ export default function ColumnForm({
           { label: "Fechado", value: "2" },
         ]}
       />
-      <Form.Submit label={data ? "Editar" : "Criar"} $loading={loading} />
+      <Form.Submit
+        label={data ? "Editar" : "Criar"}
+        $loading={
+          createColumnMutation.isPending || updateColumnMutation.isPending
+        }
+      />
     </Form>
   );
 }

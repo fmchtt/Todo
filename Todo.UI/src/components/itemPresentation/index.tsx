@@ -1,7 +1,6 @@
 import { H1, Text } from "@/assets/css/global.styles";
-import { ExpandedItem, getPriorityDisplay } from "@/types/item";
+import { EditItem, ExpandedItem, getPriorityDisplay } from "@/types/item";
 import {
-  DetailsContainer,
   PresentationBody,
   PresentationContainer,
   PresentationDataGroup,
@@ -9,8 +8,6 @@ import {
   PresentationSide,
 } from "./styles";
 import moment from "moment";
-import { changeDone, deleteItem } from "@/services/api/itens";
-import { useQueryClient } from "@tanstack/react-query";
 import PriorityIndicator from "../priorityIndicator";
 import {
   TbCalendarEvent,
@@ -22,11 +19,15 @@ import {
 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
-import { ExpandedBoard, ResumedBoard } from "@/types/board";
 import RoundedAvatar from "@/components/roundedAvatar";
 import { toast } from "react-toastify";
 import CommentSection from "@/components/commentSection";
-import { produce } from "immer";
+import Description from "./components/description";
+import {
+  useItemDelete,
+  useItemDone,
+  useItemUpdate,
+} from "@/adapters/itemAdapters";
 
 type ItemPresentationProps = {
   data: ExpandedItem;
@@ -38,10 +39,27 @@ type ItemPresentationProps = {
 export default function ItemPresentation({
   data,
   onCloseClick,
-  boardId,
 }: ItemPresentationProps) {
   const navigate = useNavigate();
-  const client = useQueryClient();
+
+  const doneMutation = useItemDone();
+  const editMutation = useItemUpdate({
+    onSuccess: () => {
+      toast.success("Item editado com sucesso!");
+    },
+    onError: () => {
+      toast.error("Item não editado, tente novamente mais tarde!");
+    },
+  });
+  const deleteMutation = useItemDelete({
+    onSuccess: () => {
+      toast.success("Tarefa deletada com sucesso!");
+      onCloseClick();
+    },
+    onError: () => {
+      toast.error("Item não deletado, tente novamente mais tarde!");
+    },
+  });
 
   const [confirmationModal, openConfirmation] = useConfirmationModal({
     message: `Tem certeza que deseja apagar a tarefa ${data.title} ?`,
@@ -49,88 +67,15 @@ export default function ItemPresentation({
   });
 
   function handleDeleteItem() {
-    deleteItem(data.id)
-      .then(() => {
-        client.invalidateQueries({ queryKey: ["itens"] });
-        client.invalidateQueries({ queryKey: ["board"] });
-        toast.success("Tarefa deletada com sucesso!");
-        onCloseClick();
-      })
-      .catch(() => {
-        toast.error("Oops! Ocorreu um erro, tente novamente mais tarde!");
-      });
+    deleteMutation.mutate(data.id);
   }
 
   async function handleDone(done: boolean) {
-    await changeDone(data.id, done);
+    doneMutation.mutate({ id: data.id, done });
+  }
 
-    if (data.board || boardId) {
-      try {
-        client.setQueryData<ExpandedBoard>(
-          ["board", data.board?.id || boardId],
-          produce((prev) => {
-            if (!prev) {
-              throw new Error("Quadro inexistente");
-            }
-
-            const colIdx = prev.columns.findIndex(
-              (x) => x.itens.findIndex((x) => x.id === data.id) !== -1,
-            );
-            const itemIdx = prev.columns[colIdx].itens.findIndex(
-              (x) => x.id === data.id,
-            );
-
-            prev.columns[colIdx].itens[itemIdx].done = done;
-            if (done) {
-              prev.doneItemCount += 1;
-            } else {
-              prev.doneItemCount -= 1;
-            }
-
-            return prev;
-          }),
-        );
-      } catch (e) {
-        console.log(e);
-      }
-
-      client.setQueryData<ResumedBoard[]>(
-        ["boards"],
-        produce((prev) => {
-          if (!prev) {
-            throw new Error("Cache invalido!");
-          }
-
-          const boardIdx = prev.findIndex(
-            (x) => x.id === (data.board?.id || boardId),
-          );
-          if (boardIdx >= 0) {
-            if (done) {
-              prev[boardIdx].doneItemCount += 1;
-            } else {
-              prev[boardIdx].doneItemCount -= 1;
-            }
-          }
-
-          return prev;
-        }),
-      );
-    }
-
-    client.setQueryData<ExpandedItem[]>(
-      ["itens"],
-      produce((prev) => {
-        if (!prev) {
-          throw new Error("Cache invalido!");
-        }
-        const itemIdx = prev.findIndex((x) => x.id === data.id);
-        if (itemIdx >= 0) {
-          prev[itemIdx].done = done;
-        }
-
-        return prev;
-      }),
-    );
+  async function handleEdit(values: Omit<EditItem, "id">) {
+    editMutation.mutate({ id: data.id, ...values });
   }
 
   return (
@@ -141,9 +86,10 @@ export default function ItemPresentation({
           <H1>{data.title}</H1>
           <PriorityIndicator $size={26} $priority={data.priority} />
         </PresentationGroup>
-        <DetailsContainer
-          dangerouslySetInnerHTML={{
-            __html: data.description,
+        <Description
+          description={data.description}
+          onChange={(value) => {
+            handleEdit({ description: value });
           }}
         />
         <CommentSection itemId={data.id} />

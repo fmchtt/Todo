@@ -1,9 +1,8 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { getBoardById } from "@/services/api/boards";
 import {
   ActionsContainer,
   ColumnContainer,
+  ColumnDroppableArea,
   Container,
   HeadingContainer,
 } from "./styles";
@@ -12,22 +11,20 @@ import Column from "@/components/column";
 import { Helmet } from "react-helmet";
 import { useModal } from "@/hooks";
 import ItemPresentation from "@/components/itemPresentation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Item } from "@/types/item";
 import CreateItem from "@/components/forms/CreateItemForm";
 import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
-import { deleteBoardById } from "@/services/api/boards";
 import BoardRegister from "@/components/forms/RegisterBoard";
 import useConfirmationModal from "@/hooks/useConfirmationModal";
 import ColumnForm from "@/components/forms/ColumnForm";
-import { ExpandedBoard } from "@/types/board";
-import { ExpandedColumn } from "@/types/column";
-import { editColumn } from "@/services/api/column";
 import useAuth from "@/context/auth";
 import ParticipantWrapper from "@/components/participantWrapper";
 import InviteForm from "@/components/forms/InviteForm";
 import { toast } from "react-toastify";
-import { produce } from "immer";
+import { useBoard, useBoardDelete } from "@/adapters/boardAdapters";
+import { useColumnUpdate } from "@/adapters/columnAdapters";
+import { MessageResponse } from "@/types/responses/message";
 
 type ParamProps = {
   id: string;
@@ -35,14 +32,31 @@ type ParamProps = {
 export default function Board() {
   const params = useParams<ParamProps>();
   const navigate = useNavigate();
-  const { data, isLoading } = useQuery({
-    queryKey: ["board", params.id],
-    queryFn: getBoardById,
+
+  const { data, isLoading } = useBoard(params.id);
+  const deleteBoardMutation = useBoardDelete({
+    onSuccess: () => {
+      toast.success("Quadro deletado com sucesso!");
+      navigate("/home");
+    },
+    onError: () => {
+      toast.error("Quadro não deletado, tente novamente mais tarde!");
+    },
   });
-  const client = useQueryClient();
+  const updateColumnMutation = useColumnUpdate({
+    onError: (e) => {
+      const response = e.response?.data as MessageResponse | undefined;
+      toast.error(
+        response?.message ||
+          "Erro ao atualizar coluna, tente novamente mais tarde!"
+      );
+    },
+  });
+
   const { user } = useAuth();
 
   const [itemClicked, setItemClicked] = useState<Item | undefined>();
+  const [isDragging, setDragging] = useState<number | undefined>();
 
   useEffect(() => {
     if (itemClicked !== undefined) {
@@ -103,14 +117,7 @@ export default function Board() {
     if (!data) {
       return;
     }
-    deleteBoardById(data.id)
-      .then(() => {
-        toast.success("Quadro deletado com sucesso!");
-        navigate("/home");
-      })
-      .catch(() => {
-        toast.error("Oops! Ocorreu um erro, tente novamente mais tarde!");
-      });
+    deleteBoardMutation.mutate(data.id);
   }
 
   function handleItemCloseClick() {
@@ -124,76 +131,6 @@ export default function Board() {
 
   function handleBoardModalSuccess() {
     closeBoardModal();
-  }
-
-  let dragColumnId = "";
-  let overColumnId = "";
-
-  function handleColumnDrag() {
-    if (dragColumnId === "" || overColumnId === "") {
-      return;
-    }
-
-    try {
-      client.setQueryData<ExpandedBoard>(
-        ["board", data?.id],
-        produce((prev) => {
-          if (prev == undefined) {
-            throw new Error("Cache invalido!");
-          }
-
-          if (dragColumnId === overColumnId) {
-            throw new Error("Colunas iguais!");
-          }
-
-          const columnIdx = prev.columns.findIndex(
-            (x) => x.id === dragColumnId
-          );
-          if (columnIdx < 0) {
-            throw new Error("Coluna movida nao encontrada!");
-          }
-
-          const items = prev.columns.splice(columnIdx, 1);
-
-          if (items.length === 0) {
-            throw new Error("Coluna nao encontrada no quadro!");
-          }
-
-          const overColumnIdx = prev.columns.findIndex(
-            (x) => x.id === overColumnId
-          );
-
-          if (columnIdx < 0) {
-            throw new Error("Coluna alvo nao encontrada!");
-          }
-
-          const newColumnOrder: ExpandedColumn[] = [];
-          for (let i = 0; i < prev.columns.length; i++) {
-            if (i === overColumnIdx) {
-              newColumnOrder.push(items[0]);
-            }
-            newColumnOrder.push(prev.columns[i]);
-          }
-
-          prev.columns = newColumnOrder;
-          for (let i = 0; i < prev.columns.length; i++) {
-            prev.columns[i].order = i;
-          }
-
-          editColumn({
-            id: dragColumnId,
-            order: prev.columns[overColumnIdx].order,
-          });
-
-          dragColumnId = "";
-          overColumnId = "";
-
-          return prev;
-        })
-      );
-    } catch (e) {
-      console.log();
-    }
   }
 
   return (
@@ -248,24 +185,46 @@ export default function Board() {
         {data?.columns
           ?.slice()
           ?.sort((x, y) => (x.order > y.order ? 1 : -1))
-          ?.map((column) => {
+          ?.map((column, index) => {
             return (
-              <Column
-                onItemClick={(item: Item) => {
-                  setItemClicked(item);
-                }}
-                key={column.id}
-                totalItems={data.itemCount}
-                data={column}
-                boardId={data.id}
-                onDragStart={(columnId) => {
-                  dragColumnId = columnId;
-                }}
-                onDragOver={(columnId) => {
-                  overColumnId = columnId;
-                }}
-                onDragEnd={handleColumnDrag}
-              />
+              <Fragment key={column.id}>
+                <ColumnDroppableArea
+                  $show={!!isDragging && isDragging !== index}
+                  $hover={false}
+                  onDragOver={(e) => {
+                    if (!e.dataTransfer.types.includes("column")) return;
+                    e.preventDefault();
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    updateColumnMutation.mutate({
+                      id: e.dataTransfer.getData("id"),
+                      boardId: data.id,
+                      order: index,
+                    });
+                  }}
+                />
+                <Column
+                  draggable
+                  onDrag={() => {
+                    setDragging(index);
+                  }}
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData("id", column.id);
+                    e.dataTransfer.setData("column", "column");
+                  }}
+                  onDragEnd={(e) => {
+                    e.preventDefault();
+                    setDragging(undefined);
+                  }}
+                  onItemClick={(item: Item) => {
+                    setItemClicked(item);
+                  }}
+                  totalItems={data.itemCount}
+                  data={column}
+                  boardId={data.id}
+                />
+              </Fragment>
             );
           })}
       </ColumnContainer>

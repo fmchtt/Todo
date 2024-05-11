@@ -1,6 +1,4 @@
 import { Helmet } from "react-helmet";
-import { useQuery } from "@tanstack/react-query";
-import { getBoards } from "@/services/api/boards";
 import {
   Container,
   Section,
@@ -14,25 +12,21 @@ import { useModal } from "@/hooks";
 import BoardRegister from "@/components/forms/RegisterBoard";
 import { Text } from "@/assets/css/global.styles";
 import BoardCard from "@/components/boardCard";
-import { getItens } from "@/services/api/itens";
 import ItemCard from "@/components/itemCard";
 import { useState, useEffect } from "react";
 import ItemPresentation from "@/components/itemPresentation";
 import CreateItemForm from "@/components/forms/CreateItemForm";
 import { EmptyContent } from "@/pages/tasks/styles";
+import { useBoards } from "@/adapters/boardAdapters";
+import { useItems } from "@/adapters/itemAdapters";
 
 export default function Dashboard() {
-  const boardQuery = useQuery({
-    queryKey: ["boards"],
-    queryFn: getBoards,
-  });
-  const itemQuery = useQuery({
-    queryKey: ["itens"],
-    queryFn: getItens,
-  });
+  const boardQuery = useBoards();
+  const itemQuery = useItems();
+
   const [itemClicked, setItemClicked] = useState<number | undefined>(undefined);
   const [boardModal, openBoardModal, closeBoardModal] = useModal(
-    <BoardRegister closeModal={handleCreateBoardSuccess} />,
+    <BoardRegister closeModal={handleCreateBoardSuccess} />
   );
   const [itemModal, openItemModal, closeItemModal] = useModal(
     itemQuery.data && itemClicked !== undefined && (
@@ -42,10 +36,10 @@ export default function Dashboard() {
         onCloseClick={handleItemCloseClick}
       />
     ),
-    false,
+    false
   );
   const [createItemModal, openCreateItemModal, closeCreateItemModal] = useModal(
-    <CreateItemForm onSuccess={handleCreateItemSuccess} />,
+    <CreateItemForm onSuccess={handleCreateItemSuccess} />
   );
 
   function handleCreateBoardSuccess() {
