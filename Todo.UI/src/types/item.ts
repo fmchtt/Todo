@@ -1,4 +1,4 @@
-import User from "./user";
+import { User } from "./user";
 import { ResumedBoard } from "./board";
 
 export type Item = {

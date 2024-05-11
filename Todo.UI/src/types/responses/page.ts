@@ -1,4 +1,4 @@
-export interface PageResult<T> {
+export type PageResult<T> = {
   pageCount: number;
   results: T[];
-}
+};

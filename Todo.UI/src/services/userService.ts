@@ -1,4 +1,4 @@
-import User from "@/types/user";
+import { User } from "@/types/user";
 import http from "./http";
 import { LoginProps, RegisterProps } from "@/context/types";
 import { TokenResponse } from "@/types/responses/auth";

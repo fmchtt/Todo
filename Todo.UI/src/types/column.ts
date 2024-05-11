@@ -25,11 +25,11 @@ export type DeleteColumn = {
   boardId: string;
 };
 
-export interface ExpandedColumn {
+export type ExpandedColumn = {
   id: string;
   name: string;
   order: number;
   itemCount: number;
   type: number;
   itens: Item[];
-}
+};
