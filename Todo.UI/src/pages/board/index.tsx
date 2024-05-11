@@ -55,7 +55,7 @@ export default function Board() {
 
   const { user } = useAuth();
 
-  const [itemClicked, setItemClicked] = useState<Item | undefined>();
+  const [itemClicked, setItemClicked] = useState<string | undefined>();
   const [isDragging, setDragging] = useState<number | undefined>();
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function Board() {
   const [itemModal, openItemModal, closeItemModal] = useModal(
     itemClicked && (
       <ItemPresentation
-        data={itemClicked}
+        id={itemClicked}
         onCloseClick={handleItemCloseClick}
         boardId={data?.id}
       />
@@ -219,7 +219,7 @@ export default function Board() {
                     setDragging(undefined);
                   }}
                   onItemClick={(item: Item) => {
-                    setItemClicked(item);
+                    setItemClicked(item.id);
                   }}
                   totalItems={data.itemCount}
                   data={column}

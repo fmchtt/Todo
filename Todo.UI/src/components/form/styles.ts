@@ -9,6 +9,7 @@ type InputGroupProps = {
 export const InputGroup = styled.div<InputGroupProps>`
   position: relative;
   display: flex;
+  flex: 1;
   align-items: ${(props) => (props.$centralized ? "center" : "unset")};
   flex-direction: ${(props) => (props.row ? "row" : "column")};
   gap: ${(props) => (props.gap ? props.gap + "px" : "2px")};

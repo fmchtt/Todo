@@ -16,7 +16,7 @@ export function useItems(boardId?: string) {
 export function useItem(id: string) {
   return useQuery({
     queryKey: ["item", id],
-    queryFn: () => itemService.getItens({ id }),
+    queryFn: () => itemService.getItem(id),
   });
 }
 

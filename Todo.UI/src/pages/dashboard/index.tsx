@@ -32,7 +32,7 @@ export default function Dashboard() {
     itemQuery.data && itemClicked !== undefined && (
       <ItemPresentation
         key="modalItem"
-        data={itemQuery.data[itemClicked]}
+        id={itemQuery.data[itemClicked].id}
         onCloseClick={handleItemCloseClick}
       />
     ),

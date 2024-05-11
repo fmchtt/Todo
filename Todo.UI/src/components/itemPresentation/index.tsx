@@ -1,5 +1,5 @@
 import { H1, Text } from "@/assets/css/global.styles";
-import { EditItem, ExpandedItem, getPriorityDisplay } from "@/types/item";
+import { EditItem, getPriorityDisplay } from "@/types/item";
 import {
   PresentationBody,
   PresentationContainer,
@@ -24,23 +24,27 @@ import { toast } from "react-toastify";
 import CommentSection from "@/components/commentSection";
 import Description from "./components/description";
 import {
+  useItem,
   useItemDelete,
   useItemDone,
   useItemUpdate,
 } from "@/adapters/itemAdapters";
+import Spinner from "../spinner";
 
 type ItemPresentationProps = {
-  data: ExpandedItem;
+  id: string;
   boardId?: string;
   onCloseClick: () => void;
   boards?: { label: string; value: string }[];
 };
 
 export default function ItemPresentation({
-  data,
+  id,
   onCloseClick,
 }: ItemPresentationProps) {
   const navigate = useNavigate();
+
+  const { data, isLoading } = useItem(id);
 
   const doneMutation = useItemDone();
   const editMutation = useItemUpdate({
@@ -62,20 +66,27 @@ export default function ItemPresentation({
   });
 
   const [confirmationModal, openConfirmation] = useConfirmationModal({
-    message: `Tem certeza que deseja apagar a tarefa ${data.title} ?`,
+    message: `Tem certeza que deseja apagar a tarefa ${data?.title} ?`,
     onConfirm: handleDeleteItem,
   });
 
   function handleDeleteItem() {
+    if (!data) return;
     deleteMutation.mutate(data.id);
   }
 
   async function handleDone(done: boolean) {
+    if (!data) return;
     doneMutation.mutate({ id: data.id, done });
   }
 
   async function handleEdit(values: Omit<EditItem, "id">) {
+    if (!data) return;
     editMutation.mutate({ id: data.id, ...values });
+  }
+
+  if (isLoading || !data) {
+    return <Spinner />;
   }
 
   return (

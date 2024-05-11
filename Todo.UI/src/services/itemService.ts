@@ -27,6 +27,11 @@ class ItemService {
     return data.results;
   }
 
+  async getItem(id: string) {
+    const { data } = await http.get<ExpandedItem>(`/itens/${id}`);
+    return data;
+  }
+
   async createItem(values: CreateItem) {
     const { data } = await http.post<Item>("/itens", values);
     return data;

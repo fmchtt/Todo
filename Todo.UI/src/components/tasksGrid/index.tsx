@@ -13,7 +13,7 @@ type TasksGridProps = {
 };
 
 export default function TasksGrid(props: TasksGridProps) {
-  const [itemClicked, setItemClicked] = useState<number | undefined>();
+  const [itemClicked, setItemClicked] = useState<string | undefined>();
 
   const items = useItems(props.board.id);
 
@@ -26,7 +26,7 @@ export default function TasksGrid(props: TasksGridProps) {
     items.data && itemClicked !== undefined && (
       <ItemPresentation
         key="modalItem"
-        data={items.data[itemClicked]}
+        id={itemClicked}
         onCloseClick={handleItemCloseClick}
       />
     ),
@@ -51,9 +51,7 @@ export default function TasksGrid(props: TasksGridProps) {
                   data={item}
                   draggable={false}
                   onClick={() => {
-                    setItemClicked(
-                      items.data?.findIndex((x) => x.id === item.id)
-                    );
+                    setItemClicked(item.id);
                     openItemModal();
                   }}
                 />
@@ -77,9 +75,7 @@ export default function TasksGrid(props: TasksGridProps) {
                   data={item}
                   draggable={false}
                   onClick={() => {
-                    setItemClicked(
-                      items.data?.findIndex((x) => x.id === item.id)
-                    );
+                    setItemClicked(item.id);
                     openItemModal();
                   }}
                 />

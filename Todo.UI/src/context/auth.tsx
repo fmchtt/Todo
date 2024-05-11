@@ -1,10 +1,9 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import http from "../services/http";
-import User from "../types/user";
-import { TokenResponse } from "@/types/responses/auth";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getActualUser } from "@/services/api/user";
+import { useQueryClient } from "@tanstack/react-query";
 import { LoginProps, RegisterProps, ContextProps, Context } from "./types";
+import { useUser } from "@/adapters/userAdapters";
+import userService from "@/services/userService";
 
 const authContext = createContext({} as Context);
 
@@ -23,9 +22,8 @@ export function AuthProvider({ children }: ContextProps) {
     }
   }, [token]);
 
-  const { data, isLoading } = useQuery<User>({
-    queryKey: ["me"],
-    queryFn: getActualUser,
+  const { data, isLoading } = useUser({
+    enabled: !!token,
   });
 
   http.interceptors.response.use(
@@ -36,7 +34,7 @@ export function AuthProvider({ children }: ContextProps) {
       if (error.response.status === 401 || error.response.status === 403) {
         setToken(null);
         localStorage.removeItem("token");
-        client.setQueryData(["me"], null);
+        client.removeQueries();
       }
 
       return Promise.reject(error);
@@ -44,23 +42,19 @@ export function AuthProvider({ children }: ContextProps) {
   );
 
   async function login(formData: LoginProps) {
-    const { data } = await http.post<TokenResponse>("auth/login", formData);
+    const data = await userService.login(formData);
     setToken(data.token);
-
-    localStorage.setItem("token", data.token);
   }
 
   async function register(formData: RegisterProps) {
-    const { data } = await http.post<TokenResponse>("auth/register", formData);
+    const data = await userService.register(formData);
     setToken(data.token);
-
-    localStorage.setItem("token", data.token);
   }
 
   function logout() {
-    localStorage.removeItem("token");
+    userService.logout();
     setToken(null);
-    client.setQueryData(["me"], null);
+    client.removeQueries();
   }
 
   return (

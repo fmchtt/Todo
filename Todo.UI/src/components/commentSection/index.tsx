@@ -6,171 +6,128 @@
   CommentHead,
   CommentControls,
 } from "@/components/commentSection/styles";
-import { FormEvent } from "react";
 import moment from "moment";
-import { Comment } from "@/types/comment";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef } from "react";
 import { toast } from "react-toastify";
-import {
-  createComment,
-  deleteComment,
-  editComment,
-  getCommentsByItemId,
-} from "@/services/api/comment";
-import { Input, InputGroup, Label } from "@/components/forms/styles";
-import FilledButton from "@/components/filledButton";
-import { PageResult } from "@/types/responses/page";
+import { InputGroup } from "@/components/forms/styles";
 import { Text } from "@/assets/css/global.styles";
 import RoundedAvatar from "@/components/roundedAvatar";
-import { TbTrash, TbEdit, TbCheck } from "react-icons/tb";
+import { TbTrash, TbEdit } from "react-icons/tb";
 import useAuth from "@/context/auth";
-import { produce } from "immer";
+import {
+  useCommentCreate,
+  useCommentDelete,
+  useComments,
+  useCommentUpdate,
+} from "@/adapters/commentAdapters";
+import Form from "../form";
+import * as Yup from "yup";
+import { FormikProps } from "formik";
 
 type CommentSectionProps = {
   itemId: string;
 };
 export default function CommentSection(props: CommentSectionProps) {
-  const [text, setText] = useState("");
-  const [commentEditId, setCommentEditId] = useState("");
-  const [loading, setLoading] = useState(false);
-
   const { user } = useAuth();
+  const { data } = useComments(props.itemId);
+  const formRef = useRef<FormikProps<{
+    text: string;
+    id: string;
+  }> | null>();
 
-  const client = useQueryClient();
-  const { data } = useQuery({
-    queryKey: ["comments", props.itemId],
-    queryFn: () => getCommentsByItemId(props.itemId),
+  const createCommentMutation = useCommentCreate({
+    onSuccess: () => {
+      toast.success("Comentário adicionado!");
+      formRef.current?.resetForm({
+        values: {
+          text: "",
+          id: "",
+        },
+      });
+    },
+    onError: () => {
+      toast.error(
+        "Oops! Ocorreu um erro ao adicionar comentario, tente novamente mais tarde!"
+      );
+    },
   });
 
-  async function handleEditComment(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const text = formData.get("text");
-    if (!text || text == "") {
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const comment = await editComment(commentEditId, text.toString());
-      client.setQueryData<PageResult<Comment>>(
-        ["comments", props.itemId],
-        produce((prev) => {
-          if (!prev) {
-            return prev;
-          }
-
-          const commentIdx = prev.results.findIndex(
-            (x) => x.id === commentEditId,
-          );
-          if (commentIdx === -1) {
-            return prev;
-          }
-
-          prev.results[commentIdx] = comment;
-
-          return prev;
-        }),
-      );
-
-      setText("");
+  const editCommentMutation = useCommentUpdate({
+    onSuccess: () => {
       toast.success("Comentário editado!");
-    } catch (e) {
-      toast.error("Oops! Ocorreu um erro, tente novamente mais tarde!");
-    } finally {
-      setCommentEditId("");
-      setLoading(false);
-    }
-  }
-
-  async function handleCreateComment() {
-    if (text == "") {
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const comment = await createComment(props.itemId, text);
-      client.setQueryData<PageResult<Comment>>(
-        ["comments", props.itemId],
-        produce((prev) => {
-          if (!prev) {
-            return prev;
-          }
-
-          prev.results.unshift(comment);
-          prev.pageCount += 1;
-
-          return prev;
-        }),
+      formRef.current?.resetForm({
+        values: {
+          text: "",
+          id: "",
+        },
+      });
+    },
+    onError: () => {
+      toast.error(
+        "Oops! Ocorreu um erro ao editar comentario, tente novamente mais tarde!"
       );
+    },
+  });
 
-      setText("");
-      toast.success("Comentário adicionado!");
-    } catch (e) {
-      toast.error("Oops! Ocorreu um erro, tente novamente mais tarde!");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const deleteCommentMutation = useCommentDelete({
+    onSuccess: () => {
+      toast.success("Comentário removido!");
+    },
+    onError: () => {
+      toast.error(
+        "Oops! Ocorreu um erro ao remover comentario, tente novamente mais tarde!"
+      );
+    },
+  });
 
   async function handleDeleteComment(id: string) {
-    try {
-      setLoading(true);
-      await deleteComment(id);
-      client.setQueryData<PageResult<Comment>>(
-        ["comments", props.itemId],
-        produce((prev) => {
-          if (!prev) {
-            return prev;
-          }
+    deleteCommentMutation.mutate({
+      id: id,
+      itemId: props.itemId,
+    });
+  }
 
-          const commentIdx = prev.results.findIndex((x) => x.id === id);
-          if (commentIdx === -1) {
-            return prev;
-          }
-
-          prev.results.splice(commentIdx, 1);
-          prev.pageCount -= 1;
-
-          return prev;
-        }),
-      );
-
-      setText("");
-      toast.success("Comentário removido!");
-    } catch (e) {
-      toast.error("Oops! Ocorreu um erro, tente novamente mais tarde!");
-    } finally {
-      setLoading(false);
+  function handleSubmit(values: { text: string; id: string | undefined }) {
+    if (values.id) {
+      editCommentMutation.mutate({
+        id: values.id,
+        text: values.text,
+        itemId: props.itemId,
+      });
+    } else {
+      createCommentMutation.mutate({
+        itemId: props.itemId,
+        text: values.text,
+      });
     }
   }
+
+  const validationSchema = Yup.object().shape({
+    text: Yup.string().required("O texto é obrigatório!"),
+  });
 
   return (
     <CommentSectionContainer>
-      <InputGroup>
-        <Label>Escrever comentário:</Label>
+      <Form
+        initialValues={{ text: "", id: "" }}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+        innerRef={(ref) => (formRef.current = ref)}
+      >
         <InputGroup $row>
-          <Input
-            $flexible
-            value={text}
-            onChange={(e) => {
-              setText(e.target.value);
-            }}
+          <Form.Input label="Escreva seu comentário:" name="text" />
+          <Form.Submit
+            label="Comentar"
+            $loading={
+              editCommentMutation.isPending ||
+              createCommentMutation.isPending ||
+              deleteCommentMutation.isPending
+            }
           />
-          <FilledButton
-            onClick={() => handleCreateComment()}
-            $loading={loading}
-            $margin="0"
-            $height="unset"
-          >
-            Comentar
-          </FilledButton>
         </InputGroup>
-      </InputGroup>
+      </Form>
       <CommentLineContainer>
-        {data?.results.map((comment) => {
+        {data?.reverse().map((comment) => {
           return (
             <CommentLine key={comment.id}>
               <CommentHead>
@@ -188,7 +145,7 @@ export default function CommentSection(props: CommentSectionProps) {
                     <Text $size="thin">
                       Atualizado em:{" "}
                       {moment(comment.updateTimeStamp).format(
-                        "DD/MM/YYYY HH:mm",
+                        "DD/MM/YYYY HH:mm"
                       )}
                     </Text>
                   </div>
@@ -199,7 +156,10 @@ export default function CommentSection(props: CommentSectionProps) {
                       role="button"
                       size={20}
                       cursor="pointer"
-                      onClick={() => setCommentEditId(comment.id)}
+                      onClick={() => {
+                        formRef.current?.setFieldValue("id", comment.id);
+                        formRef.current?.setFieldValue("text", comment.text);
+                      }}
                     />
                   )}
                   <TbTrash
@@ -210,23 +170,7 @@ export default function CommentSection(props: CommentSectionProps) {
                   />
                 </CommentControls>
               </CommentHead>
-              {commentEditId === comment.id ? (
-                <form onSubmit={handleEditComment}>
-                  <InputGroup $row>
-                    <Input name="text" $flexible defaultValue={comment.text} />
-                    <FilledButton
-                      $loading={loading}
-                      $margin="0"
-                      $height="unset"
-                      type="submit"
-                    >
-                      <TbCheck role="button" cursor="pointer" size={30} />
-                    </FilledButton>
-                  </InputGroup>
-                </form>
-              ) : (
-                <Text>{comment.text}</Text>
-              )}
+              <Text>{comment.text}</Text>
             </CommentLine>
           );
         })}

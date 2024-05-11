@@ -7,3 +7,19 @@ export type Comment = {
   creationTimeStamp: string;
   updateTimeStamp: string;
 };
+
+export type CreateComment = {
+  itemId: string;
+  text: string;
+};
+
+export type EditComment = {
+  id: string;
+  itemId: string;
+  text: string;
+};
+
+export type DeleteComment = {
+  id: string;
+  itemId: string;
+};

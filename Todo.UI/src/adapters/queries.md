@@ -16,6 +16,10 @@ Refers to all itens owned by the user, the type of the query is ExpandedItem[]
 2. [item, {id}]
 Refers to a single item, the type of the query is ExpandedItem[]
 
+### Comment
+
+1. [comments, {itemId}]
+
 ## Creation and Updates
 
 To update or create an column, the query *Board.1* should be updated to set the column
@@ -23,6 +27,8 @@ To update or create an column, the query *Board.1* should be updated to set the 
 To update or create an item, the queries *Item.1*, *Item.2* and *Board.2* should be updated to set the item (if done was updated, the *Board.1* should be updated to set the count of done/undone)
 
 To update or create an board, the query *Board.1* should be updated to set the board (if the board was updated and the cache contains the board, the board should be updated on the *Board.2* query)
+
+To update or create an comment, the query *Comment.1* should be updated to set the comment
 
 ## Deletion
 
