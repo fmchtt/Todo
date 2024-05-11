@@ -1,6 +1,7 @@
 import boardService from "@/services/boardService";
 import { MutationAdapter } from "@/types/adapters";
 import { ExpandedBoard, ResumedBoard } from "@/types/board";
+import { MessageResponse } from "@/types/responses/message";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { produce } from "immer";
@@ -140,6 +141,59 @@ export function useBoardDelete(props?: BoardDeleteProps) {
       client.removeQueries({ queryKey: ["board", id], exact: true });
 
       if (props?.onSuccess) props.onSuccess(id);
+    },
+    onError(error) {
+      if (error instanceof AxiosError) {
+        if (props?.onError) props.onError(error);
+      } else {
+        console.error(error);
+      }
+    },
+  });
+}
+
+type BoardParticipantAddProps = MutationAdapter<MessageResponse>;
+export function useBoardParticipantAdd(props?: BoardParticipantAddProps) {
+  return useMutation({
+    mutationFn: boardService.sendBoardInvite,
+    onSuccess(data) {
+      if (props?.onSuccess) props.onSuccess(data);
+    },
+    onError(error) {
+      if (error instanceof AxiosError) {
+        if (props?.onError) props.onError(error);
+      } else {
+        console.error(error);
+      }
+    },
+  });
+}
+
+type BoardParticipantRemoveProps = MutationAdapter<MessageResponse>;
+export function useBoardParticipantRemove(props?: BoardParticipantRemoveProps) {
+  return useMutation({
+    mutationFn: boardService.deleteBoardParticipant,
+    onSuccess(data) {
+      if (props?.onSuccess) props.onSuccess(data);
+    },
+    onError(error) {
+      if (error instanceof AxiosError) {
+        if (props?.onError) props.onError(error);
+      } else {
+        console.error(error);
+      }
+    },
+  });
+}
+
+type BoardParticipantConfirmProps = MutationAdapter<MessageResponse>;
+export function useBoardParticipantConfirm(
+  props?: BoardParticipantConfirmProps
+) {
+  return useMutation({
+    mutationFn: boardService.createBoardParticipant,
+    onSuccess(data) {
+      if (props?.onSuccess) props.onSuccess(data);
     },
     onError(error) {
       if (error instanceof AxiosError) {

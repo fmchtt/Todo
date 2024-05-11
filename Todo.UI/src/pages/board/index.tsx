@@ -26,11 +26,11 @@ import { useBoard, useBoardDelete } from "@/adapters/boardAdapters";
 import { useColumnUpdate } from "@/adapters/columnAdapters";
 import { MessageResponse } from "@/types/responses/message";
 
-type ParamProps = {
+type BoardProps = {
   id: string;
 };
 export default function Board() {
-  const params = useParams<ParamProps>();
+  const params = useParams<BoardProps>();
   const navigate = useNavigate();
 
   const { data, isLoading } = useBoard(params.id);
@@ -210,6 +210,7 @@ export default function Board() {
                     setDragging(index);
                   }}
                   onDragStart={(e) => {
+                    e.stopPropagation();
                     e.dataTransfer.setData("id", column.id);
                     e.dataTransfer.setData("column", "column");
                   }}

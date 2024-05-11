@@ -1,13 +1,15 @@
 import User from "@/types/user";
-import { useState } from "react";
 import { Group } from "./styles";
 import { Text } from "@/assets/css/global.styles";
 import { TbTrash } from "react-icons/tb";
-import { removeParticipant, sendInvite } from "@/services/api/boards";
 import useAuth from "@/context/auth";
 import RoundedAvatar from "@/components/roundedAvatar";
 import { toast } from "react-toastify";
 import Form from "../form";
+import {
+  useBoardParticipantAdd,
+  useBoardParticipantRemove,
+} from "@/adapters/boardAdapters";
 
 interface InviteFormProps {
   participants?: User[];
@@ -16,36 +18,42 @@ interface InviteFormProps {
 }
 
 export default function InviteForm(props: InviteFormProps) {
-  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
-  async function handleSubmit(values: { emails: string }) {
-    setLoading(true);
-    const emailList = values.emails.split(",");
-
-    try {
-      await sendInvite(emailList, props.boardId);
-
+  const sendInviteMutation = useBoardParticipantAdd({
+    onSuccess: () => {
       toast.success("Convite enviado com sucesso!");
-    } catch (e) {
-      toast.error("Oops, ocorreu um erro, tente novamente mais tarde!");
-    }
+    },
+    onError: () => {
+      toast.error(
+        "Oops, ocorreu um erro ao enviar convite, tente novamente mais tarde!"
+      );
+    },
+  });
 
-    setLoading(false);
+  const removeParticipantMutation = useBoardParticipantRemove({
+    onSuccess: () => {
+      toast.success("Participante removido com sucesso!");
+    },
+    onError: () => {
+      toast.error(
+        "Oops, ocorreu um erro ao remover participante, tente novamente mais tarde!"
+      );
+    },
+  });
+
+  async function handleSubmit(values: { emails: string }) {
+    sendInviteMutation.mutate({
+      boardId: props.boardId,
+      emails: values.emails.split(","),
+    });
   }
 
   async function handleRemoveParticipant(participantId: string) {
-    setLoading(true);
-
-    try {
-      await removeParticipant(participantId, props.boardId);
-
-      toast.success("Participante removido com sucesso!");
-    } catch (e) {
-      toast.error("Oops, ocorreu um erro, tente novamente mais tarde!");
-    }
-
-    setLoading(false);
+    removeParticipantMutation.mutate({
+      participantId: participantId,
+      boardId: props.boardId,
+    });
   }
 
   return (
@@ -56,7 +64,12 @@ export default function InviteForm(props: InviteFormProps) {
           name="emails"
           description="Emails separados por virgula. ex: email1@email.com, email2@email.com"
         />
-        <Form.Submit label="Convidar" $loading={loading} />
+        <Form.Submit
+          label="Convidar"
+          $loading={
+            removeParticipantMutation.isPending || sendInviteMutation.isPending
+          }
+        />
       </Form>
       <Text>Participantes: </Text>
       {props.participants?.map((participant) => {

@@ -30,3 +30,13 @@ export type ExpandedBoard = {
   itemCount: number;
   doneItemCount: number;
 };
+
+export type ParticipantInvite = {
+  emails: string[];
+  boardId: string;
+};
+
+export type ParticipantRemove = {
+  boardId: string;
+  participantId: string;
+};
