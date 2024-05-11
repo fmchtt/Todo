@@ -1,12 +1,28 @@
-import { useContext, createContext, useState, useEffect } from "react";
+import {
+  useContext,
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import http from "../services/http";
 import { useQueryClient } from "@tanstack/react-query";
-import { LoginProps, RegisterProps, ContextProps, Context } from "./types";
 import { useUser } from "@/adapters/userAdapters";
 import userService from "@/services/userService";
+import { LoginProps, RegisterProps, User } from "@/types/user";
 
+type Context = {
+  user: User | undefined;
+  isLoading: boolean;
+  register: (formData: RegisterProps) => Promise<void>;
+  login: (formData: LoginProps) => Promise<void>;
+  logout: () => void;
+};
 const authContext = createContext({} as Context);
 
+type ContextProps = {
+  children: ReactNode;
+};
 export function AuthProvider({ children }: ContextProps) {
   const client = useQueryClient();
   const [token, setToken] = useState<string | null>(

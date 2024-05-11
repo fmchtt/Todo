@@ -3,3 +3,12 @@ export type User = {
   name: string;
   avatarUrl?: string;
 };
+
+export type LoginProps = {
+  email: string;
+  password: string;
+};
+
+export type RegisterProps = LoginProps & {
+  name: string;
+};
