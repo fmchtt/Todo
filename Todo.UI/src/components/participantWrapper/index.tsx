@@ -1,4 +1,4 @@
-import User from "@/types/user";
+import { User } from "@/types/user";
 import { StyledParticipantWrapper } from "./styles";
 import RoundedAvatar from "@/components/roundedAvatar";
 import { RoundedInitials } from "@/components/roundedAvatar/styles";

@@ -1,3 +1,4 @@
+import useAuth from "@/context/auth";
 import boardService from "@/services/boardService";
 import { MutationAdapter } from "@/types/adapters";
 import { ExpandedBoard, ResumedBoard } from "@/types/board";
@@ -5,6 +6,7 @@ import { MessageResponse } from "@/types/responses/message";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { produce } from "immer";
+import { useNavigate } from "react-router-dom";
 
 export function useBoards() {
   return useQuery({
@@ -171,9 +173,27 @@ export function useBoardParticipantAdd(props?: BoardParticipantAddProps) {
 
 type BoardParticipantRemoveProps = MutationAdapter<MessageResponse>;
 export function useBoardParticipantRemove(props?: BoardParticipantRemoveProps) {
+  const client = useQueryClient();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   return useMutation({
     mutationFn: boardService.deleteBoardParticipant,
-    onSuccess(data) {
+    onSuccess(data, variables) {
+      if (variables.participantId === user?.id) {
+        client.removeQueries({
+          queryKey: ["board"],
+        });
+        client.invalidateQueries({
+          queryKey: ["boards"],
+          exact: true,
+        });
+        client.invalidateQueries({
+          queryKey: ["itens"],
+          exact: true,
+        });
+        navigate("/home");
+      }
       if (props?.onSuccess) props.onSuccess(data);
     },
     onError(error) {

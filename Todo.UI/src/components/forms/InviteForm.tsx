@@ -1,8 +1,7 @@
-import User from "@/types/user";
+import { User } from "@/types/user";
 import { Group } from "./styles";
 import { Text } from "@/assets/css/global.styles";
 import { TbTrash } from "react-icons/tb";
-import useAuth from "@/context/auth";
 import RoundedAvatar from "@/components/roundedAvatar";
 import { toast } from "react-toastify";
 import Form from "../form";
@@ -10,6 +9,8 @@ import {
   useBoardParticipantAdd,
   useBoardParticipantRemove,
 } from "@/adapters/boardAdapters";
+import { useRef } from "react";
+import { FormikProps } from "formik";
 
 interface InviteFormProps {
   participants?: User[];
@@ -18,11 +19,16 @@ interface InviteFormProps {
 }
 
 export default function InviteForm(props: InviteFormProps) {
-  const { user } = useAuth();
+  const formRef = useRef<FormikProps<{ emails: string }> | null>();
 
   const sendInviteMutation = useBoardParticipantAdd({
     onSuccess: () => {
       toast.success("Convite enviado com sucesso!");
+      formRef.current?.resetForm({
+        values: {
+          emails: "",
+        },
+      });
     },
     onError: () => {
       toast.error(
@@ -58,7 +64,11 @@ export default function InviteForm(props: InviteFormProps) {
 
   return (
     <>
-      <Form initialValues={{ emails: "" }} onSubmit={handleSubmit}>
+      <Form
+        initialValues={{ emails: "" }}
+        onSubmit={handleSubmit}
+        innerRef={(ref) => (formRef.current = ref)}
+      >
         <Form.Input
           label="Email's"
           name="emails"
@@ -66,28 +76,33 @@ export default function InviteForm(props: InviteFormProps) {
         />
         <Form.Submit
           label="Convidar"
+          $margin="2px"
           $loading={
             removeParticipantMutation.isPending || sendInviteMutation.isPending
           }
         />
       </Form>
       <Text>Participantes: </Text>
-      {props.participants?.map((participant) => {
-        return (
-          <Group justify="space-between" align="center" key={participant.id}>
-            <Group align="center">
-              <RoundedAvatar
-                avatarUrl={
-                  participant.avatarUrl &&
-                  import.meta.env.VITE_API_URL + participant.avatarUrl
-                }
-                name={participant.name}
-              />
-              <Text $weight={200}>{participant.name}</Text>
-            </Group>
-            <Group>
-              {participant.id !== user?.id &&
-                participant.id !== props.ownerId && (
+      <Group $col $gap={5}>
+        {props.participants?.map((participant) => {
+          return (
+            <Group
+              $justify="space-between"
+              $align="center"
+              key={participant.id}
+            >
+              <Group $align="center">
+                <RoundedAvatar
+                  avatarUrl={
+                    participant.avatarUrl &&
+                    import.meta.env.VITE_API_URL + participant.avatarUrl
+                  }
+                  name={participant.name}
+                />
+                <Text $weight={200}>{participant.name}</Text>
+              </Group>
+              <Group>
+                {participant.id !== props.ownerId && (
                   <TbTrash
                     role="button"
                     size={22}
@@ -97,10 +112,11 @@ export default function InviteForm(props: InviteFormProps) {
                     }}
                   />
                 )}
+              </Group>
             </Group>
-          </Group>
-        );
-      })}
+          );
+        })}
+      </Group>
     </>
   );
 }

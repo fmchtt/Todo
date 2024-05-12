@@ -89,16 +89,18 @@ export const ImagePreview = styled.img`
 `;
 
 interface GroupProps {
-  justify?: "center" | "unset" | "space-around" | "space-between";
-  align?: "center" | "unset";
-  gap?: number;
+  $justify?: "center" | "unset" | "space-around" | "space-between";
+  $align?: "center" | "unset";
+  $col?: boolean;
+  $gap?: number;
 }
 
 export const Group = styled.div<GroupProps>`
   display: flex;
-  align-items: ${(props) => (props.align ? props.align : "unset")};
-  justify-content: ${(props) => (props.justify ? props.justify : "unset")};
-  gap: ${(props) => (props.gap ? props.gap + "px" : "10px")};
+  flex-direction: ${(props) => (props.$col ? "column" : "row")};
+  align-items: ${(props) => (props.$align ? props.$align : "unset")};
+  justify-content: ${(props) => (props.$justify ? props.$justify : "unset")};
+  gap: ${(props) => (props.$gap ? props.$gap + "px" : "10px")};
   color: ${(props) => props.theme.font.medium};
 `;
 

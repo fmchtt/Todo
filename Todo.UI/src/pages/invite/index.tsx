@@ -27,20 +27,22 @@ export default function Invite() {
         response?.message ||
           "Oops, ocorreu um erro ao entrar no quadro, tente novamente mais tarde!"
       );
-      navigate("/dashboard");
+      navigate("/home");
     },
   });
 
   useEffect(() => {
     if (!user && !isLoading) {
-      return navigate("/login?next=" + window.location.pathname);
+      // "if" to protect against async changes
+      if (window.location.pathname !== "/login")
+        return navigate("/login?next=" + window.location.pathname);
     } else if (user) {
       handleParticipant();
     }
   }, [user, isLoading]);
 
   async function handleParticipant() {
-    if (!id) return navigate("/dashboard");
+    if (!id) return navigate("/home");
     createParticipantMutation.mutate(id);
   }
 

@@ -1,12 +1,17 @@
 import FilledButton from "../filledButton";
+import { StyledButtonProps } from "../filledButton/types";
 
-type SubmitProps = {
+type SubmitProps = StyledButtonProps & {
   label: string;
   $loading?: boolean;
 };
-export default function SubmitButton({ label, $loading }: SubmitProps) {
+export default function SubmitButton({
+  label,
+  $loading,
+  ...props
+}: SubmitProps) {
   return (
-    <FilledButton type="submit" $loading={$loading}>
+    <FilledButton {...props} type="submit" $loading={$loading}>
       {label}
     </FilledButton>
   );
