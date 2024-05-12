@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
+using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Application.DTO;
 using Todo.Domain.Entities;
@@ -11,7 +11,7 @@ public class EditUserValidator : AbstractValidator<EditUserCommand>
 {
     public EditUserValidator()
     {
-        RuleFor(x => x.Name).Must(x => x == null || x.Length > 4 || x.Contains(' '));
+        RuleFor(x => x.Name).MinimumLength(4).Must(x => x.Contains(' '));
         RuleFor(x => x.User).NotNull();
     }
 }

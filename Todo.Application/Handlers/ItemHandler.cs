@@ -101,9 +101,9 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
             item.Description = command.Description;
         }
 
-        if (command.Priority != null)
+        if (command.Priority.HasValue)
         {
-            item.Priority = (EPriority)command.Priority;
+            item.Priority = command.Priority.Value;
         }
 
         item.UpdatedDate = DateTime.UtcNow;

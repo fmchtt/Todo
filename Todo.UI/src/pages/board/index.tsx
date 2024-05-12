@@ -12,7 +12,7 @@ import { Helmet } from "react-helmet";
 import { useModal } from "@/hooks";
 import ItemPresentation from "@/components/itemPresentation";
 import { useState, useEffect, Fragment } from "react";
-import { Item } from "@/types/item";
+import { ResumedItem } from "@/types/item";
 import CreateItem from "@/components/forms/CreateItemForm";
 import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
 import BoardRegister from "@/components/forms/RegisterBoard";
@@ -214,7 +214,7 @@ export default function Board() {
                     e.preventDefault();
                     setDragging(undefined);
                   }}
-                  onItemClick={(item: Item) => {
+                  onItemClick={(item: ResumedItem) => {
                     setItemClicked(item.id);
                   }}
                   totalItems={data.itemCount}

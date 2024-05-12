@@ -1,4 +1,4 @@
-import { Item } from "./item";
+import { ResumedItem } from "./item";
 
 export enum ColumnType {
   OPEN,
@@ -31,7 +31,7 @@ export type ExpandedColumn = {
   order: number;
   itemCount: number;
   type: number;
-  itens: Item[];
+  itens: ResumedItem[];
 };
 
 export type ResumedColumn = {

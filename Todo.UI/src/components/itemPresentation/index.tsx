@@ -1,14 +1,14 @@
 import { Text } from "@/assets/css/global.styles";
-import { EditItem, getPriorityDisplay } from "@/types/item";
+import { EditItem, getPriorityDisplay, priorityValues } from "@/types/item";
 import {
   PresentationBody,
   PresentationContainer,
   PresentationDataGroup,
+  PresentationDataGroupSelect,
   PresentationGroup,
   PresentationSide,
 } from "./styles";
 import moment from "moment";
-import PriorityIndicator from "../priorityIndicator";
 import {
   TbCalendarEvent,
   TbCheck,
@@ -99,14 +99,13 @@ export default function ItemPresentation({
     <PresentationContainer>
       {confirmationModal}
       <PresentationBody>
-        <PresentationGroup $flex>
+        <PresentationGroup>
           <Title
             title={data.title}
             onChange={(value) => {
               handleEdit({ title: value });
             }}
           />
-          <PriorityIndicator $size={26} $priority={data.priority} />
         </PresentationGroup>
         <Description
           description={data.description}
@@ -169,8 +168,19 @@ export default function ItemPresentation({
         <PresentationGroup>
           <Text>Prioridade:</Text>
           <PresentationDataGroup $padding="10px">
-            <PriorityIndicator $size={24} $priority={data.priority} />
-            <Text>{getPriorityDisplay(data.priority)}</Text>
+            {getPriorityDisplay(data.priority).icon({ size: 24 })}
+            <PresentationDataGroupSelect
+              defaultValue={data.priority}
+              onChange={(e) =>
+                handleEdit({ priority: parseInt(e.target.value) })
+              }
+            >
+              {priorityValues.map((value, index) => (
+                <option key={"priority_" + index} value={index}>
+                  {value.label}
+                </option>
+              ))}
+            </PresentationDataGroupSelect>
           </PresentationDataGroup>
         </PresentationGroup>
         {showBoard && (

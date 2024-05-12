@@ -63,10 +63,10 @@ type PresentationDataGroupProps = {
   $padding?: string;
 };
 export const PresentationDataGroup = styled.div<PresentationDataGroupProps>`
-  background: ${(props) => props.theme.colors[400]};
+  background-color: ${(props) => props.theme.colors[400]};
   cursor: pointer;
 
-  &:hover {
+  :hover {
     background: ${(props) => props.theme.colors[400] + "c1"};
   }
 
@@ -76,4 +76,12 @@ export const PresentationDataGroup = styled.div<PresentationDataGroupProps>`
 
   border-radius: 20px;
   padding: ${(props) => props.$padding || "2px"};
+`;
+
+export const PresentationDataGroupSelect = styled.select`
+  background-color: ${(props) => props.theme.colors[400]};
+  color: inherit;
+  font-size: inherit;
+  border: none;
+  width: 100%;
 `;

@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
+using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
 
@@ -11,8 +11,8 @@ public class EditBoardValidator : AbstractValidator<EditBoardCommand>
     public EditBoardValidator()
     {
         RuleFor(x => x.BoardId).NotNull().NotEmpty();
-        RuleFor(x => x.Name).Must(x => x == null || x.Length > 5);
-        RuleFor(x => x.Description).Must(x => x == null || x.Length > 10);
+        RuleFor(x => x.Name).MinimumLength(5);
+        RuleFor(x => x.Description).MinimumLength(10);
         RuleFor(x => x.User).NotNull();
     }
 }

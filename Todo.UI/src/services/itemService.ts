@@ -3,7 +3,7 @@ import {
   CreateItem,
   EditItem,
   ExpandedItem,
-  Item,
+  ResumedItem,
   QueryItens,
   ToggleDone,
 } from "@/types/item";
@@ -33,12 +33,12 @@ class ItemService {
   }
 
   async createItem(values: CreateItem) {
-    const { data } = await http.post<Item>("/itens", values);
+    const { data } = await http.post<ResumedItem>("/itens", values);
     return data;
   }
 
   async updateItem({ id, ...values }: EditItem) {
-    const { data } = await http.patch<Item>(`/itens/${id}`, values);
+    const { data } = await http.patch<ResumedItem>(`/itens/${id}`, values);
     return data;
   }
 
@@ -48,14 +48,14 @@ class ItemService {
   }
 
   async toggleItemDone({ id, done }: ToggleDone) {
-    const { data } = await http.post<Item>(
+    const { data } = await http.post<ResumedItem>(
       `/itens/${id}/${done ? "done" : "undone"}`
     );
     return data;
   }
 
   async changeItemColumn({ itemId, targetColumnId }: ChangeColumn) {
-    const { data } = await http.post<Item>(
+    const { data } = await http.post<ResumedItem>(
       `/itens/${itemId}/column/${targetColumnId}`
     );
     return data;

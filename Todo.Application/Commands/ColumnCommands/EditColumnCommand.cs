@@ -11,8 +11,8 @@ public class EditColumnValidator : AbstractValidator<EditColumnCommand>
     public EditColumnValidator()
     {
         RuleFor(x => x.ColumnId).NotNull().NotEmpty();
-        RuleFor(x => x.Name).Must(x => x == null || x.Length > 5);
-        RuleFor(x => x.Order).Must(x => x is null or >= 0);
+        RuleFor(x => x.Name).MinimumLength(5);
+        RuleFor(x => x.Order).GreaterThanOrEqualTo(0);
         RuleFor(x => x.User).NotNull();
     }
 }

@@ -1,6 +1,6 @@
 import moment from "moment";
 import { Text } from "@/assets/css/global.styles";
-import { Item } from "@/types/item";
+import { ResumedItem } from "@/types/item";
 import { CardContainer, CardFooter, CardGroup, LeftDecoration } from "./styles";
 import PriorityIndicator from "../priorityIndicator";
 import { DetailedHTMLProps } from "react";
@@ -10,7 +10,7 @@ type DivProps = DetailedHTMLProps<
   HTMLDivElement
 >;
 type ItemCardProps = DivProps & {
-  data: Item;
+  data: ResumedItem;
   draggable?: boolean;
   onClick?: () => void;
 };

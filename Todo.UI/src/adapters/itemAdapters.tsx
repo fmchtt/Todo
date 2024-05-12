@@ -1,7 +1,7 @@
 import itemService from "@/services/itemService";
 import { MutationAdapter } from "@/types/adapters";
 import { ExpandedBoard } from "@/types/board";
-import { ExpandedItem, Item } from "@/types/item";
+import { ExpandedItem, ResumedItem } from "@/types/item";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { produce } from "immer";
@@ -20,7 +20,7 @@ export function useItem(id: string) {
   });
 }
 
-type ItemCreateProps = MutationAdapter<Item>;
+type ItemCreateProps = MutationAdapter<ResumedItem>;
 export function useItemCreate(props?: ItemCreateProps) {
   const client = useQueryClient();
 
@@ -74,7 +74,7 @@ export function useItemCreate(props?: ItemCreateProps) {
   });
 }
 
-type ItemUpdateProps = MutationAdapter<Item>;
+type ItemUpdateProps = MutationAdapter<ResumedItem>;
 export function useItemUpdate(props?: ItemUpdateProps) {
   const client = useQueryClient();
 
@@ -91,7 +91,7 @@ export function useItemUpdate(props?: ItemUpdateProps) {
             if (!draft) return;
             const itemIdx = draft.findIndex((x) => x.id === data.id);
             if (itemIdx === -1) return;
-            draft[itemIdx] = data;
+            Object.assign(draft[itemIdx], data);
           })
         );
       }
@@ -115,13 +115,19 @@ export function useItemUpdate(props?: ItemUpdateProps) {
                 (x) => x.id === data.id
               );
               if (itemIdx === -1) return;
-              draft.columns[columnIdx].itens[itemIdx] = data;
+              Object.assign(draft.columns[columnIdx].itens[itemIdx], data);
             })
           );
         }
       }
 
-      client.setQueryData<ExpandedItem>(["item", data.id], data);
+      client.setQueryData<ExpandedItem>(
+        ["item", data.id],
+        produce((draft) => {
+          if (!draft) return;
+          Object.assign(draft, data);
+        })
+      );
 
       if (props?.onSuccess) props.onSuccess(data);
     },
@@ -174,7 +180,7 @@ export function useItemDelete(props?: ItemDeleteProps) {
   });
 }
 
-type ItemDoneProps = MutationAdapter<Item>;
+type ItemDoneProps = MutationAdapter<ResumedItem>;
 export function useItemDone(props?: ItemDoneProps) {
   const client = useQueryClient();
 
@@ -201,7 +207,7 @@ export function useItemDone(props?: ItemDoneProps) {
         exact: true,
       });
       if (itensByIdQuery) {
-        client.setQueryData<Item>(
+        client.setQueryData<ResumedItem>(
           itensByIdQuery.queryKey,
           produce((draft) => {
             if (!draft) return;
@@ -222,7 +228,7 @@ export function useItemDone(props?: ItemDoneProps) {
   });
 }
 
-type ItemChangeColumnProps = MutationAdapter<Item>;
+type ItemChangeColumnProps = MutationAdapter<ResumedItem>;
 export function useItemColumnChange(props?: ItemChangeColumnProps) {
   const client = useQueryClient();
 

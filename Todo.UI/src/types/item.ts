@@ -1,8 +1,17 @@
 import { User } from "./user";
 import { ResumedBoard } from "./board";
 import { ResumedColumn } from "./column";
+import {
+  TbChevronDown,
+  TbChevronsDown,
+  TbChevronsUp,
+  TbChevronUp,
+  TbEqual,
+  TbEqualNot,
+} from "react-icons/tb";
+import { IconType } from "react-icons";
 
-export type Item = {
+export type ResumedItem = {
   id: string;
   title: string;
   description: string;
@@ -14,7 +23,7 @@ export type Item = {
   done: boolean;
 };
 
-export type ExpandedItem = Item & {
+export type ExpandedItem = ResumedItem & {
   board?: ResumedBoard;
   column?: ResumedColumn;
 };
@@ -54,21 +63,16 @@ export type ChangeColumn = {
   targetColumnType: number;
 };
 
+export const priorityValues: { label: string; icon: IconType }[] = [
+  { label: "Nenhuma", icon: TbEqualNot },
+  { label: "Muito Baixa", icon: TbChevronsDown },
+  { label: "Baixa", icon: TbChevronDown },
+  { label: "Media", icon: TbEqual },
+  { label: "Alta", icon: TbChevronUp },
+  { label: "Muita Alta", icon: TbChevronsUp },
+];
+
 export function getPriorityDisplay(priority: number) {
-  switch (priority) {
-    case 0:
-      return "Nenhuma";
-    case 1:
-      return "Muito Baixa";
-    case 2:
-      return "Baixa";
-    case 3:
-      return "Media";
-    case 4:
-      return "Alta";
-    case 5:
-      return "Muita Alta";
-    default:
-      return "Nenhuma";
-  }
+  if (priority >= priorityValues.length) return priorityValues[0];
+  return priorityValues[priority];
 }

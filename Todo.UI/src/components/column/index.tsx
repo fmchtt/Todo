@@ -1,6 +1,6 @@
 import { Text } from "@/assets/css/global.styles";
 import { ExpandedColumn } from "@/types/column";
-import { Item } from "@/types/item";
+import { ResumedItem } from "@/types/item";
 import ItemCard from "../itemCard";
 import {
   ColumnActions,
@@ -26,7 +26,7 @@ export type ColumnProps = DivProps & {
   data: ExpandedColumn;
   totalItems: number;
   boardId: string;
-  onItemClick: (item: Item) => void;
+  onItemClick: (item: ResumedItem) => void;
 };
 export default function Column({
   data,
