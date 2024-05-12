@@ -33,3 +33,10 @@ export type ExpandedColumn = {
   type: number;
   itens: Item[];
 };
+
+export type ResumedColumn = {
+  id: string;
+  name: string;
+  order: number;
+  type: number;
+};

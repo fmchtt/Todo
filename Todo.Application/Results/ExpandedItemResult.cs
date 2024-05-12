@@ -12,5 +12,6 @@ public class ExpandedItemResult
     public DateTime UpdatedDate { get; set; }
     public ResumedUserResult? Creator { get; set; }
     public ResumedBoardResult? Board { get; set; }
+    public ResumedColumnResult? Column { get; set; }
     public bool Done { get; set; }
 }

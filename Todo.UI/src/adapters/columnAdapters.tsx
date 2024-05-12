@@ -14,6 +14,7 @@ export function useColumnCreate(props?: ColumnCreateProps) {
     mutationFn: columnService.createColumn,
     onSuccess(data, variables) {
       const queryCache = client.getQueryCache();
+      const value = { itemCount: 0, itens: [], ...data };
 
       const boardQuery = queryCache.find({
         queryKey: ["board", variables.boardId],
@@ -24,12 +25,12 @@ export function useColumnCreate(props?: ColumnCreateProps) {
           boardQuery.queryKey,
           produce((draft) => {
             if (!draft) return;
-            draft.columns.push(data);
+            draft.columns.push(value);
           })
         );
       }
 
-      if (props?.onSuccess) props.onSuccess(data);
+      if (props?.onSuccess) props.onSuccess(value);
     },
     onError(error) {
       if (error instanceof AxiosError) {
@@ -69,13 +70,14 @@ export function useColumnUpdate(props?: ColumnUpdateProps) {
                 (x) => x.id === data.id
               );
               if (columnIdx === -1) return;
-              draft.columns[columnIdx] = data;
+              Object.assign(draft.columns[columnIdx], data);
             })
           );
         }
       }
 
-      if (props?.onSuccess) props.onSuccess(data);
+      if (props?.onSuccess)
+        props.onSuccess({ itemCount: 0, itens: [], ...data });
     },
     onError(error) {
       if (error instanceof AxiosError) {

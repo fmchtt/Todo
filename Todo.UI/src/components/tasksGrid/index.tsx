@@ -28,6 +28,7 @@ export default function TasksGrid(props: TasksGridProps) {
         key="modalItem"
         id={itemClicked}
         onCloseClick={handleItemCloseClick}
+        showBoard
       />
     ),
     false

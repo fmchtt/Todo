@@ -8,5 +8,4 @@ public class ResumedColumnResult
     public string Name { get; set; } = string.Empty;
     public int Order { get; set; }
     public EColumnType Type { get; set; }
-    public List<ResumedItemResult> Itens { get; set; } = new();
 }

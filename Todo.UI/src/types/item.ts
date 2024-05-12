@@ -1,5 +1,6 @@
 import { User } from "./user";
 import { ResumedBoard } from "./board";
+import { ResumedColumn } from "./column";
 
 export type Item = {
   id: string;
@@ -15,6 +16,7 @@ export type Item = {
 
 export type ExpandedItem = Item & {
   board?: ResumedBoard;
+  column?: ResumedColumn;
 };
 
 export type QueryItens = {
@@ -35,6 +37,8 @@ export type EditItem = {
   title?: string;
   description?: string;
   priority?: number;
+  columnId?: string;
+  boardId?: string;
 };
 
 export type ToggleDone = {

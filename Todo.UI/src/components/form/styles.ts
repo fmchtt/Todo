@@ -3,16 +3,16 @@ import styled from "styled-components";
 
 type InputGroupProps = {
   $centralized?: boolean;
-  row?: boolean;
-  gap?: number;
+  $row?: boolean;
+  $gap?: number;
 };
 export const InputGroup = styled.div<InputGroupProps>`
   position: relative;
   display: flex;
   flex: 1;
   align-items: ${(props) => (props.$centralized ? "center" : "unset")};
-  flex-direction: ${(props) => (props.row ? "row" : "column")};
-  gap: ${(props) => (props.gap ? props.gap + "px" : "2px")};
+  flex-direction: ${(props) => (props.$row ? "row" : "column")};
+  gap: ${(props) => (props.$gap ? props.$gap + "px" : "2px")};
 
   .eye {
     position: absolute;

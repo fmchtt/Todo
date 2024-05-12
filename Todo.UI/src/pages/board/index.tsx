@@ -66,11 +66,7 @@ export default function Board() {
 
   const [itemModal, openItemModal, closeItemModal] = useModal(
     itemClicked && (
-      <ItemPresentation
-        id={itemClicked}
-        onCloseClick={handleItemCloseClick}
-        boardId={data?.id}
-      />
+      <ItemPresentation id={itemClicked} onCloseClick={handleItemCloseClick} />
     ),
     false
   );

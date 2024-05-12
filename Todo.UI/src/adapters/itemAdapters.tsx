@@ -80,7 +80,7 @@ export function useItemUpdate(props?: ItemUpdateProps) {
 
   return useMutation({
     mutationFn: itemService.updateItem,
-    onSuccess(data) {
+    onSuccess(data, variables) {
       const queryCache = client.getQueryCache();
 
       const itensQuery = queryCache.find({ queryKey: ["itens"], exact: true });
@@ -94,6 +94,31 @@ export function useItemUpdate(props?: ItemUpdateProps) {
             draft[itemIdx] = data;
           })
         );
+      }
+
+      if (variables.boardId && variables.columnId) {
+        const boardQuery = queryCache.find({
+          queryKey: ["board", variables.boardId],
+          exact: true,
+        });
+        if (boardQuery) {
+          client.setQueryData<ExpandedBoard>(
+            boardQuery.queryKey,
+            produce((draft) => {
+              if (!draft) return;
+              const columnIdx = draft.columns.findIndex(
+                (x) => x.id === variables.columnId
+              );
+              if (columnIdx === -1) return;
+
+              const itemIdx = draft.columns[columnIdx].itens.findIndex(
+                (x) => x.id === data.id
+              );
+              if (itemIdx === -1) return;
+              draft.columns[columnIdx].itens[itemIdx] = data;
+            })
+          );
+        }
       }
 
       client.setQueryData<ExpandedItem>(["item", data.id], data);

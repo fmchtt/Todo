@@ -1,4 +1,4 @@
-import { H1, Text } from "@/assets/css/global.styles";
+import { Text } from "@/assets/css/global.styles";
 import { EditItem, getPriorityDisplay } from "@/types/item";
 import {
   PresentationBody,
@@ -30,17 +30,18 @@ import {
   useItemUpdate,
 } from "@/adapters/itemAdapters";
 import Spinner from "../spinner";
+import Title from "./components/title";
 
 type ItemPresentationProps = {
   id: string;
-  boardId?: string;
+  showBoard?: boolean;
   onCloseClick: () => void;
-  boards?: { label: string; value: string }[];
 };
 
 export default function ItemPresentation({
   id,
   onCloseClick,
+  showBoard,
 }: ItemPresentationProps) {
   const navigate = useNavigate();
 
@@ -82,7 +83,12 @@ export default function ItemPresentation({
 
   async function handleEdit(values: Omit<EditItem, "id">) {
     if (!data) return;
-    editMutation.mutate({ id: data.id, ...values });
+    editMutation.mutate({
+      id: data.id,
+      boardId: data.board?.id,
+      columnId: data.column?.id,
+      ...values,
+    });
   }
 
   if (isLoading || !data) {
@@ -94,7 +100,12 @@ export default function ItemPresentation({
       {confirmationModal}
       <PresentationBody>
         <PresentationGroup $flex>
-          <H1>{data.title}</H1>
+          <Title
+            title={data.title}
+            onChange={(value) => {
+              handleEdit({ title: value });
+            }}
+          />
           <PriorityIndicator $size={26} $priority={data.priority} />
         </PresentationGroup>
         <Description
@@ -162,7 +173,7 @@ export default function ItemPresentation({
             <Text>{getPriorityDisplay(data.priority)}</Text>
           </PresentationDataGroup>
         </PresentationGroup>
-        {data.board !== undefined && (
+        {showBoard && (
           <PresentationGroup>
             <Text>Quadro:</Text>
             <PresentationDataGroup

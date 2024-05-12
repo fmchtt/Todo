@@ -20,6 +20,7 @@ export const PresentationBody = styled.div`
 
 type DetailsContainerProps = ComponentPropsWithoutRef<"div">;
 export const DetailsContainer = styled.div<DetailsContainerProps>`
+  padding: 5px;
   color: ${(props) => props.theme.font.medium};
   min-height: calc(100% - 195px);
   border-radius: 20px;
@@ -55,6 +56,7 @@ export const PresentationGroup = styled.div<PresentationGroupProps>`
   display: ${(props) => (props.$flex ? "flex" : "block")};
   justify-content: space-between;
   align-items: center;
+  gap: 40px;
 `;
 
 type PresentationDataGroupProps = {

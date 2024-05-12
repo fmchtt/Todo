@@ -34,6 +34,7 @@ export default function Dashboard() {
         key="modalItem"
         id={itemQuery.data[itemClicked].id}
         onCloseClick={handleItemCloseClick}
+        showBoard
       />
     ),
     false

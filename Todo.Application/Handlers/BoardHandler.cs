@@ -136,7 +136,7 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
         {
             invites.Add(new Invite(email, command.BoardId));
             await _mailer.SendMail(
-                $"Convite para participar do quadro: {board.Name}", 
+                $"Convite para participar do quadro: {board.Name}",
                 $"Você foi convidado para participar do quadro: {board.Name}, clique <a href='{command.Domain}/invite/{board.Id}'>aqui</a> para participar!",
                 email
                 );
@@ -189,15 +189,15 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
             throw new NotFoundException("Quadro não encontrado!");
         }
 
-        if (board.Owner != command.User)
-        {
-            throw new PermissionException("Sem permissão para remover participantes!");
-        }
-
         var participant = board.Participants.Find(x => x.Id == command.ParticipantId);
         if (participant == null)
         {
             throw new NotFoundException("Participante não encontrado!");
+        }
+
+        if (board.Owner != command.User && participant != command.User)
+        {
+            throw new PermissionException("Sem permissão para remover participantes!");
         }
 
         board.Participants.Remove(participant);

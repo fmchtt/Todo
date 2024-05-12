@@ -4,17 +4,17 @@ import {
   CreateColumn,
   DeleteColumn,
   EditColumn,
-  ExpandedColumn,
+  ResumedColumn,
 } from "@/types/column";
 
 class ColumnService {
   async createColumn(values: CreateColumn) {
-    const { data } = await http.post<ExpandedColumn>(`/columns`, values);
+    const { data } = await http.post<ResumedColumn>(`/columns`, values);
     return data;
   }
 
   async updateColumn({ id, ...values }: EditColumn) {
-    const { data } = await http.patch<ExpandedColumn>(`/columns/${id}`, values);
+    const { data } = await http.patch<ResumedColumn>(`/columns/${id}`, values);
     return data;
   }
 
