@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using Todo.Application.Commands.Contracts;
 
 namespace Todo.Application.Commands.UserCommands;
@@ -25,11 +24,5 @@ public class ConfirmRecoverPasswordCommand : ICommand<string>
         Code = code;
         Email = email;
         Password = password;
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new ConfirmRecoverPasswordValidator();
-        return validator.Validate(this);
     }
 }

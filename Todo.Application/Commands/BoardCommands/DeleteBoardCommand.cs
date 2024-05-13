@@ -1,6 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation;
-using FluentValidation.Results;
+﻿using FluentValidation;
+using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
 
@@ -24,11 +23,5 @@ public class DeleteBoardCommand : ICommand<string>
     {
         BoardId = boardId;
         User = user;
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new DeleteBoardValidator();
-        return validator.Validate(this);
     }
 }

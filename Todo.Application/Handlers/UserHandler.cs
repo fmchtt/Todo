@@ -39,13 +39,6 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
 
     public async Task<TokenResult> Handle(LoginCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var user = await _userRepository.GetByEmail(command.Email);
         if (user == null || !_hasher.Verify(command.Password, user.Password))
         {
@@ -59,13 +52,6 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
 
     public async Task<TokenResult> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var existingUser = await _userRepository.GetByEmail(command.Email);
         if (existingUser != null)
         {
@@ -83,13 +69,6 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
 
     public async Task<User> Handle(EditUserCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         if (command.Name != null && command.Name != command.User.Name)
         {
             command.User.Name = command.Name;
@@ -115,13 +94,6 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
 
     public async Task<string> Handle(RecoverPasswordCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var user = await _userRepository.GetByEmail(command.Email);
         if (user == null)
         {
@@ -149,13 +121,6 @@ public class UserHandler : IRequestHandler<LoginCommand, TokenResult>, IRequestH
 
     public async Task<string> Handle(ConfirmRecoverPasswordCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var code = await _recoverCodeRepository.Get(command.Code, command.Email);
         if (code == null)
         {

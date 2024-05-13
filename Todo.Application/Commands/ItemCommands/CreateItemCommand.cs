@@ -1,6 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation;
-using FluentValidation.Results;
+﻿using FluentValidation;
+using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
 
@@ -34,11 +33,5 @@ public class CreateItemCommand : ICommand<TodoItem>
         BoardId = boardId;
         ColumnId = columnId;
         User = user ?? new User();
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new CreateItemValidator();
-        return validator.Validate(this);
     }
 }

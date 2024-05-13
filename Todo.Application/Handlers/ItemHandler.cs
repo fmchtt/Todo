@@ -2,7 +2,6 @@
 using Todo.Application.Commands.ItemCommands;
 using Todo.Application.Exceptions;
 using Todo.Application.Queries;
-using Todo.Application.Results;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Results;
@@ -27,13 +26,6 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
 
     public async Task<TodoItem> Handle(CreateItemCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         if (command.BoardId.HasValue)
         {
             var board = await _boardRepository.GetById(command.BoardId.Value);
@@ -73,13 +65,6 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
 
     public async Task<TodoItem> Handle(EditItemCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var item = await _itemRepository.GetById(command.ItemId);
         if (item == null)
         {
@@ -114,13 +99,6 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
 
     public async Task<string> Handle(DeleteItemCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var item = await _itemRepository.GetById(command.ItemId);
         if (item == null)
         {
@@ -139,13 +117,6 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
 
     public async Task<TodoItem> Handle(ChangeItemColumnCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var todo = await _itemRepository.GetById(command.ItemId);
         var column = await _columnRepository.GetById(command.ColumnId);
 
@@ -167,13 +138,6 @@ public class ItemHandler : IRequestHandler<CreateItemCommand, TodoItem>, IReques
 
     public async Task<TodoItem> Handle(MarkCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var item = await _itemRepository.GetById(command.ItemId);
         if (item == null)
         {

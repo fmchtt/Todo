@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
@@ -30,11 +29,5 @@ public class EditBoardCommand : ICommand<Board>
         Name = name;
         Description = description;
         User = user ?? new User();
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new EditBoardValidator();
-        return validator.Validate(this);
     }
 }

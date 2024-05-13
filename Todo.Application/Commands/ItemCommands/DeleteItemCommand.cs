@@ -1,6 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation;
-using FluentValidation.Results;
+﻿using FluentValidation;
+using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
 
@@ -24,11 +23,5 @@ public class DeleteItemCommand : ICommand<string>
     {
         ItemId = itemId;
         User = user ?? new User();
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new DeleteItemValidator();
-        return validator.Validate(this);
     }
 }

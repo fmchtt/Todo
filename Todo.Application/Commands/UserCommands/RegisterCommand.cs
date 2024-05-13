@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using Todo.Application.Commands.Contracts;
 using Todo.Application.Results;
 
@@ -26,11 +25,5 @@ public class RegisterCommand : ICommand<TokenResult>
         Name = name;
         Email = email;
         Password = password;
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new RegisterValidator();
-        return validator.Validate(this);
     }
 }

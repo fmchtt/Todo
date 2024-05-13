@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
@@ -33,11 +32,5 @@ public class EditItemCommand : ICommand<TodoItem>
         Description = description;
         Priority = priority;
         User = user ?? new User();
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new EditItemValidator();
-        return validator.Validate(this);
     }
 }

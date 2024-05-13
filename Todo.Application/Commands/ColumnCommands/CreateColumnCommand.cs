@@ -1,6 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation;
-using FluentValidation.Results;
+﻿using FluentValidation;
+using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
 
@@ -30,11 +29,5 @@ public class CreateColumnCommand : ICommand<Column>
         Name = name;
         User = user ?? new User();
         Type = type;
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new CreateColumnValidator();
-        return validator.Validate(this);
     }
 }

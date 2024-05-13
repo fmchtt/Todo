@@ -1,6 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation;
-using FluentValidation.Results;
+﻿using FluentValidation;
+using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
 
@@ -13,14 +12,14 @@ public class AddBoardParticipantValidator : AbstractValidator<AddBoardParticipan
         RuleFor(command => command.Emails).ForEach(email => email.EmailAddress());
         RuleFor(x => x.User).NotNull();
     }
-} 
+}
 
 public class AddBoardParticipantCommand : ICommand<string>
 {
     [JsonIgnore] public Guid BoardId { get; set; }
     public ICollection<string> Emails { get; set; }
     [JsonIgnore] public string? Domain { get; set; }
-    
+
     [JsonIgnore] public User User { get; set; }
 
     public AddBoardParticipantCommand(Guid boardId, ICollection<string>? emails, string? domain, User? user)
@@ -29,11 +28,5 @@ public class AddBoardParticipantCommand : ICommand<string>
         Domain = domain;
         Emails = emails ?? new List<string>();
         User = user ?? new User();
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new AddBoardParticipantValidator();
-        return validator.Validate(this);
     }
 }

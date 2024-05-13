@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
@@ -32,11 +31,5 @@ public class EditColumnCommand : ICommand<Column>
         Order = order;
         User = user ?? new User();
         Type = type;
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new EditColumnValidator();
-        return validator.Validate(this);
     }
 }

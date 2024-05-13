@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Application.DTO;
@@ -27,11 +26,5 @@ public class EditUserCommand : ICommand<User>
         Name = name;
         Avatar = avatar;
         User = user ?? new User();
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new EditUserValidator();
-        return validator.Validate(this);
     }
 }

@@ -2,7 +2,6 @@
 using Todo.Application.Commands.BoardCommands;
 using Todo.Application.Exceptions;
 using Todo.Application.Queries;
-using Todo.Application.Results;
 using Todo.Application.Utils;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
@@ -30,13 +29,6 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
 
     public async Task<Board> Handle(CreateBoardCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var board = new Board(command.Name, command.Description, command.User.Id)
         {
             Participants = new List<User> { command.User }
@@ -53,13 +45,6 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
 
     public async Task<string> Handle(DeleteBoardCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var board = await _boardRepository.GetById(command.BoardId);
         if (board == null)
         {
@@ -78,13 +63,6 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
 
     public async Task<Board> Handle(EditBoardCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var board = await _boardRepository.GetById(command.BoardId);
         if (board == null)
         {
@@ -113,13 +91,6 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
 
     public async Task<string> Handle(AddBoardParticipantCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var board = await _boardRepository.GetById(command.BoardId);
         if (board == null)
         {
@@ -149,13 +120,6 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
 
     public async Task<string> Handle(ConfirmBoardParticipantCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var invite = await _inviteRepository.GetInvite(command.User.Email, command.BoardId);
         if (invite == null)
         {
@@ -176,13 +140,6 @@ public class BoardHandler : IRequestHandler<CreateBoardCommand, Board>, IRequest
 
     public async Task<string> Handle(RemoveBoardParticipantCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var board = await _boardRepository.GetById(command.BoardId);
         if (board == null)
         {

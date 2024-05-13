@@ -1,6 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation;
-using FluentValidation.Results;
+﻿using FluentValidation;
+using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
 
@@ -20,16 +19,10 @@ public class ConfirmBoardParticipantCommand : ICommand<string>
 
     public Guid BoardId { get; set; }
     [JsonIgnore] public User User { get; set; }
-    
+
     public ConfirmBoardParticipantCommand(Guid boardId, User? user)
     {
         BoardId = boardId;
         User = user ?? new User();
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new ConfirmBoardParticipantValidator();
-        return validator.Validate(this);
     }
 }

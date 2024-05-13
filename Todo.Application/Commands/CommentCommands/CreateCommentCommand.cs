@@ -1,6 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using FluentValidation;
-using FluentValidation.Results;
+﻿using FluentValidation;
+using System.Text.Json.Serialization;
 using Todo.Application.Commands.Contracts;
 using Todo.Domain.Entities;
 
@@ -32,11 +31,5 @@ public class CreateCommentCommand : ICommand<Comment>
         User = user;
         ItemId = itemId;
         Text = text;
-    }
-
-    public ValidationResult Validate()
-    {
-        var validator = new CreateCommentValidator();
-        return validator.Validate(this);
     }
 }

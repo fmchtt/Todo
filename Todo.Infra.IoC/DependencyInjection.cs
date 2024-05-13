@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Todo.Application.Behaviors;
 using Todo.Application.Handlers;
 using Todo.Application.Utils;
 using Todo.Domain.Repositories;
@@ -53,6 +56,8 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(CommentMapper));
 
         services.AddMediatR(conf => conf.RegisterServicesFromAssembly(AppDomain.CurrentDomain.Load("Todo.Application")));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddValidatorsFromAssembly(AppDomain.CurrentDomain.Load("Todo.Application"));
 
         return services;
     }

@@ -2,7 +2,6 @@
 using Todo.Application.Commands.CommentCommands;
 using Todo.Application.Exceptions;
 using Todo.Application.Queries;
-using Todo.Application.Results;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Results;
@@ -27,13 +26,6 @@ public class CommentHandler : IRequestHandler<CreateCommentCommand, Comment>,
 
     public async Task<Comment> Handle(CreateCommentCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var item = await _itemRepository.GetById(command.ItemId);
         if (item == null)
         {

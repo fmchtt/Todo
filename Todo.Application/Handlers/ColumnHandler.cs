@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Todo.Application.Commands.ColumnCommands;
 using Todo.Application.Exceptions;
-using Todo.Application.Results;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
@@ -21,13 +20,6 @@ public class ColumnHandler : IRequestHandler<CreateColumnCommand, Column>, IRequ
 
     public async Task<Column> Handle(CreateColumnCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var board = await _boardRepository.GetById(command.BoardId);
         if (board == null)
         {
@@ -49,13 +41,6 @@ public class ColumnHandler : IRequestHandler<CreateColumnCommand, Column>, IRequ
 
     public async Task<Column> Handle(EditColumnCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var column = await _columnRepository.GetById(command.ColumnId);
         if (column == null)
         {
@@ -90,13 +75,6 @@ public class ColumnHandler : IRequestHandler<CreateColumnCommand, Column>, IRequ
 
     public async Task<string> Handle(DeleteColumnCommand command, CancellationToken cancellationToken)
     {
-        var validation = command.Validate();
-        if (!validation.IsValid)
-        {
-            throw new ValidationException("Comando inválido",
-                validation.Errors.Select(error => new ErrorResult(error)).ToList());
-        }
-
         var column = await _columnRepository.GetById(command.ColumnId);
         if (column == null)
         {
