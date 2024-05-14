@@ -60,7 +60,7 @@ export default function TasksGrid(props: TasksGridProps) {
             })}
           </ItemContainer>
         ) : (
-          <EmptyContent card>
+          <EmptyContent $card>
             <Text>O quadro ainda não tem tarefas abertas!</Text>
           </EmptyContent>
         )}
@@ -84,7 +84,7 @@ export default function TasksGrid(props: TasksGridProps) {
             })}
           </ItemContainer>
         ) : (
-          <EmptyContent card>
+          <EmptyContent $card>
             <Text>O quadro ainda não tem tarefas encerradas!</Text>
           </EmptyContent>
         )}

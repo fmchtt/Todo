@@ -8,10 +8,10 @@ export const Container = styled.div`
 `;
 
 type EmptyContentProps = {
-  card?: boolean;
+  $card?: boolean;
 };
 export const EmptyContent = styled.div<EmptyContentProps>`
-  width: ${(props) => (props.card ? "260px" : "100%")};
+  width: ${(props) => (props.$card ? "260px" : "100%")};
   height: 100px;
   display: flex;
   justify-content: center;

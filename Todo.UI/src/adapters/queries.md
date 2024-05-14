@@ -22,7 +22,7 @@ Refers to a single item, the type of the query is ExpandedItem[]
 
 ## Creation and Updates
 
-To update or create an column, the query *Board.1* should be updated to set the column
+To update or create an column, the query *Board.2* should be updated to set the column
 
 To update or create an item, the queries *Item.1*, *Item.2* and *Board.2* should be updated to set the item (if done was updated, the *Board.1* should be updated to set the count of done/undone)
 
