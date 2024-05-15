@@ -3,10 +3,10 @@
 public class RecoverCode : Entity
 {
     public Guid UserId { get; set; }
-    public virtual User User { get; set; }
     public int Code { get; set; }
 
-    #pragma warning disable CS8618
+    public virtual User User { get; set; } = null!;
+
     public RecoverCode(Guid userId, int code)
     {
         UserId = userId;

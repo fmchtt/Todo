@@ -9,14 +9,14 @@ public class TodoItem : Entity
     public bool Done { get; set; }
     public EPriority Priority { get; set; }
     public Guid? BoardId { get; set; }
-    public virtual Board? Board { get; set; }
     public Guid? ColumnId { get; set; }
-    public virtual Column? Column { get; set; }
     public Guid CreatorId { get; set; }
-    public virtual User Creator { get; set; }
-    public virtual List<Comment> Comments { get; set; }
 
-#pragma warning disable CS8618
+    public virtual User Creator { get; set; } = null!;
+    public virtual List<Comment> Comments { get; set; } = [];
+    public virtual Board? Board { get; set; }
+    public virtual Column? Column { get; set; }
+
     public TodoItem(string title, string description, DateTime createdDate, DateTime updatedDate, Guid? boardId, Guid creatorId, bool done, EPriority priority, Guid? columnId)
     {
         Title = title;
@@ -30,7 +30,6 @@ public class TodoItem : Entity
         Priority = priority;
     }
 
-#pragma warning disable CS8618
     public TodoItem(string title, string description, Guid? boardId, Guid creatorId, bool done, EPriority priority, Guid? columnId)
     {
         Title = title;
