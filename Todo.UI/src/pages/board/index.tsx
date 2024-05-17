@@ -75,6 +75,7 @@ export default function Board() {
       boardId={data?.id}
       onSuccess={handleCreateItemSuccess}
       columns={data?.columns
+        .slice()
         .sort((x, y) => (x.order > y.order ? 1 : -1))
         .map((column) => {
           return { label: column.name, value: column.id };

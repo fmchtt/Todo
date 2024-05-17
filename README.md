@@ -1,5 +1,8 @@
 # Taskerizer
 
+![Home da aplicação](./Todo.UI/src/assets/images/taskerizer-home.png)
+![Quadro da aplicação](./Todo.UI/src/assets/images/taskerizer-board.png)
+
 Projeto feito para estudos em .NET e React.
 
 O Projeto consiste em uma aplicação de TODO, onde podem ser adicionadas tarefas e quadros 
